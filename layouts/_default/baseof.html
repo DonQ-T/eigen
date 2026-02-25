@@ -21,10 +21,10 @@
 <body>
   <header>
     <nav>
-      <a href="/" class="site-name">DON Q<span class="transpose"><span class="dot">.</span>T</span></a>
+      <a href="{{ "/" | relURL }}" class="site-name">DON Q<span class="transpose"><span class="dot">.</span>T</span></a>
       <ul class="nav-links">
         {{ range .Site.Menus.main }}
-        <li><a href="{{ .URL }}">{{ .Name }}</a></li>
+        <li><a href="{{ .URL | relURL }}">{{ .Name }}</a></li>
         {{ end }}
       </ul>
     </nav>
@@ -37,9 +37,9 @@
   <footer>
     <div class="footer-content">
       <ul class="footer-links">
-        <li><a href="https://youtube.com/@donq.T" target="_blank">YouTube</a></li>
-        <li><a href="https://instagram.com/donq.ai" target="_blank">Instagram</a></li>
-        <li><a href="https://github.com/" target="_blank">GitHub</a></li>
+        <li><a href="https://www.youtube.com/@donq.T" target="_blank">YouTube</a></li>
+        <li><a href="https://www.instagram.com/donqt.ai/" target="_blank">Instagram</a></li>
+        <li><a href="https://github.com/DonQ-T" target="_blank">GitHub</a></li>
       </ul>
       <p class="footer-copy">&copy; {{ now.Year }} Don Q — Matt Jacob</p>
     </div>

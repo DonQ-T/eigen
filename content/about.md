@@ -28,8 +28,8 @@ The goal is to make high-level quantitative concepts accessible without dumbing 
 
 ## Connect
 
-- **YouTube:** [@DonQ_T](https://youtube.com/@donq.T)
-- **Instagram:** Coming soon
-- **Email:** mjacob28@binghamton.edu
+- **YouTube:** [@donq.T](https://www.youtube.com/@donq.T)
+- **Instagram:** [@donqt.ai](https://www.instagram.com/donqt.ai/)
+- **Email:** mattjacob1107@gmail.com
 
 </div>
