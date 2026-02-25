@@ -1,12 +1,5 @@
 {{ define "main" }}
-<div class="hero hero-banner">
-  <div class="hero-banner-bg"></div>
-  <div class="hero-content">
-    <div class="hero-divider"></div>
-  </div>
-</div>
-
-<h2 style="font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; color: var(--gold-bright); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 1rem;">Latest Posts</h2>
+<h2 style="font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; color: var(--gold-bright); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 1rem; margin-top: 2rem;">Latest Posts</h2>
 
 <ul class="post-list">
   {{ range (where .Site.RegularPages "Section" "blog").ByDate.Reverse }}
