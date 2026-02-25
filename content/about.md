@@ -1,5 +1,6 @@
 ---
 title: "About"
+layout: "about"
 ---
 
 <div class="about-content">
