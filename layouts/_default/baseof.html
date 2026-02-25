@@ -18,7 +18,7 @@
     });">
   </script>
 </head>
-<body>
+<body{{ if .IsHome }} class="home"{{ end }}>
   <header>
     <nav>
       <a href="/donq-site/" class="site-name">DON Q<span class="transpose"><span class="dot">.</span>T</span></a>
@@ -44,5 +44,8 @@
       <p class="footer-copy">&copy; {{ now.Year }} Don Q — Matt Jacob</p>
     </div>
   </footer>
+
+  <!-- Particle System -->
+  <script src="{{ "js/particles.js" | relURL }}"></script>
 </body>
 </html>

@@ -56,10 +56,30 @@ body::before {
   z-index: 0;
 }
 
-/* ---- HEADER / NAV ---- */
-header {
+/* ---- PARTICLE CANVAS ---- */
+#particle-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Allow mouse events to pass through to canvas for interaction */
+body.home #particle-canvas {
+  pointer-events: auto;
+}
+
+/* Ensure all content sits above the canvas */
+header, main, footer {
   position: relative;
   z-index: 10;
+}
+
+/* ---- HEADER / NAV ---- */
+header {
   border-bottom: 1px solid rgba(180, 140, 70, 0.08);
 }
 
@@ -120,8 +140,6 @@ nav {
 
 /* ---- MAIN CONTENT ---- */
 main {
-  position: relative;
-  z-index: 1;
   flex: 1;
   max-width: var(--max-width);
   margin: 0 auto;
@@ -129,10 +147,52 @@ main {
   width: 100%;
 }
 
-/* ---- HOME PAGE ---- */
+/* ---- HOME PAGE HERO WITH BANNER ---- */
 .hero {
   text-align: center;
   padding: 4rem 0 3rem;
+}
+
+.hero-banner {
+  position: relative;
+  padding: 0;
+  margin: -3rem -2rem 3rem -2rem;
+  width: calc(100% + 4rem);
+  max-width: none;
+  min-height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.hero-banner-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('../images/banner.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.5;
+  z-index: 0;
+}
+
+/* Gradient fade at bottom of banner so it blends into the page */
+.hero-banner-bg::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60%;
+  background: linear-gradient(to top, var(--bg-primary) 0%, transparent 100%);
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  padding: 5rem 2rem;
 }
 
 .hero-title {
@@ -405,8 +465,6 @@ main {
 
 /* ---- FOOTER ---- */
 footer {
-  position: relative;
-  z-index: 10;
   border-top: 1px solid var(--gold-faint);
   padding: 2rem;
   text-align: center;
@@ -452,6 +510,8 @@ footer {
   nav { padding: 1rem 1.25rem; }
   main { padding: 2rem 1.25rem; }
   .hero-title { font-size: 2.8rem; letter-spacing: 6px; }
+  .hero-banner { min-height: 40vh; margin: -2rem -1.25rem 2rem -1.25rem; width: calc(100% + 2.5rem); }
+  .hero-content { padding: 3rem 1.25rem; }
   .post-header .post-title { font-size: 1.7rem; }
   .nav-links { gap: 1.25rem; }
   .nav-links a { font-size: 0.85rem; letter-spacing: 2px; }
