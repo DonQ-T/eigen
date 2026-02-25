@@ -8,7 +8,7 @@
 
   const canvas = document.createElement('canvas');
   canvas.id = 'particle-canvas';
-  document.body.appendChild(canvas);
+  document.body.insertBefore(canvas, document.body.firstChild);
   const ctx = canvas.getContext('2d');
 
   const isHome = document.body.classList.contains('home');
