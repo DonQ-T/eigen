@@ -4,27 +4,32 @@ title: "About"
 
 <div class="about-content">
 
-I'm Matt Jacob — a statistician, researcher, and PhD candidate tilting at the windmills of machine learning.
+I'm Matt Jacob — statistician, distance runner, and soon-to-be math PhD student chasing the intersection of mathematics and machine learning.
 
-## The Short Version
+## Who I Am
 
-I hold a Master of Science in Statistics from Binghamton University (3.91 GPA) and a Bachelor of Science in Finance and Actuarial Science (4.0 GPA) from the same institution. I've worked as a data analyst building reproducible pipelines and interactive tools, as a researcher constructing structural equation models for published academic work, and as an analyst at Gabelli Funds projecting equities and presenting to portfolio managers.
+From New York, and I've spent my undergrad and grad at Binghamton University — BS in Finance and Actuarial Science, MS in Statistics, and this fall will be starting a PhD in Mathematics there. Right now I work as a data analyst, where I build data pipelines, Shiny apps, etc. On the research side, I'm currently aiding a project applying ML to prognostic medicine.
 
-Now I'm pursuing a PhD, studying the mathematical foundations of machine learning, and building this platform to share what I learn along the way.
+Outside of math, I'm a former D1 cross country and track athlete. I still train at a pretty high level ~ 70-90 miles a week. PRs include 14:48 5K and 70:20 half marathon. If you've ever wondered what a lactate threshold curve looks like modeled with a third-degree polynomial, hmu...
+
+## What I'm Working Through Right Now
+
+- *The Elements of Statistical Learning* (Hastie, Tibshirani, Friedman)
+- Andrew Ng's Machine Learning and Deep Learning Specializations
+- Recently finished *Why Machines Learn* (Ananthaswamy) and *Everything is Predictable* (Chivers)
+
+I'll write about what I'm learning in real time, this site is meant to document that.
 
 ## Why "Don Q"?
 
-The name is a reference to Don Quixote — the fictional knight who believed so deeply in his vision that fiction became reality. Breaking into machine learning research, building a platform to teach it, doing a PhD while creating content — it sounds quixotic. That's the point.
+The name is a reference to Don Quixote — the knight who believed so deeply in his fantasy that the fiction became his reality ( arguably not for the best, in his case). 
 
-It's also a nod to my Puerto Rican heritage. And if you look closely at the handle — @DonQ_T — you might notice it looks a lot like NumPy syntax for a matrix transpose.
+It's also a nod to my Puerto Rican heritage, with the handle — @DonQ.T — being NumPy syntax for a matrix transpose (I had a really late night).
 
-Three layers. All intentional.
 
 ## What You'll Find Here
 
-This blog covers the mathematical foundations of machine learning — not surface-level tutorials, but the actual theory, the proofs, the geometry, and the code. I write about what I'm learning in real time, which means you get the perspective of someone actively deep in the material, not someone recounting it from memory years later.
-
-The goal is to make high-level quantitative concepts accessible without dumbing them down. If you're working toward a career in ML engineering, data science, quant research, or ML research, this is for you.
+The math behind machine learning — theory, proofs, geometry, and the code. If you're working toward a career in ML, data science, quant research, or you're just someone who wants to understand this stuff at a real level, come learn alongside me!
 
 ## Connect
 
