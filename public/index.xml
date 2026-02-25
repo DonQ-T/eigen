@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Don Q</title>
+    <link>http://localhost:1313/donq-site/</link>
+    <description>Recent content on Don Q</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 25 Feb 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/donq-site/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Bayesian Probability: Is Statistics Even Real?</title>
+      <link>http://localhost:1313/donq-site/blog/bayesian-probability-is-statistics-even-real/</link>
+      <pubDate>Wed, 25 Feb 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/donq-site/blog/bayesian-probability-is-statistics-even-real/</guid>
+      <description>&lt;p&gt;You go to the doctor. You take a test. The test comes back positive. You want to know one thing: &lt;em&gt;what&amp;rsquo;s the probability I actually have this disease?&lt;/em&gt;&lt;/p&gt;&#xA;&lt;p&gt;This is the most natural question in the world. And for about a century, the dominant school of statistics refused to answer it.&lt;/p&gt;&#xA;&lt;p&gt;Frequentist statistics — the framework you learned in your intro stats class, the one with p-values and confidence intervals and null hypotheses — can tell you the probability of getting a positive test result &lt;em&gt;given that you have the disease&lt;/em&gt;. That&amp;rsquo;s P(positive | disease). It can also tell you the probability of a positive result &lt;em&gt;given that you&amp;rsquo;re healthy&lt;/em&gt;. That&amp;rsquo;s the false positive rate, P(positive | no disease).&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>The Strange Simplicity of Machine Learning</title>
+      <link>http://localhost:1313/donq-site/blog/strange-simplicity-of-machine-learning/</link>
+      <pubDate>Wed, 25 Feb 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/donq-site/blog/strange-simplicity-of-machine-learning/</guid>
+      <description>&lt;p&gt;In 1958, Frank Rosenblatt built a machine at the Cornell Aeronautical Laboratory that could learn to distinguish shapes. He called it the Perceptron. The New York Times ran a story suggesting it would one day &amp;ldquo;be conscious of its existence.&amp;rdquo; The hype was, predictably, overblown.&lt;/p&gt;&#xA;&lt;p&gt;But here&amp;rsquo;s what wasn&amp;rsquo;t overblown: the idea behind it. Because nearly seventy years later, the perceptron&amp;rsquo;s core principle is still the beating heart of almost every machine learning model you&amp;rsquo;ve ever heard of. From logistic regression to the transformer architecture powering ChatGPT, the final act is almost always the same — find a line that separates one group of things from another.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>About</title>
+      <link>http://localhost:1313/donq-site/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/donq-site/about/</guid>
+      <description>&lt;div class=&#34;about-content&#34;&gt;&#xA;&lt;p&gt;I&amp;rsquo;m Matt Jacob — a statistician, researcher, and PhD candidate tilting at the windmills of machine learning.&lt;/p&gt;&#xA;&lt;h2 id=&#34;the-short-version&#34;&gt;The Short Version&lt;/h2&gt;&#xA;&lt;p&gt;I hold a Master of Science in Statistics from Binghamton University (3.91 GPA) and a Bachelor of Science in Finance and Actuarial Science (4.0 GPA) from the same institution. I&amp;rsquo;ve worked as a data analyst building reproducible pipelines and interactive tools, as a researcher constructing structural equation models for published academic work, and as an analyst at Gabelli Funds projecting equities and presenting to portfolio managers.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

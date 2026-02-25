@@ -1,0 +1,25 @@
+{{ define "main" }}
+<div class="hero">
+  <h1 class="hero-title">DON Q<span class="transpose"><span class="dot">.</span>T</span></h1>
+  <p class="hero-tagline">{{ .Site.Params.tagline }}</p>
+  <p class="hero-subtitle">Machine Learning · Mathematics · Research</p>
+  <div class="hero-divider"></div>
+</div>
+
+<h2 style="font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; color: var(--gold-bright); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 1rem;">Latest Posts</h2>
+
+<ul class="post-list">
+  {{ range (where .Site.RegularPages "Section" "blog").ByDate.Reverse }}
+  <li class="post-item">
+    <span class="post-date">{{ .Date.Format "January 2, 2006" }}</span>
+    <h3 class="post-title"><a href="{{ .Permalink }}">{{ .Title }}</a></h3>
+    <p class="post-excerpt">{{ .Description }}</p>
+    <div class="post-tags">
+      {{ range .Params.tags }}
+      <a href="/tags/{{ . | urlize }}" class="tag">{{ . }}</a>
+      {{ end }}
+    </div>
+  </li>
+  {{ end }}
+</ul>
+{{ end }}
