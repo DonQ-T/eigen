@@ -93,4 +93,4 @@ Bayes figured this out in the 1700s. Statistics spent a century ignoring it. The
 
 ---
 
-*This is the second post in a series on the mathematical foundations of machine learning. Previously: [The Strange Simplicity of Machine Learning](/blog/strange-simplicity-of-machine-learning).*
+*This is the second post in a series on the mathematical foundations of machine learning. Previously: [The Strange Simplicity of Machine Learning](../strange-simplicity-of-machine-learning).*

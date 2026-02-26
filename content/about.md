@@ -35,7 +35,7 @@ The math behind machine learning — theory, proofs, geometry, and the code. If 
 ## Connect
 
 - **YouTube:** [@donq.T](https://www.youtube.com/@donq.T)
-- **Instagram:** [@donqt.ai](https://www.instagram.com/donqt.ai/)
+- **Instagram:** [@eigen.io](https://www.instagram.com/eigen.io/)
 - **Email:** mattjacob1107@gmail.com
 
 </div>

@@ -44,22 +44,40 @@ body {
   flex-direction: column;
 }
 
-/* ---- NOISE TEXTURE ---- */
+/* ---- ATMOSPHERIC GLOW ---- */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
-  opacity: 0.03;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-  background-size: 256px 256px;
+  background: radial-gradient(ellipse at 50% 30%, rgba(140, 100, 40, 0.12) 0%, rgba(7, 6, 12, 0) 60%);
   pointer-events: none;
   z-index: 0;
 }
 
-/* ---- HEADER / NAV ---- */
-header {
+/* ---- PARTICLE CANVAS ---- */
+#particle-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Allow mouse events to pass through to canvas for interaction */
+body.home #particle-canvas {
+  pointer-events: auto;
+}
+
+/* Ensure all content sits above the canvas */
+header, main, footer {
   position: relative;
   z-index: 10;
+}
+
+/* ---- HEADER / NAV ---- */
+header {
   border-bottom: 1px solid rgba(180, 140, 70, 0.08);
 }
 
@@ -120,71 +138,11 @@ nav {
 
 /* ---- MAIN CONTENT ---- */
 main {
-  position: relative;
-  z-index: 1;
   flex: 1;
   max-width: var(--max-width);
   margin: 0 auto;
   padding: 3rem 2rem;
   width: 100%;
-}
-
-/* ---- HOME PAGE ---- */
-.hero {
-  text-align: center;
-  padding: 4rem 0 3rem;
-}
-
-.hero-title {
-  font-family: var(--font-display);
-  font-weight: 900;
-  font-size: 4rem;
-  letter-spacing: 12px;
-  background: linear-gradient(178deg, var(--gold-bright), var(--gold-dim));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  line-height: 1.1;
-  margin-bottom: 0.5rem;
-}
-
-.hero-title .transpose {
-  font-family: var(--font-code);
-  font-weight: 700;
-  font-size: 2rem;
-  color: var(--blue-accent);
-  vertical-align: super;
-}
-
-.hero-title .dot {
-  color: var(--blue-dim);
-}
-
-.hero-tagline {
-  font-family: var(--font-accent);
-  font-style: italic;
-  font-weight: 300;
-  font-size: 1.15rem;
-  color: var(--text-dim);
-  letter-spacing: 2px;
-  margin-top: 1rem;
-}
-
-.hero-subtitle {
-  font-family: var(--font-accent);
-  font-weight: 300;
-  font-size: 0.9rem;
-  letter-spacing: 6px;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  margin-top: 1.5rem;
-}
-
-.hero-divider {
-  width: 200px;
-  height: 1px;
-  margin: 2rem auto;
-  background: linear-gradient(90deg, transparent, var(--gold-mid), transparent);
 }
 
 /* ---- BLOG LIST ---- */
@@ -405,8 +363,6 @@ main {
 
 /* ---- FOOTER ---- */
 footer {
-  position: relative;
-  z-index: 10;
   border-top: 1px solid var(--gold-faint);
   padding: 2rem;
   text-align: center;
@@ -451,7 +407,6 @@ footer {
   html { font-size: 16px; }
   nav { padding: 1rem 1.25rem; }
   main { padding: 2rem 1.25rem; }
-  .hero-title { font-size: 2.8rem; letter-spacing: 6px; }
   .post-header .post-title { font-size: 1.7rem; }
   .nav-links { gap: 1.25rem; }
   .nav-links a { font-size: 0.85rem; letter-spacing: 2px; }

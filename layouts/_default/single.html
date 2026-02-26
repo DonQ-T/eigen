@@ -9,7 +9,7 @@
     {{ if not (eq .Params.layout "about") }}
     <div class="post-tags" style="margin-top: 1rem;">
       {{ range .Params.tags }}
-      <a href="/tags/{{ . | urlize }}" class="tag">{{ . }}</a>
+      <span class="tag">{{ . }}</span>
       {{ end }}
     </div>
     {{ end }}
