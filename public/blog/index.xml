@@ -9,6 +9,13 @@
     <lastBuildDate>Thu, 26 Feb 2026 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://donq-t.github.io/donq-site/blog/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Gradient Descent: The Blind Man Who Finds the Valley</title>
+      <link>https://donq-t.github.io/donq-site/blog/gradient-descent-the-blind-man-who-finds-the-valley/</link>
+      <pubDate>Thu, 26 Feb 2026 00:00:00 +0000</pubDate>
+      <guid>https://donq-t.github.io/donq-site/blog/gradient-descent-the-blind-man-who-finds-the-valley/</guid>
+      <description>&lt;p&gt;You&amp;rsquo;re standing on a mountainside in thick fog. You can&amp;rsquo;t see the valley floor. You can&amp;rsquo;t see the peak behind you. You can see approximately nothing. But you can feel the ground under your feet — the slope, the angle, the direction the earth tilts. So you do the obvious thing. You take a step downhill.&lt;/p&gt;&#xA;&lt;p&gt;Then another. Then another.&lt;/p&gt;&#xA;&lt;p&gt;That&amp;rsquo;s gradient descent. The algorithm behind every neural network ever trained, every large language model, every image generator, every system that has made the last decade of AI feel like science fiction. The entire $600 billion AI industry runs on a blind man walking downhill.&lt;/p&gt;</description>
+    </item>
+    <item>
       <title>The Bias-Variance Tradeoff: It Holds Until It Doesn&#39;t</title>
       <link>https://donq-t.github.io/donq-site/blog/the-bias-variance-tradeoff-it-holds-until-it-doesnt/</link>
       <pubDate>Thu, 26 Feb 2026 00:00:00 +0000</pubDate>

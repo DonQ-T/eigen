@@ -69,7 +69,7 @@ In the standard workflow, you'd stop here. The model has converged. Further trai
 
 But the researchers kept training. Not because they expected anything to happen. They kept training because — as the lore goes — someone went on vacation and left the job running. The compute budget was trivial. Nobody bothered to kill it.
 
-Somewhere around step 30,000 — long after the model had perfectly memorized every training example — validation accuracy began to climb. Not gradually. Not noisily. It shot up, almost vertically, from near-zero to near-perfect generalization. The model had suddenly *understood* modular arithmetic. It had discovered the algorithm, not just memorized the data.
+Then, long after the model had perfectly memorized every training example — orders of magnitude more training steps than it had taken to reach zero training loss — validation accuracy began to climb. Not gradually. Not noisily. It shot up, almost vertically, from near-zero to near-perfect generalization. The model had suddenly *understood* modular arithmetic. It had discovered the algorithm, not just memorized the data.
 
 They called this phenomenon *grokking* — a term borrowed from Heinlein meaning to understand something so thoroughly that it becomes part of you. The model hadn't just learned the mapping. It had found the underlying structure. And it had done so *long after* the point where every classical indicator said learning was over.
 
