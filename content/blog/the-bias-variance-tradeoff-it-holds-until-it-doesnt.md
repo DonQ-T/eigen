@@ -1,5 +1,5 @@
 ---
-title: "The Bias-Variance Tradeoff Is Wrong (Until It Isn't)"
+title: "The Bias-Variance Tradeoff: It Holds Until It Doesn't"
 date: 2026-02-26
 author: "Matt Jacob"
 description: "The textbook says more training means more overfitting — until a researcher went on vacation and came back to find the opposite was true."

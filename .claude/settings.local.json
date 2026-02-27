@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C \"C:\\\\Users\\\\mattj\\\\Desktop\\\\donq-site\" mv content/blog/the-bias-variance-tradeoff-is-wrong-until-it-isnt.md content/blog/the-bias-variance-tradeoff-it-holds-until-it-doesnt.md)",
+      "Bash(git -C \"C:\\\\Users\\\\mattj\\\\Desktop\\\\donq-site\" add -A)",
+      "Bash(git -C \"C:\\\\Users\\\\mattj\\\\Desktop\\\\donq-site\" commit -m \"$\\(cat <<''EOF''\nRename bias-variance article to match updated title\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git -C \"C:\\\\Users\\\\mattj\\\\Desktop\\\\donq-site\" push)"
+    ]
+  }
+}
