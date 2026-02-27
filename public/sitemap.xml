@@ -2,16 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://donq-t.github.io/donq-site/tags/bias-variance/</loc>
+    <lastmod>2026-02-26T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://donq-t.github.io/donq-site/blog/</loc>
+    <lastmod>2026-02-26T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://donq-t.github.io/donq-site/</loc>
+    <lastmod>2026-02-26T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://donq-t.github.io/donq-site/tags/double-descent/</loc>
+    <lastmod>2026-02-26T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://donq-t.github.io/donq-site/tags/generalization/</loc>
+    <lastmod>2026-02-26T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://donq-t.github.io/donq-site/tags/grokking/</loc>
+    <lastmod>2026-02-26T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://donq-t.github.io/donq-site/tags/</loc>
+    <lastmod>2026-02-26T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://donq-t.github.io/donq-site/blog/the-bias-variance-tradeoff-is-wrong-until-it-isnt/</loc>
+    <lastmod>2026-02-26T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>https://donq-t.github.io/donq-site/tags/bayesian/</loc>
     <lastmod>2026-02-25T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://donq-t.github.io/donq-site/blog/bayesian-probability-is-statistics-even-real/</loc>
-    <lastmod>2026-02-25T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://donq-t.github.io/donq-site/blog/</loc>
-    <lastmod>2026-02-25T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://donq-t.github.io/donq-site/</loc>
     <lastmod>2026-02-25T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://donq-t.github.io/donq-site/tags/linear-algebra/</loc>
@@ -33,9 +51,6 @@
     <lastmod>2026-02-25T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://donq-t.github.io/donq-site/tags/statistics/</loc>
-    <lastmod>2026-02-25T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://donq-t.github.io/donq-site/tags/</loc>
     <lastmod>2026-02-25T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://donq-t.github.io/donq-site/blog/strange-simplicity-of-machine-learning/</loc>

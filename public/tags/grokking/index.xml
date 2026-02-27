@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Grokking on Don Q</title>
+    <link>https://donq-t.github.io/donq-site/tags/grokking/</link>
+    <description>Recent content in Grokking on Don Q</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 26 Feb 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://donq-t.github.io/donq-site/tags/grokking/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>The Bias-Variance Tradeoff Is Wrong (Until It Isn&#39;t)</title>
+      <link>https://donq-t.github.io/donq-site/blog/the-bias-variance-tradeoff-is-wrong-until-it-isnt/</link>
+      <pubDate>Thu, 26 Feb 2026 00:00:00 +0000</pubDate>
+      <guid>https://donq-t.github.io/donq-site/blog/the-bias-variance-tradeoff-is-wrong-until-it-isnt/</guid>
+      <description>&lt;p&gt;You&amp;rsquo;re training a model. Training loss is dropping nicely. Then you glance at validation loss and — there it is. The curve has turned upward. The gap is widening. Every textbook, every lecture, every blog post you&amp;rsquo;ve ever read says the same thing: &lt;em&gt;stop&lt;/em&gt;. You&amp;rsquo;re overfitting. More training will only make it worse.&lt;/p&gt;&#xA;&lt;p&gt;So you stop. You tune your regularization. You reduce your model size. You do everything the theory tells you to do, because the theory is backed by a clean, beautiful mathematical decomposition that has governed machine learning for decades.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
