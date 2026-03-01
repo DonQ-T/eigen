@@ -1,18 +1,41 @@
 {{ define "main" }}
-<h2 style="font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; color: var(--gold-bright); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 1rem; margin-top: 2rem;">Latest Posts</h2>
+<section class="hero">
+  <!-- Gradient masks over the Hilbert curve canvas -->
+  <div class="hero-gradient-top"></div>
+  <div class="hero-gradient-bottom"></div>
 
-<ul class="post-list">
-  {{ range (where .Site.RegularPages "Section" "blog").ByDate.Reverse }}
-  <li class="post-item">
-    <span class="post-date">{{ .Date.Format "January 2, 2006" }}</span>
-    <h3 class="post-title"><a href="{{ .Permalink }}">{{ .Title }}</a></h3>
-    <p class="post-excerpt">{{ .Description }}</p>
-    <div class="post-tags">
-      {{ range .Params.tags }}
-      <a href="/tags/{{ . | urlize }}" class="tag">{{ . }}</a>
-      {{ end }}
-    </div>
-  </li>
-  {{ end }}
-</ul>
+  <div class="hero-content">
+    <h1 class="hero-title" data-animate data-delay="100">
+      <span class="hero-accent">Math</span> behind<br>the Machine
+    </h1>
+    <p class="hero-tagline" data-animate data-delay="300">
+      Exploring machine learning, optimization, and the deep structures underneath — through proofs, code, and visual intuition.
+    </p>
+    <p class="hero-bio" data-animate data-delay="500">
+      Matt Jacob — MS Statistics, incoming PhD Mathematics.
+    </p>
+  </div>
+</section>
+
+<section class="home-section" data-animate data-delay="100">
+  <h2 class="section-heading">Latest Posts</h2>
+  <div class="card-grid">
+    {{ range first 4 (where .Site.RegularPages "Section" "blog").ByDate.Reverse }}
+    <a href="{{ .Permalink }}" class="card">
+      <div class="card-inner">
+        <span class="card-date">{{ .Date.Format "Jan 2, 2006" }}</span>
+        <h3 class="card-title">{{ .Title }}</h3>
+        <p class="card-desc">{{ .Description }}</p>
+      </div>
+      <span class="card-arrow">&rarr;</span>
+    </a>
+    {{ end }}
+  </div>
+</section>
+
+<section class="home-section" data-animate data-delay="100">
+  <h2 class="section-heading">Videos</h2>
+  <p class="section-desc">Mathematical animations and visual explanations built with Manim.</p>
+  <a href="{{ "videos/" | relURL }}" class="pill-link">Browse videos &rarr;</a>
+</section>
 {{ end }}

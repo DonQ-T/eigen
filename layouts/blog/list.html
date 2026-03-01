@@ -1,18 +1,24 @@
 {{ define "main" }}
-<h1 style="font-family: var(--font-display); font-weight: 900; font-size: 2rem; letter-spacing: 6px; background: linear-gradient(178deg, var(--gold-bright), var(--gold-dim)); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 2rem;">Blog</h1>
+<section class="page-header">
+  <h1 class="page-title">Blog</h1>
+  <p class="page-desc">Writing about mathematics, machine learning, and the ideas behind them.</p>
+</section>
 
-<ul class="post-list">
+<div class="card-grid" style="max-width: var(--max-width); margin: 0 auto; padding: 0 2rem 4rem;">
   {{ range .Pages.ByDate.Reverse }}
-  <li class="post-item">
-    <span class="post-date">{{ .Date.Format "January 2, 2006" }}</span>
-    <h3 class="post-title"><a href="{{ .Permalink }}">{{ .Title }}</a></h3>
-    <p class="post-excerpt">{{ .Description }}</p>
-    <div class="post-tags">
-      {{ range .Params.tags }}
-      <a href="/tags/{{ . | urlize }}" class="tag">{{ . }}</a>
-      {{ end }}
+  <a href="{{ .Permalink }}" class="card">
+    <div class="card-inner">
+      <span class="card-date">{{ .Date.Format "Jan 2, 2006" }}</span>
+      <h3 class="card-title">{{ .Title }}</h3>
+      <p class="card-desc">{{ .Description }}</p>
+      <div class="card-tags">
+        {{ range .Params.tags }}
+        <span class="tag">{{ . }}</span>
+        {{ end }}
+      </div>
     </div>
-  </li>
+    <span class="card-arrow">&rarr;</span>
+  </a>
   {{ end }}
-</ul>
+</div>
 {{ end }}

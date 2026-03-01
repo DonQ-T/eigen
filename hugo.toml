@@ -1,13 +1,13 @@
-baseURL = "https://donq-t.github.io/donq-site/"
+baseURL = "https://donq-t.github.io/eigen/"
 languageCode = "en-us"
-title = "Don Q"
+title = "Eigen"
 [pagination]
   pagerSize = 10
 
 [params]
-  description = "Machine Learning · Mathematics · Research"
+  description = "Mathematics · Machine Learning · Research"
   author = "Matt Jacob"
-  tagline = "Tilting at the windmills of machine learning, one proof at a time."
+  tagline = "Where mathematics meets machine learning."
 
 [menu]
   [[menu.main]]
@@ -15,13 +15,21 @@ title = "Don Q"
     url = "/"
     weight = 1
   [[menu.main]]
+    name = "Projects"
+    url = "/projects/"
+    weight = 2
+  [[menu.main]]
     name = "Blog"
     url = "/blog/"
-    weight = 2
+    weight = 3
+  [[menu.main]]
+    name = "Videos"
+    url = "/videos/"
+    weight = 4
   [[menu.main]]
     name = "About"
     url = "/about/"
-    weight = 3
+    weight = 5
 
 [markup]
   [markup.goldmark]
