@@ -34,6 +34,22 @@
 </section>
 
 <section class="home-section" data-animate data-delay="100">
+  <h2 class="section-heading">Projects</h2>
+  <div class="card-grid">
+    {{ range first 3 (where .Site.RegularPages "Section" "projects").ByDate.Reverse }}
+    <a href="{{ .Permalink }}" class="card">
+      <div class="card-inner">
+        <span class="card-date">{{ .Date.Format "Jan 2, 2006" }}</span>
+        <h3 class="card-title">{{ .Title }}</h3>
+        <p class="card-desc">{{ .Description }}</p>
+      </div>
+      <span class="card-arrow">&rarr;</span>
+    </a>
+    {{ end }}
+  </div>
+</section>
+
+<section class="home-section" data-animate data-delay="100">
   <h2 class="section-heading">Videos</h2>
   <p class="section-desc">Mathematical animations and visual explanations built with Manim.</p>
   <a href="{{ "videos/" | relURL }}" class="pill-link">Browse videos &rarr;</a>
