@@ -40,9 +40,9 @@
   /** Convert speed (mph) to pace string "M:SS /mi" */
   function speedToPace(mph) {
     if (!mph || mph <= 0) return '--:--';
-    const totalSec = (60 / mph) * 60;
+    const totalSec = Math.round((60 / mph) * 60);
     const min = Math.floor(totalSec / 60);
-    const sec = Math.round(totalSec % 60);
+    const sec = totalSec % 60;
     return min + ':' + (sec < 10 ? '0' : '') + sec;
   }
 
@@ -558,65 +558,80 @@
       ctx.setLineDash([]);
     }
 
-    // Threshold markers
+    // Threshold markers — collect hit targets for hover tooltips
+    chartMarkers = [];
     if (results) {
       if (results.obla) {
-        ctx.fillStyle = CHART_COLORS.thresholdMarker;
         for (const o of results.obla) {
           if (o.x === null) continue;
-          const x = toX(o.x);
-          const y = toY(o.threshold);
-          ctx.beginPath();
-          ctx.arc(x, y, 4, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.font = '9px JetBrains Mono, monospace';
-          ctx.fillStyle = 'rgba(255,255,255,0.5)';
-          ctx.textAlign = 'left';
-          ctx.fillText(o.threshold.toFixed(1), x + 7, y + 3);
+          const px = toX(o.x);
+          const py = toY(o.threshold);
           ctx.fillStyle = CHART_COLORS.thresholdMarker;
+          ctx.beginPath();
+          ctx.arc(px, py, 4, 0, Math.PI * 2);
+          ctx.fill();
+          const r = formatResult(o.x, speeds, lastCalc.hrs);
+          chartMarkers.push({ x: px, y: py, label: 'OBLA ' + o.threshold.toFixed(1), pace: r.pace, hr: r.hr, lac: o.threshold.toFixed(1) });
+        }
+      }
+
+      if (results.baselinePlus) {
+        for (const bp of results.baselinePlus) {
+          if (bp.x === null) continue;
+          const px = toX(bp.x);
+          const py = toY(bp.target);
+          ctx.fillStyle = CHART_COLORS.thresholdMarker;
+          ctx.beginPath();
+          ctx.arc(px, py, 4, 0, Math.PI * 2);
+          ctx.fill();
+          const r = formatResult(bp.x, speeds, lastCalc.hrs);
+          chartMarkers.push({ x: px, y: py, label: 'Baseline +' + bp.delta.toFixed(1), pace: r.pace, hr: r.hr, lac: bp.target.toFixed(1) });
         }
       }
 
       if (results.dmax && results.dmax.x !== null) {
         const dm = results.dmax;
-        drawMarker(ctx, toX(dm.x), toY(dm.lac), 'D', CHART_COLORS.thresholdMarker);
+        const px = toX(dm.x);
+        const py = toY(dm.lac);
+        drawMarker(ctx, px, py, CHART_COLORS.thresholdMarker);
+        const r = formatResult(dm.x, speeds, lastCalc.hrs);
+        chartMarkers.push({ x: px, y: py, label: 'Dmax', pace: r.pace, hr: r.hr, lac: dm.lac.toFixed(1) });
       }
 
       if (results.modDmax && results.modDmax.x !== null) {
         const mdm = results.modDmax;
-        drawMarker(ctx, toX(mdm.x), toY(mdm.lac), 'M', CHART_COLORS.thresholdMarker);
+        const px = toX(mdm.x);
+        const py = toY(mdm.lac);
+        drawMarker(ctx, px, py, CHART_COLORS.thresholdMarker);
+        const r = formatResult(mdm.x, speeds, lastCalc.hrs);
+        chartMarkers.push({ x: px, y: py, label: 'Modified Dmax', pace: r.pace, hr: r.hr, lac: mdm.lac.toFixed(1) });
       }
 
       if (results.loglog && results.loglog.x !== null) {
         const ll = results.loglog;
         const llLac = coeffs ? polyEval(coeffs, ll.x) : 0;
-        drawMarker(ctx, toX(ll.x), toY(llLac), 'L', CHART_COLORS.thresholdMarker);
+        const px = toX(ll.x);
+        const py = toY(llLac);
+        drawMarker(ctx, px, py, CHART_COLORS.thresholdMarker);
+        const r = formatResult(ll.x, speeds, lastCalc.hrs);
+        chartMarkers.push({ x: px, y: py, label: 'Log-log', pace: r.pace, hr: r.hr, lac: llLac.toFixed(1) });
       }
 
-      // Baseline+ markers (small dots like OBLA, labeled with delta)
-      if (results.baselinePlus) {
-        ctx.fillStyle = CHART_COLORS.thresholdMarker;
-        for (const bp of results.baselinePlus) {
-          if (bp.x === null) continue;
-          const x = toX(bp.x);
-          const y = toY(bp.target);
-          ctx.beginPath();
-          ctx.arc(x, y, 4, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.font = '9px JetBrains Mono, monospace';
-          ctx.fillStyle = 'rgba(255,255,255,0.5)';
-          ctx.textAlign = 'left';
-          ctx.fillText('+' + bp.delta.toFixed(1), x + 7, y + 3);
-          ctx.fillStyle = CHART_COLORS.thresholdMarker;
-        }
-      }
-
-      // LTP markers (diamonds labeled "1" and "2")
       if (results.ltp && results.ltp.ltp1) {
-        drawMarker(ctx, toX(results.ltp.ltp1.x), toY(results.ltp.ltp1.lac), '1', CHART_COLORS.thresholdMarker);
+        const ltpLac1 = coeffs ? polyEval(coeffs, results.ltp.ltp1.x) : results.ltp.ltp1.lac;
+        const px = toX(results.ltp.ltp1.x);
+        const py = toY(ltpLac1);
+        drawMarker(ctx, px, py, CHART_COLORS.thresholdMarker);
+        const r = formatResult(results.ltp.ltp1.x, speeds, lastCalc.hrs);
+        chartMarkers.push({ x: px, y: py, label: 'LTP1', pace: r.pace, hr: r.hr, lac: ltpLac1.toFixed(1) });
       }
       if (results.ltp && results.ltp.ltp2) {
-        drawMarker(ctx, toX(results.ltp.ltp2.x), toY(results.ltp.ltp2.lac), '2', CHART_COLORS.thresholdMarker);
+        const ltpLac2 = coeffs ? polyEval(coeffs, results.ltp.ltp2.x) : results.ltp.ltp2.lac;
+        const px = toX(results.ltp.ltp2.x);
+        const py = toY(ltpLac2);
+        drawMarker(ctx, px, py, CHART_COLORS.thresholdMarker);
+        const r = formatResult(results.ltp.ltp2.x, speeds, lastCalc.hrs);
+        chartMarkers.push({ x: px, y: py, label: 'LTP2', pace: r.pace, hr: r.hr, lac: ltpLac2.toFixed(1) });
       }
     }
 
@@ -636,7 +651,7 @@
     drawLegend(ctx, pad.left, pad.top - 16, results);
   }
 
-  function drawMarker(ctx, x, y, label, color) {
+  function drawMarker(ctx, x, y, color) {
     ctx.fillStyle = color;
     ctx.beginPath();
     ctx.moveTo(x, y - 6);
@@ -645,10 +660,6 @@
     ctx.lineTo(x - 5, y);
     ctx.closePath();
     ctx.fill();
-    ctx.font = 'bold 9px Inter, sans-serif';
-    ctx.fillStyle = '#000000';
-    ctx.textAlign = 'center';
-    ctx.fillText(label, x, y + 3);
   }
 
   function drawLegend(ctx, x, y, results) {
@@ -710,6 +721,9 @@
 
   // Cached calculation state for resize redraws
   let lastCalc = null;
+
+  // Marker hit targets for hover tooltips
+  let chartMarkers = [];
 
   function init() {
     const container = document.getElementById('lt-app');
@@ -1025,6 +1039,49 @@
         }
       }, 250);
     });
+
+    // Hover tooltips on chart markers
+    var tooltip = document.createElement('div');
+    tooltip.style.cssText = 'position:fixed;display:none;pointer-events:none;z-index:1000;' +
+      'background:rgba(0,0,0,0.92);border:1px solid rgba(255,255,255,0.15);border-radius:6px;' +
+      'padding:0.5rem 0.75rem;font-family:var(--font-code);font-size:0.75rem;color:#fff;' +
+      'line-height:1.5;white-space:nowrap;';
+    document.body.appendChild(tooltip);
+
+    var chartCanvas = document.getElementById('lt-chart');
+    if (chartCanvas) {
+      chartCanvas.addEventListener('mousemove', function (e) {
+        if (!chartMarkers.length) { tooltip.style.display = 'none'; return; }
+        var rect = chartCanvas.getBoundingClientRect();
+        var mx = e.clientX - rect.left;
+        var my = e.clientY - rect.top;
+        var hit = null;
+        var bestDist = 144; // 12px radius squared
+        for (var i = 0; i < chartMarkers.length; i++) {
+          var m = chartMarkers[i];
+          var dx = mx - m.x;
+          var dy = my - m.y;
+          var d2 = dx * dx + dy * dy;
+          if (d2 < bestDist) { bestDist = d2; hit = m; }
+        }
+        if (hit) {
+          tooltip.innerHTML = '<strong>' + hit.label + '</strong><br>' +
+            hit.pace + ' /mi · ' + hit.hr + ' bpm<br>' +
+            hit.lac + ' mmol/L';
+          tooltip.style.display = 'block';
+          tooltip.style.left = (e.clientX + 14) + 'px';
+          tooltip.style.top = (e.clientY - 10) + 'px';
+          chartCanvas.style.cursor = 'pointer';
+        } else {
+          tooltip.style.display = 'none';
+          chartCanvas.style.cursor = 'default';
+        }
+      });
+      chartCanvas.addEventListener('mouseleave', function () {
+        tooltip.style.display = 'none';
+        chartCanvas.style.cursor = 'default';
+      });
+    }
   }
 
   if (document.readyState === 'loading') {
