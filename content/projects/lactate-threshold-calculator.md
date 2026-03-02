@@ -68,26 +68,41 @@ This calculator implements six threshold estimation methods modeled on the R [`l
     <div class="lt-obla-grid" id="lt-bsln-results"></div>
   </div>
 
-  <div class="lt-other-results">
-    <div class="lt-result-card">
-      <div class="lt-result-label">Dmax<span class="lt-tag lt-tag-lt2">LT2</span></div>
-      <div id="lt-dmax-result"></div>
+  <div class="lt-results-group">
+    <div class="lt-results-group-title">Dmax</div>
+    <div class="lt-obla-grid" style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));">
+      <div class="lt-result-card">
+        <div class="lt-result-label">Dmax</div>
+        <div id="lt-dmax-result"></div>
+      </div>
+      <div class="lt-result-card">
+        <div class="lt-result-label">Modified Dmax</div>
+        <div id="lt-moddmax-result"></div>
+      </div>
     </div>
-    <div class="lt-result-card">
-      <div class="lt-result-label">Modified Dmax<span class="lt-tag lt-tag-lt2">LT2</span></div>
-      <div id="lt-moddmax-result"></div>
+  </div>
+
+  <div class="lt-results-group">
+    <div class="lt-results-group-title">Log-log</div>
+    <div class="lt-obla-grid" style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));">
+      <div class="lt-result-card">
+        <div class="lt-result-label">Log-log<span class="lt-tag lt-tag-lt1">LT1</span></div>
+        <div id="lt-loglog-result"></div>
+      </div>
     </div>
-    <div class="lt-result-card">
-      <div class="lt-result-label">Log-log<span class="lt-tag lt-tag-lt1">LT1</span></div>
-      <div id="lt-loglog-result"></div>
-    </div>
-    <div class="lt-result-card">
-      <div class="lt-result-label">LTP1<span class="lt-tag lt-tag-lt1">LT1</span></div>
-      <div id="lt-ltp1-result"></div>
-    </div>
-    <div class="lt-result-card">
-      <div class="lt-result-label">LTP2<span class="lt-tag lt-tag-lt2">LT2</span></div>
-      <div id="lt-ltp2-result"></div>
+  </div>
+
+  <div class="lt-results-group">
+    <div class="lt-results-group-title">LTP (Lactate Turning Points)</div>
+    <div class="lt-obla-grid" style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));">
+      <div class="lt-result-card">
+        <div class="lt-result-label">LTP1<span class="lt-tag lt-tag-lt1">LT1</span></div>
+        <div id="lt-ltp1-result"></div>
+      </div>
+      <div class="lt-result-card">
+        <div class="lt-result-label">LTP2<span class="lt-tag lt-tag-lt2">LT2</span></div>
+        <div id="lt-ltp2-result"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -108,18 +123,20 @@ This calculator implements six threshold estimation methods modeled on the R [`l
   <button class="lt-method-toggle">Dmax</button>
   <div class="lt-method-panel">
     <div class="lt-method-panel-inner">
-      <p>Draw a straight line from the first to the last data point. The Dmax threshold is the point on the fitted polynomial with the maximum perpendicular distance from this line.</p>
-      <p>For a line from $(x_1, y_1)$ to $(x_2, y_2)$ with slope $m$, the perpendicular distance of a point $(x, p(x))$ is:</p>
+      <p>Dmax finds the "elbow" of the lactate curve — the pace where lactate accumulation starts accelerating away from a linear baseline. Intuitively: draw a straight line from the first data point to the last, then find where the fitted curve bows away from that line the most. That maximum departure is the point where lactate production begins outpacing clearance.</p>
+      <p>Formally: for a baseline from $(x_1, y_1)$ to $(x_2, y_2)$ with slope $m$, the perpendicular distance of a point $(x, p(x))$ on the polynomial is:</p>
       $$d(x) = \frac{|p(x) - y_1 - m(x - x_1)|}{\sqrt{1 + m^2}}$$
       <p>To maximize: set the derivative of $p(x) - y_1 - m(x - x_1)$ to zero. For a cubic polynomial, this gives $p'(x) = m$, a quadratic equation with an analytic solution.</p>
+      <p><strong>Note:</strong> Original Dmax as described by <a href="https://pubmed.ncbi.nlm.nih.gov/1459746/">Cheng et al. (1992)</a> has been shown to systematically underestimate MLSS ($p &lt; 0.01$ — the discrepancy is statistically significant, not due to chance) because the baseline anchors at the very first data point, which may be well below any physiological threshold. See Modified Dmax for a corrected version with validated MLSS agreement.</p>
     </div>
   </div>
 
   <button class="lt-method-toggle">Modified Dmax</button>
   <div class="lt-method-panel">
     <div class="lt-method-panel-inner">
-      <p>Same as Dmax, but the baseline starts from the data point <em>preceding</em> the first lactate rise $\geq 0.4$ mmol/L, rather than the first data point. This accounts for the initial flat portion of the curve where lactate hasn't yet begun to rise.</p>
-      <p>The modification makes the method more sensitive to the actual inflection region and less influenced by very low initial lactate values.</p>
+      <p>Same elbow-finding idea as Dmax, but with a smarter baseline. Instead of anchoring at the first data point (which might be deep in the baseline plateau), the line starts from the point <em>preceding</em> the first lactate rise $\geq 0.4$ mmol/L. This skips the flat early portion and anchors the baseline where lactate actually starts rising.</p>
+      <p>The result is a threshold estimate closer to the true inflection — less pulled toward slower paces by low resting values.</p>
+      <p>Validated against MLSS (the highest intensity sustainable without lactate continuously rising) with ICC $\geq 0.75$ and $r \geq 0.94$ (<a href="https://pubmed.ncbi.nlm.nih.gov/30408426/">Jamnick et al. 2018</a>, <a href="https://pubmed.ncbi.nlm.nih.gov/17855166/">Fell &amp; Rayfield 2007</a>). ICC measures absolute agreement between two methods — unlike correlation, which only checks if rankings are preserved, ICC penalizes systematic bias too. $\geq 0.75$ is "good" agreement, meaning Modified Dmax lands close to an athlete's true MLSS.</p>
     </div>
   </div>
 
