@@ -630,6 +630,306 @@ footer {
   user-select: none;
 }
 
+/* ---- PROJECT ARTICLE (wider layout) ---- */
+.project-article {
+  max-width: var(--wide-width);
+}
+
+/* ---- LACTATE THRESHOLD CALCULATOR ---- */
+#lt-app {
+  margin-top: 2rem;
+}
+
+.lt-section-label {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-dim);
+  margin-bottom: 1rem;
+}
+
+/* Data table */
+.lt-table-wrap {
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+}
+
+.lt-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-code);
+  font-size: 0.8125rem;
+}
+
+.lt-table th {
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-dim);
+  font-weight: 500;
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.lt-table td {
+  padding: 0.35rem 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.lt-row-num {
+  color: var(--text-dim);
+  font-size: 0.6875rem;
+  width: 2rem;
+  text-align: center;
+}
+
+.lt-pace-cell {
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+  white-space: nowrap;
+}
+
+.lt-input {
+  font-family: var(--font-code);
+  font-size: 0.875rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text);
+  padding: 0.4rem 0.6rem;
+  width: 100px;
+  transition: border-color 0.2s;
+}
+
+.lt-input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Buttons */
+.lt-btn-row {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.lt-btn {
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  padding: 0.5rem 1.25rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.lt-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.lt-btn-primary {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.lt-btn-primary:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+/* Error message */
+.lt-error {
+  color: #ff6b6b;
+  font-size: 0.8125rem;
+  margin-bottom: 1rem;
+  display: none;
+}
+
+/* Chart */
+.lt-chart-section {
+  display: none;
+  margin-bottom: 2.5rem;
+}
+
+.lt-chart-wrap {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.5rem;
+}
+
+#lt-chart {
+  width: 100%;
+  height: 400px;
+  display: block;
+}
+
+/* Results section */
+.lt-results-section {
+  display: none;
+}
+
+.lt-results-group {
+  margin-bottom: 2rem;
+}
+
+.lt-results-group-title {
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--text);
+}
+
+.lt-obla-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.lt-result-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+  transition: border-color 0.2s;
+}
+
+.lt-result-card:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.lt-result-label {
+  font-family: var(--font-code);
+  font-size: 0.625rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.4rem;
+}
+
+.lt-result-value {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.lt-result-unit {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.lt-result-sub {
+  font-family: var(--font-code);
+  font-size: 0.6875rem;
+  color: var(--text-dim);
+  margin-top: 0.25rem;
+}
+
+.lt-result-na {
+  color: var(--text-dim);
+}
+
+.lt-other-results {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+
+/* Method explanation panels */
+.lt-methods-section {
+  margin-top: 3rem;
+  border-top: 1px solid var(--border);
+  padding-top: 2rem;
+}
+
+.lt-method-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.75rem 0;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  transition: color 0.2s;
+}
+
+.lt-method-toggle:hover {
+  color: var(--text-secondary);
+}
+
+.lt-method-toggle::after {
+  content: '+';
+  font-family: var(--font-code);
+  font-size: 1rem;
+  color: var(--text-dim);
+  transition: transform 0.2s;
+}
+
+.lt-method-toggle.lt-toggle-open::after {
+  content: '−';
+}
+
+.lt-method-panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+
+.lt-method-panel-inner {
+  padding: 1rem 0 1.5rem;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.7;
+}
+
+.lt-method-panel-inner p {
+  margin-bottom: 0.75rem;
+}
+
+.lt-method-panel-inner .katex-display {
+  margin: 1rem 0;
+}
+
+/* LT1/LT2 threshold badges */
+.lt-tag {
+  font-family: var(--font-code);
+  font-size: 0.5625rem;
+  letter-spacing: 0.05em;
+  padding: 0.1rem 0.35rem;
+  border-radius: 3px;
+  margin-left: 0.4rem;
+  vertical-align: middle;
+}
+
+.lt-tag-lt1 {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+}
+
+.lt-tag-lt2 {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--text);
+}
+
 /* ---- RESPONSIVE ---- */
 @media (max-width: 768px) {
   nav { padding: 0.875rem 1.25rem; }
@@ -653,4 +953,10 @@ footer {
     margin-left: -0.75rem;
     margin-right: -0.75rem;
   }
+  .project-article { padding: 2rem 1.25rem 3rem; }
+  #lt-chart { height: 280px; }
+  .lt-obla-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+  .lt-other-results { grid-template-columns: 1fr; }
+  .lt-input { width: 70px; }
+  .lt-result-value { font-size: 1.25rem; }
 }

@@ -1,6 +1,24 @@
 {{ define "main" }}
-<section class="coming-soon">
+<section class="page-header">
   <h1 class="page-title">Projects</h1>
-  <p class="coming-soon-text">Coming soon.</p>
+  <p class="page-desc">Interactive tools, calculators, and research explorations.</p>
 </section>
+
+<div class="card-grid" style="max-width: var(--max-width); margin: 0 auto; padding: 0 2rem 4rem;">
+  {{ range .Pages.ByDate.Reverse }}
+  <a href="{{ .Permalink }}" class="card">
+    <div class="card-inner">
+      <span class="card-date">{{ .Date.Format "Jan 2, 2006" }}</span>
+      <h3 class="card-title">{{ .Title }}</h3>
+      <p class="card-desc">{{ .Description }}</p>
+      <div class="card-tags">
+        {{ range .Params.tags }}
+        <span class="tag">{{ . }}</span>
+        {{ end }}
+      </div>
+    </div>
+    <span class="card-arrow">&rarr;</span>
+  </a>
+  {{ end }}
+</div>
 {{ end }}
