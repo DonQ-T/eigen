@@ -1,0 +1,2185 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Step 2: Improved scRNA Preprocessing for NMF</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="02_improved_scrna_matrix_files/libs/clipboard/clipboard.min.js"></script>
+<script src="02_improved_scrna_matrix_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="02_improved_scrna_matrix_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="02_improved_scrna_matrix_files/libs/quarto-html/popper.min.js"></script>
+<script src="02_improved_scrna_matrix_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="02_improved_scrna_matrix_files/libs/quarto-html/anchor.min.js"></script>
+<link href="02_improved_scrna_matrix_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="02_improved_scrna_matrix_files/libs/quarto-html/quarto-syntax-highlighting-dark-2fef5ea3f8957b3e4ecc936fc74692ca.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="02_improved_scrna_matrix_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="02_improved_scrna_matrix_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="02_improved_scrna_matrix_files/libs/bootstrap/bootstrap-dd69d3d26763a1884eb60582decffdb7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#background" id="toc-background" class="nav-link active" data-scroll-target="#background">Background</a>
+  <ul class="collapse">
+  <li><a href="#what-we-found-in-script-01" id="toc-what-we-found-in-script-01" class="nav-link" data-scroll-target="#what-we-found-in-script-01">What we found in Script 01</a></li>
+  <li><a href="#approach-one-fix-at-a-time" id="toc-approach-one-fix-at-a-time" class="nav-link" data-scroll-target="#approach-one-fix-at-a-time">Approach: one fix at a time</a></li>
+  <li><a href="#important-note-on-error-comparison" id="toc-important-note-on-error-comparison" class="nav-link" data-scroll-target="#important-note-on-error-comparison">Important note on error comparison</a></li>
+  <li><a href="#why-k-2-and-k-3" id="toc-why-k-2-and-k-3" class="nav-link" data-scroll-target="#why-k-2-and-k-3">Why k = 2 and k = 3?</a></li>
+  </ul></li>
+  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup">Setup</a></li>
+  <li><a href="#load-data" id="toc-load-data" class="nav-link" data-scroll-target="#load-data">Load Data</a></li>
+  <li><a href="#rna-vs-sct-what-are-they" id="toc-rna-vs-sct-what-are-they" class="nav-link" data-scroll-target="#rna-vs-sct-what-are-they">RNA vs SCT: What are they?</a>
+  <ul class="collapse">
+  <li><a href="#rna-assay-standard-log-normalization" id="toc-rna-assay-standard-log-normalization" class="nav-link" data-scroll-target="#rna-assay-standard-log-normalization">RNA assay (standard log-normalization)</a></li>
+  <li><a href="#sct-assay-sctransform-hafemeister-satija-2019" id="toc-sct-assay-sctransform-hafemeister-satija-2019" class="nav-link" data-scroll-target="#sct-assay-sctransform-hafemeister-satija-2019">SCT assay (SCTransform, Hafemeister &amp; Satija 2019)</a></li>
+  <li><a href="#sanity-check-verifying-what-the-rna-data-slot-actually-contains" id="toc-sanity-check-verifying-what-the-rna-data-slot-actually-contains" class="nav-link" data-scroll-target="#sanity-check-verifying-what-the-rna-data-slot-actually-contains">Sanity check: verifying what the RNA data slot actually contains</a></li>
+  </ul></li>
+  <li><a href="#fix-1-correct-single-log-normalization" id="toc-fix-1-correct-single-log-normalization" class="nav-link" data-scroll-target="#fix-1-correct-single-log-normalization">Fix 1: Correct Single Log-Normalization</a></li>
+  <li><a href="#fix-2-sct-assay-all-genes" id="toc-fix-2-sct-assay-all-genes" class="nav-link" data-scroll-target="#fix-2-sct-assay-all-genes">Fix 2: SCT Assay (All Genes)</a></li>
+  <li><a href="#feature-selection-why-not-all-17857-genes" id="toc-feature-selection-why-not-all-17857-genes" class="nav-link" data-scroll-target="#feature-selection-why-not-all-17857-genes">Feature Selection: Why not all 17,857 genes?</a>
+  <ul class="collapse">
+  <li><a href="#how-hvg-selection-works" id="toc-how-hvg-selection-works" class="nav-link" data-scroll-target="#how-hvg-selection-works">How HVG selection works</a></li>
+  <li><a href="#why-2000-specifically" id="toc-why-2000-specifically" class="nav-link" data-scroll-target="#why-2000-specifically">Why 2,000 specifically?</a></li>
+  <li><a href="#biology-gene-coverage-check" id="toc-biology-gene-coverage-check" class="nav-link" data-scroll-target="#biology-gene-coverage-check">Biology gene coverage check</a></li>
+  </ul></li>
+  <li><a href="#fix-3-feature-selection-only-rna-ethans-normalization" id="toc-fix-3-feature-selection-only-rna-ethans-normalization" class="nav-link" data-scroll-target="#fix-3-feature-selection-only-rna-ethans-normalization">Fix 3: Feature Selection Only (RNA, Ethan’s normalization)</a></li>
+  <li><a href="#fix-4-sct-feature-selection-best-of-everything" id="toc-fix-4-sct-feature-selection-best-of-everything" class="nav-link" data-scroll-target="#fix-4-sct-feature-selection-best-of-everything">Fix 4: SCT + Feature Selection (Best of Everything)</a></li>
+  <li><a href="#fix-5-raw-counts-feature-selection-no-log-at-all" id="toc-fix-5-raw-counts-feature-selection-no-log-at-all" class="nav-link" data-scroll-target="#fix-5-raw-counts-feature-selection-no-log-at-all">Fix 5: Raw Counts + Feature Selection (No Log at All)</a></li>
+  <li><a href="#gene-count-sweep" id="toc-gene-count-sweep" class="nav-link" data-scroll-target="#gene-count-sweep">Gene Count Sweep</a></li>
+  <li><a href="#compare-all-errors" id="toc-compare-all-errors" class="nav-link" data-scroll-target="#compare-all-errors">Compare All Errors</a>
+  <ul class="collapse">
+  <li><a href="#raw-lad-scale-dependent" id="toc-raw-lad-scale-dependent" class="nav-link" data-scroll-target="#raw-lad-scale-dependent">Raw LAD (scale-dependent)</a></li>
+  <li><a href="#normalized-comparison-scale-independent" id="toc-normalized-comparison-scale-independent" class="nav-link" data-scroll-target="#normalized-comparison-scale-independent">Normalized comparison (scale-independent)</a></li>
+  </ul></li>
+  <li><a href="#visualization-error-comparison" id="toc-visualization-error-comparison" class="nav-link" data-scroll-target="#visualization-error-comparison">Visualization: Error Comparison</a></li>
+  <li><a href="#export-improved-csvs-for-megpath" id="toc-export-improved-csvs-for-megpath" class="nav-link" data-scroll-target="#export-improved-csvs-for-megpath">Export Improved CSVs for MEGPath</a></li>
+  <li><a href="#save-results" id="toc-save-results" class="nav-link" data-scroll-target="#save-results">Save Results</a></li>
+  <li><a href="#summary-takeaways" id="toc-summary-takeaways" class="nav-link" data-scroll-target="#summary-takeaways">Summary &amp; Takeaways</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Step 2: Improved scRNA Preprocessing for NMF</h1>
+<p class="subtitle lead">Systematic evaluation of preprocessing choices and their impact on reconstruction error</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="background" class="level2">
+<h2 class="anchored" data-anchor-id="background">Background</h2>
+<section id="what-we-found-in-script-01" class="level3">
+<h3 class="anchored" data-anchor-id="what-we-found-in-script-01">What we found in Script 01</h3>
+<p>Script 01 reproduced Ethan’s preprocessing pipeline exactly and identified four issues:</p>
+<ol type="1">
+<li><p><strong>Double log-normalization</strong> — <code>AverageExpression(slot="data")</code> returns values that are already log-normalized per cell. Ethan then ran <code>NormalizeData("LogNormalize")</code> on those averages, applying <code>log1p()</code> a second time. This compresses the dynamic range: a gene with true expression 100 vs 10 (10x difference) becomes ~1.8 vs ~1.4 after double-log (~1.3x difference). NMF can’t distinguish biologically meaningful differences from noise when everything is squished together.</p></li>
+<li><p><strong>RNA assay instead of SCT</strong> — The Seurat object contains two assays: RNA (basic log-normalization) and SCT (SCTransform, variance-stabilized). Ethan used RNA, likely because it’s the Seurat default and most tutorials use it.</p></li>
+<li><p><strong>Averaging in log space</strong> — When you average already-log-transformed values, you get the geometric mean, not the arithmetic mean. This systematically underestimates highly-expressed genes.</p></li>
+<li><p><strong>No feature selection</strong> — All 17,857 genes were included. Most genes in scRNA-seq are either not expressed (zeros), expressed at constant levels (housekeeping), or too noisy to be informative. Including them forces NMF to waste factor capacity fitting noise.</p></li>
+</ol>
+</section>
+<section id="approach-one-fix-at-a-time" class="level3">
+<h3 class="anchored" data-anchor-id="approach-one-fix-at-a-time">Approach: one fix at a time</h3>
+<p>This script changes <strong>one thing at a time</strong> so we can attribute error reduction to specific preprocessing decisions rather than changing everything at once and not knowing what mattered. Every variant is run through the same R NMF algorithm (Lee multiplicative updates, k=2 and k=3, 10 random starts) so errors are directly comparable.</p>
+</section>
+<section id="important-note-on-error-comparison" class="level3">
+<h3 class="anchored" data-anchor-id="important-note-on-error-comparison">Important note on error comparison</h3>
+<p>We use <strong>LAD (Least Absolute Deviation = sum|V - WH|)</strong> as our error metric because that’s what MEGPath optimizes. However, R’s Lee algorithm actually optimizes Frobenius (squared error), so we’re measuring LAD on a solution that wasn’t optimized for LAD. The absolute numbers will differ from MEGPath, but the <strong>relative ranking</strong> between preprocessing approaches should hold — a cleaner input matrix helps any NMF algorithm.</p>
+<p>Additionally, <strong>LAD is scale-dependent</strong>. A matrix with values in [0, 560] will have larger LAD than a matrix with values in [0, 6] simply because the numbers are bigger. We address this in the normalized comparison section at the end.</p>
+</section>
+<section id="why-k-2-and-k-3" class="level3">
+<h3 class="anchored" data-anchor-id="why-k-2-and-k-3">Why k = 2 and k = 3?</h3>
+<p>NMF decomposes V (n genes x p timepoints) into W (n x k) and H (k x p). Our pseudobulk matrix has only <strong>p = 4 columns</strong> (Pre, Wk3, Wk6, Wk9), and the rank k cannot meaningfully exceed the smallest matrix dimension. Here’s why:</p>
+<ul>
+<li><strong>k = 1</strong>: Trivial — one factor that’s just the weighted average of everything. No structure learned.</li>
+<li><strong>k = 2 or 3</strong>: The useful range. NMF is forced to compress 4 timepoints into fewer factors, and that compression reveals structure (e.g., “genes that peak at week 6” vs “genes that decline over time”).</li>
+<li><strong>k = 4</strong>: Trivial in the other direction — as many factors as columns. NMF can represent each timepoint with its own factor, achieving near-zero error without learning any shared structure across timepoints.</li>
+<li><strong>k &gt; 4</strong> (e.g., k = 6): <strong>Mathematically degenerate.</strong> H would be a 6x4 matrix, but a 6x4 matrix has rank at most 4 — so at least 2 of the 6 factors would be linear combinations of the others (redundant, not independent patterns). Worse, W (n x 6) and H (6 x 4) together have more free parameters than data points in V. This is the NMF equivalent of overfitting: many different W,H pairs can reconstruct V perfectly, the factorization is non-unique, and the factors become uninterpretable. It’s like fitting a degree-5 polynomial to 4 data points — zero error, but the curve is meaningless between the points.</li>
+</ul>
+<p>This is a fundamental limitation of the pseudobulk approach. Averaging all cells into 4 timepoint columns leaves very little room for NMF to find structure. A more granular matrix (e.g., timepoint x cluster = 4 x 13 = 52 columns) would allow higher ranks and potentially richer factor discovery, but requires more careful construction.</p>
+</section>
+</section>
+<section id="setup" class="level2">
+<h2 class="anchored" data-anchor-id="setup">Setup</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Seurat)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(NMF)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reshape2)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"theme_donq.R"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="load-data" class="level2">
+<h2 class="anchored" data-anchor-id="load-data">Load Data</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>sobj <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"NMF Research Data/Copy of Ito_MQ_scRNAseq_sct(1).rds"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Cells:"</span>, <span class="fu">ncol</span>(sobj), <span class="st">"| Genes:"</span>, <span class="fu">nrow</span>(sobj), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Cells: 4876 | Genes: 17857 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Assays:"</span>, <span class="fu">paste</span>(<span class="fu">Assays</span>(sobj), <span class="at">collapse =</span> <span class="st">", "</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Assays: RNA, SCT </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Default assay:"</span>, <span class="fu">DefaultAssay</span>(sobj), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Default assay: RNA </code></pre>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Reusable function: compute NMF errors for a matrix at given ranks</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Returns a data frame with LAD, Frobenius, and normalized LAD (after [0,1] scaling)</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>compute_errors <span class="ot">&lt;-</span> <span class="cf">function</span>(mat, label, <span class="at">ranks =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">nrun =</span> <span class="dv">10</span>) {</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Remove all-zero rows (NMF can't factor zeros meaningfully)</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  mat <span class="ot">&lt;-</span> mat[<span class="fu">rowSums</span>(mat) <span class="sc">&gt;</span> <span class="dv">0</span>, , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Floor negatives to 0 (SCT Pearson residuals can be slightly negative)</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  mat <span class="ot">&lt;-</span> <span class="fu">pmax</span>(mat, <span class="dv">0</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Remove any new all-zero rows created by flooring</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  mat <span class="ot">&lt;-</span> mat[<span class="fu">rowSums</span>(mat) <span class="sc">&gt;</span> <span class="dv">0</span>, , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  results <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (k <span class="cf">in</span> ranks) {</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    fit <span class="ot">&lt;-</span> <span class="fu">nmf</span>(mat, <span class="at">rank =</span> k, <span class="at">method =</span> <span class="st">"lee"</span>, <span class="at">seed =</span> <span class="st">"random"</span>,</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>               <span class="at">nrun =</span> nrun, <span class="at">.opt =</span> <span class="st">"vp2"</span>)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    residual <span class="ot">&lt;-</span> mat <span class="sc">-</span> <span class="fu">fitted</span>(fit)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    frob <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">sum</span>(residual<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    lad <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">abs</span>(residual))</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    n_elem <span class="ot">&lt;-</span> <span class="fu">length</span>(residual)</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Normalized LAD: scale matrix to [0,1] and recompute</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    mat_norm <span class="ot">&lt;-</span> mat <span class="sc">/</span> <span class="fu">max</span>(mat)</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>    fitted_norm <span class="ot">&lt;-</span> <span class="fu">fitted</span>(fit) <span class="sc">/</span> <span class="fu">max</span>(mat)</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>    lad_norm <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">abs</span>(mat_norm <span class="sc">-</span> fitted_norm))</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"[%s] k=%d: LAD=%.2f, LAD_norm=%.4f, Frobenius=%.2f, Rows=%d</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>                label, k, lad, lad_norm <span class="sc">/</span> n_elem, frob, <span class="fu">nrow</span>(mat)))</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>    results[[<span class="fu">length</span>(results) <span class="sc">+</span> <span class="dv">1</span>]] <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>      <span class="at">label =</span> label, <span class="at">rank =</span> k,</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>      <span class="at">frobenius =</span> frob, <span class="at">lad =</span> lad,</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>      <span class="at">lad_norm =</span> lad_norm,</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>      <span class="at">nmae =</span> lad_norm <span class="sc">/</span> n_elem,</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>      <span class="at">n_rows =</span> <span class="fu">nrow</span>(mat), <span class="at">n_elements =</span> n_elem,</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>      <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span></span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(results)</span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Recompute baselines using our updated error function (which includes NMAE)</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># rather than loading from Script 01 (which used an older function without NMAE)</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Loading Ethan's CSVs to recompute baselines with normalized error...</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Loading Ethan's CSVs to recompute baselines with normalized error...</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>dense_raw <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">read.csv</span>(<span class="st">"NMF Research Data/Data (scRNA, TCR)/dense_data.csv"</span>,</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">header =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>dense_log <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">read.csv</span>(<span class="st">"NMF Research Data/Data (scRNA, TCR)/dense_dataLT.csv"</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">header =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>tcr_freq  <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">read.csv</span>(<span class="st">"NMF Research Data/Data (scRNA, TCR)/tcr_expansion.csv"</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">header =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(dense_raw) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(dense_log) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Pre"</span>, <span class="st">"Wk3"</span>, <span class="st">"Wk6"</span>, <span class="st">"Wk9"</span>)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(tcr_freq) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Pre"</span>, <span class="st">"Wk3"</span>, <span class="st">"Wk6"</span>, <span class="st">"Wk9"</span>)</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"dense_data.csv: %d x %d, range [%.2f, %.2f]</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>            <span class="fu">nrow</span>(dense_raw), <span class="fu">ncol</span>(dense_raw), <span class="fu">min</span>(dense_raw), <span class="fu">max</span>(dense_raw)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>dense_data.csv: 17857 x 4, range [0.00, 560.93]</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"dense_dataLT.csv: %d x %d, range [%.2f, %.2f]</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>            <span class="fu">nrow</span>(dense_log), <span class="fu">ncol</span>(dense_log), <span class="fu">min</span>(dense_log), <span class="fu">max</span>(dense_log)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>dense_dataLT.csv: 17857 x 4, range [0.00, 6.33]</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"tcr_expansion.csv: %d x %d, range [%.2f, %.2f]</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>            <span class="fu">nrow</span>(tcr_freq), <span class="fu">ncol</span>(tcr_freq), <span class="fu">min</span>(tcr_freq), <span class="fu">max</span>(tcr_freq)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>tcr_expansion.csv: 2541 x 4, range [0.00, 12.05]</code></pre>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"=== Recomputing Baseline Errors (with NMAE) ===</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>=== Recomputing Baseline Errors (with NMAE) ===</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>baseline_raw  <span class="ot">&lt;-</span> <span class="fu">compute_errors</span>(dense_raw, <span class="st">"scRNA raw"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Runs: |                                                        
+Runs: |                                                  |   0%
+Runs: |                                                        
+Runs: |==================================================| 100%
+System time:
+   user  system elapsed 
+   2.65    0.05    6.70 
+[scRNA raw] k=2: LAD=2402.82, LAD_norm=0.0001, Frobenius=44.58, Rows=17759</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Runs: |                                                        
+Runs: |                                                  |   0%
+Runs: |                                                        
+Runs: |==================================================| 100%
+System time:
+   user  system elapsed 
+   2.59    0.00    8.18 
+[scRNA raw] k=3: LAD=1340.06, LAD_norm=0.0000, Frobenius=20.85, Rows=17759</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>baseline_log  <span class="ot">&lt;-</span> <span class="fu">compute_errors</span>(dense_log, <span class="st">"scRNA log"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Runs: |                                                        
+Runs: |                                                  |   0%
+Runs: |                                                        
+Runs: |==================================================| 100%
+System time:
+   user  system elapsed 
+   2.53    0.00    6.97 
+[scRNA log] k=2: LAD=1073.09, LAD_norm=0.0024, Frobenius=7.71, Rows=17759</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Runs: |                                                        
+Runs: |                                                  |   0%
+Runs: |                                                        
+Runs: |==================================================| 100%
+System time:
+   user  system elapsed 
+   2.58    0.01    9.15 
+[scRNA log] k=3: LAD=543.23, LAD_norm=0.0012, Frobenius=3.94, Rows=17759</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>baseline_tcr  <span class="ot">&lt;-</span> <span class="fu">compute_errors</span>(tcr_freq, <span class="st">"TCR freq"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Runs: |                                                        
+Runs: |                                                  |   0%
+Runs: |                                                        
+Runs: |==================================================| 100%
+System time:
+   user  system elapsed 
+   2.64    0.00    4.86 
+[TCR freq] k=2: LAD=298.40, LAD_norm=0.0024, Frobenius=4.86, Rows=2541</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Runs: |                                                        
+Runs: |                                                  |   0%
+Runs: |                                                        
+Runs: |==================================================| 100%
+System time:
+   user  system elapsed 
+   2.47    0.08    5.11 
+[TCR freq] k=3: LAD=186.99, LAD_norm=0.0015, Frobenius=3.18, Rows=2541</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>baseline <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(baseline_raw, baseline_log, baseline_tcr)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">as.data.frame</span>(baseline))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>      label rank frobenius       lad   lad_norm         nmae n_rows n_elements
+1 scRNA raw    2 44.576401 2402.8158   4.283653 6.030257e-05  17759      71036
+2 scRNA raw    3 20.851860 1340.0597   2.389010 3.363097e-05  17759      71036
+3 scRNA log    2  7.707395 1073.0888 169.487574 2.385939e-03  17759      71036
+4 scRNA log    3  3.943797  543.2310  85.799895 1.207837e-03  17759      71036
+5  TCR freq    2  4.856518  298.4024  24.767396 2.436777e-03   2541      10164
+6  TCR freq    3  3.184668  186.9888  15.520073 1.526965e-03   2541      10164</code></pre>
+</div>
+</div>
+</section>
+<section id="rna-vs-sct-what-are-they" class="level2">
+<h2 class="anchored" data-anchor-id="rna-vs-sct-what-are-they">RNA vs SCT: What are they?</h2>
+<p>Before running the fixes, here’s what the two assays in this Seurat object actually contain. This matters for understanding why each fix exists.</p>
+<section id="rna-assay-standard-log-normalization" class="level3">
+<h3 class="anchored" data-anchor-id="rna-assay-standard-log-normalization">RNA assay (standard log-normalization)</h3>
+<p>The default Seurat normalization pipeline (<code>NormalizeData</code>):</p>
+<ol type="1">
+<li>Take raw counts per cell</li>
+<li>Divide by total counts in that cell (library-size normalization)</li>
+<li>Multiply by 10,000 (scaling factor)</li>
+<li>Apply <code>log1p()</code>: <code>log(1 + x)</code></li>
+</ol>
+<p><strong>Problem</strong>: This assumes every gene has the same variance characteristics. In reality, lowly-expressed genes have high variance from sampling noise (a gene detected in 2 vs 0 cells looks like a huge change), while highly-expressed genes have low relative variance. The log transform partially addresses this but doesn’t fully correct it.</p>
+</section>
+<section id="sct-assay-sctransform-hafemeister-satija-2019" class="level3">
+<h3 class="anchored" data-anchor-id="sct-assay-sctransform-hafemeister-satija-2019">SCT assay (SCTransform, Hafemeister &amp; Satija 2019)</h3>
+<p>A more statistically principled approach:</p>
+<ol type="1">
+<li>Fit a <strong>regularized negative binomial regression</strong> for each gene across all cells</li>
+<li>The model learns the expected mean-variance relationship (how much variance to expect at each expression level given sequencing depth)</li>
+<li>Return <strong>Pearson residuals</strong>: how much each gene deviates from what you’d expect given its mean expression and the cell’s sequencing depth</li>
+<li>Positive residual = gene is expressed higher than expected. Negative = lower than expected.</li>
+</ol>
+<p><strong>Result</strong>: Variance is stabilized across expression levels. A lowly-expressed immune receptor and a highly-expressed housekeeping gene are on a comparable scale. This prevents NMF from being dominated by a few high-count genes.</p>
+<p><strong>Caveat for NMF</strong>: SCT values can be negative (Pearson residuals below expected). NMF requires non-negative input, so we floor negatives to zero. This is a minor data loss — in our data, very few values are negative.</p>
+</section>
+<section id="sanity-check-verifying-what-the-rna-data-slot-actually-contains" class="level3">
+<h3 class="anchored" data-anchor-id="sanity-check-verifying-what-the-rna-data-slot-actually-contains">Sanity check: verifying what the RNA data slot actually contains</h3>
+<p>How do we know the RNA <code>data</code> slot contains <code>log1p(count / total * 10000)</code>? Because that’s what Seurat’s <code>NormalizeData("LogNormalize")</code> computes by definition. But we can verify it directly by pulling a single cell, taking its raw count for a gene, manually computing the formula, and checking it matches the stored <code>data</code> value.</p>
+<p>This matters because Ethan’s double-log bug depends on the <code>data</code> slot already being log-transformed. If we’re wrong about what’s in the <code>data</code> slot, our entire analysis of his preprocessing error would be wrong.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">DefaultAssay</span>(sobj) <span class="ot">&lt;-</span> <span class="st">"RNA"</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Pick a cell and a gene with a non-zero count</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>counts_mat <span class="ot">&lt;-</span> <span class="fu">GetAssayData</span>(sobj, <span class="at">layer =</span> <span class="st">"counts"</span>)</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>data_mat <span class="ot">&lt;-</span> <span class="fu">GetAssayData</span>(sobj, <span class="at">layer =</span> <span class="st">"data"</span>)</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Find a gene-cell pair with a decent count value</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Use the first cell and find a gene with count &gt; 10</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>cell_idx <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>cell_name <span class="ot">&lt;-</span> <span class="fu">colnames</span>(counts_mat)[cell_idx]</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>gene_counts <span class="ot">&lt;-</span> counts_mat[, cell_idx]</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>gene_idx <span class="ot">&lt;-</span> <span class="fu">which</span>(gene_counts <span class="sc">&gt;</span> <span class="dv">10</span>)[<span class="dv">1</span>]</span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>gene_name <span class="ot">&lt;-</span> <span class="fu">names</span>(gene_idx)</span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>raw_count <span class="ot">&lt;-</span> counts_mat[gene_name, cell_name]</span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>stored_data <span class="ot">&lt;-</span> data_mat[gene_name, cell_name]</span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Manually compute what NormalizeData("LogNormalize") should produce</span></span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>total_counts <span class="ot">&lt;-</span> <span class="fu">sum</span>(counts_mat[, cell_name])</span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a>manual_calc <span class="ot">&lt;-</span> <span class="fu">log1p</span>(raw_count <span class="sc">/</span> total_counts <span class="sc">*</span> <span class="dv">10000</span>)</span>
+<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"=== Sanity Check: RNA data slot = log1p(count / total * 10000) ===</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>=== Sanity Check: RNA data slot = log1p(count / total * 10000) ===</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Cell: %s</span><span class="sc">\n</span><span class="st">"</span>, cell_name))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Cell: MQpool1_RS-03742653_AAACCTGTCGCGTTTC-1</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Gene: %s</span><span class="sc">\n</span><span class="st">"</span>, gene_name))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Gene: MALAT1</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Raw count: %d</span><span class="sc">\n</span><span class="st">"</span>, raw_count))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Raw count: 44</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Total counts in cell: %d</span><span class="sc">\n</span><span class="st">"</span>, total_counts))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Total counts in cell: 582</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Manual calculation: log1p(%d / %d * 10000) = %.10f</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>            raw_count, total_counts, manual_calc))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Manual calculation: log1p(44 / 582 * 10000) = 6.6293814114</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Stored data slot value:                      %.10f</span><span class="sc">\n</span><span class="st">"</span>, stored_data))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Stored data slot value:                      6.6293814114</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Difference:                                  %.2e</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>            <span class="fu">abs</span>(manual_calc <span class="sc">-</span> stored_data)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Difference:                                  0.00e+00</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">abs</span>(manual_calc <span class="sc">-</span> stored_data) <span class="sc">&lt;</span> <span class="fl">1e-10</span>) {</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">CONFIRMED: RNA data slot contains log1p(count / total * 10000)</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"This means Ethan's AverageExpression(slot='data') averages LOGGED values.</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"His subsequent NormalizeData() then logs them AGAIN -&gt; double-log.</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">WARNING: Values don't match — investigate further.</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+CONFIRMED: RNA data slot contains log1p(count / total * 10000)
+This means Ethan's AverageExpression(slot='data') averages LOGGED values.
+His subsequent NormalizeData() then logs them AGAIN -&gt; double-log.</code></pre>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">DefaultAssay</span>(sobj) <span class="ot">&lt;-</span> <span class="st">"RNA"</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>rna_data <span class="ot">&lt;-</span> <span class="fu">GetAssayData</span>(sobj, <span class="at">layer =</span> <span class="st">"data"</span>)</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>rna_range <span class="ot">&lt;-</span> <span class="fu">range</span>(rna_data)</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a><span class="fu">DefaultAssay</span>(sobj) <span class="ot">&lt;-</span> <span class="st">"SCT"</span></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>sct_data <span class="ot">&lt;-</span> <span class="fu">GetAssayData</span>(sobj, <span class="at">layer =</span> <span class="st">"data"</span>)</span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>sct_range <span class="ot">&lt;-</span> <span class="fu">range</span>(sct_data)</span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>sct_neg <span class="ot">&lt;-</span> <span class="fu">sum</span>(sct_data <span class="sc">&lt;</span> <span class="dv">0</span>)</span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a>sct_total <span class="ot">&lt;-</span> <span class="fu">length</span>(sct_data)</span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"RNA data layer range:"</span>, rna_range, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>RNA data layer range: 0 7.750948 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"SCT data layer range:"</span>, sct_range, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>SCT data layer range: 0 6.023448 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"SCT negative values:"</span>, sct_neg, <span class="st">"of"</span>, sct_total,</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sprintf</span>(<span class="st">"(%.3f%%)</span><span class="sc">\n</span><span class="st">"</span>, <span class="dv">100</span> <span class="sc">*</span> sct_neg <span class="sc">/</span> sct_total))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>SCT negative values: 0 of 74700320 (0.000%)</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="fix-1-correct-single-log-normalization" class="level2">
+<h2 class="anchored" data-anchor-id="fix-1-correct-single-log-normalization">Fix 1: Correct Single Log-Normalization</h2>
+<p><strong>What this fixes</strong>: Ethan’s double-log bug, nothing else.</p>
+<p>Ethan’s pipeline: <code>AverageExpression(slot="data")</code> → averages already-log-normalized values → <code>NormalizeData()</code> → applies log1p a second time.</p>
+<p>Our fix: average the <strong>raw counts</strong> across cells per timepoint first, <em>then</em> apply log1p once. This gives us properly log-normalized pseudobulk values. Same number of genes (all 17,857), same normalization philosophy — just done correctly.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">DefaultAssay</span>(sobj) <span class="ot">&lt;-</span> <span class="st">"RNA"</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Average raw counts per timepoint (NOT the log-normalized data slot)</span></span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>avg_counts <span class="ot">&lt;-</span> <span class="fu">AverageExpression</span>(sobj, <span class="at">group.by =</span> <span class="st">"HTO_maxID"</span>,</span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">assays =</span> <span class="st">"RNA"</span>, <span class="at">slot =</span> <span class="st">"counts"</span>)<span class="sc">$</span>RNA</span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>avg_counts <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(avg_counts)</span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>avg_counts <span class="ot">&lt;-</span> avg_counts[, <span class="fu">c</span>(<span class="st">"HashTag1"</span>, <span class="st">"HashTag2"</span>, <span class="st">"HashTag3"</span>, <span class="st">"HashTag4"</span>)]</span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(avg_counts) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Pre"</span>, <span class="st">"Wk3"</span>, <span class="st">"Wk6"</span>, <span class="st">"Wk9"</span>)</span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Averaged raw counts:"</span>, <span class="fu">nrow</span>(avg_counts), <span class="st">"x"</span>, <span class="fu">ncol</span>(avg_counts), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Averaged raw counts: 17857 x 4 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Range:"</span>, <span class="fu">range</span>(avg_counts), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Range: 0 121.5023 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Single log-normalization: log1p(x)</span></span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>fix1_mat <span class="ot">&lt;-</span> <span class="fu">log1p</span>(avg_counts)</span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"After log1p:"</span>, <span class="fu">nrow</span>(fix1_mat), <span class="st">"x"</span>, <span class="fu">ncol</span>(fix1_mat), <span class="st">"range:"</span>, <span class="fu">range</span>(fix1_mat), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>After log1p: 17857 x 4 range: 0 4.80813 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>fix1_errors <span class="ot">&lt;-</span> <span class="fu">compute_errors</span>(fix1_mat, <span class="st">"Fix1: single log"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Runs: |                                                        
+Runs: |                                                  |   0%
+Runs: |                                                        
+Runs: |==================================================| 100%
+System time:
+   user  system elapsed 
+   2.56    0.02    7.25 
+[Fix1: single log] k=2: LAD=514.37, LAD_norm=0.0015, Frobenius=4.11, Rows=17759</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Runs: |                                                        
+Runs: |                                                  |   0%
+Runs: |                                                        
+Runs: |==================================================| 100%
+System time:
+   user  system elapsed 
+   2.57    0.04    9.84 
+[Fix1: single log] k=3: LAD=213.70, LAD_norm=0.0006, Frobenius=1.99, Rows=17759</code></pre>
+</div>
+</div>
+</section>
+<section id="fix-2-sct-assay-all-genes" class="level2">
+<h2 class="anchored" data-anchor-id="fix-2-sct-assay-all-genes">Fix 2: SCT Assay (All Genes)</h2>
+<p><strong>What this fixes</strong>: The normalization method only. Still uses all genes.</p>
+<p>Instead of RNA’s simple log-normalization, use SCT’s variance-stabilized values. If the assay choice alone matters, this should show improvement over baseline.</p>
+<p>SCT contains 15,320 genes (vs RNA’s 17,857) because SCTransform drops genes it can’t model reliably — genes with too few counts or too little variation. This is actually a feature: those dropped genes were uninformative anyway.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">DefaultAssay</span>(sobj) <span class="ot">&lt;-</span> <span class="st">"SCT"</span></span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Average SCT-normalized values per timepoint</span></span>
+<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a>avg_sct <span class="ot">&lt;-</span> <span class="fu">AverageExpression</span>(sobj, <span class="at">group.by =</span> <span class="st">"HTO_maxID"</span>,</span>
+<span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a>                              <span class="at">assays =</span> <span class="st">"SCT"</span>, <span class="at">slot =</span> <span class="st">"data"</span>)<span class="sc">$</span>SCT</span>
+<span id="cb64-6"><a href="#cb64-6" aria-hidden="true" tabindex="-1"></a>avg_sct <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(avg_sct)</span>
+<span id="cb64-7"><a href="#cb64-7" aria-hidden="true" tabindex="-1"></a>avg_sct <span class="ot">&lt;-</span> avg_sct[, <span class="fu">c</span>(<span class="st">"HashTag1"</span>, <span class="st">"HashTag2"</span>, <span class="st">"HashTag3"</span>, <span class="st">"HashTag4"</span>)]</span>
+<span id="cb64-8"><a href="#cb64-8" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(avg_sct) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Pre"</span>, <span class="st">"Wk3"</span>, <span class="st">"Wk6"</span>, <span class="st">"Wk9"</span>)</span>
+<span id="cb64-9"><a href="#cb64-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-10"><a href="#cb64-10" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"SCT averaged:"</span>, <span class="fu">nrow</span>(avg_sct), <span class="st">"x"</span>, <span class="fu">ncol</span>(avg_sct), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>SCT averaged: 15320 x 4 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Range:"</span>, <span class="fu">range</span>(avg_sct), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Range: 0 122.1817 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Negatives:"</span>, <span class="fu">sum</span>(avg_sct <span class="sc">&lt;</span> <span class="dv">0</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Negatives: 0 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Floor negatives to 0 for NMF non-negativity requirement</span></span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>fix2_mat <span class="ot">&lt;-</span> <span class="fu">pmax</span>(avg_sct, <span class="dv">0</span>)</span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"After floor:"</span>, <span class="fu">range</span>(fix2_mat), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>After floor: 0 122.1817 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>fix2_errors <span class="ot">&lt;-</span> <span class="fu">compute_errors</span>(fix2_mat, <span class="st">"Fix2: SCT assay"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Runs: |                                                        
+Runs: |                                                  |   0%
+Runs: |                                                        
+Runs: |==================================================| 100%
+System time:
+   user  system elapsed 
+   2.64    0.01    7.27 
+[Fix2: SCT assay] k=2: LAD=880.68, LAD_norm=0.0001, Frobenius=18.40, Rows=15320</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Runs: |                                                        
+Runs: |                                                  |   0%
+Runs: |                                                        
+Runs: |==================================================| 100%
+System time:
+   user  system elapsed 
+   2.75    0.02    8.20 
+[Fix2: SCT assay] k=3: LAD=456.91, LAD_norm=0.0001, Frobenius=11.10, Rows=15320</code></pre>
+</div>
+</div>
+</section>
+<section id="feature-selection-why-not-all-17857-genes" class="level2">
+<h2 class="anchored" data-anchor-id="feature-selection-why-not-all-17857-genes">Feature Selection: Why not all 17,857 genes?</h2>
+<p>Before running Fixes 3-5, we need to understand <strong>why feature selection matters for NMF</strong>.</p>
+<p>Of the 17,857 genes in this dataset:</p>
+<ul>
+<li>Many are <strong>not expressed at all</strong> in certain timepoints (zeros)</li>
+<li>Many are <strong>housekeeping genes</strong> expressed at constant levels across all conditions (ribosomal proteins, translation factors, cytoskeletal genes). These don’t change between timepoints, so NMF can’t learn anything from them.</li>
+<li>Many are <strong>too sparse</strong> to be informative — detected in &lt;10 of 4,876 cells</li>
+</ul>
+<p>NMF with rank k=3 has only 3 factors to explain the entire matrix. With 17,857 rows, each factor is responsible for ~6,000 genes. Most of those genes are flat noise, so the factors end up as blurry compromises between signal and noise. By filtering to the top 2,000 highly variable genes (HVGs), NMF can focus its limited factor capacity on genes that actually change across timepoints.</p>
+<section id="how-hvg-selection-works" class="level3">
+<h3 class="anchored" data-anchor-id="how-hvg-selection-works">How HVG selection works</h3>
+<p>Seurat’s <code>FindVariableFeatures()</code> (or SCTransform’s built-in variance estimation) ranks genes by how much their observed variance exceeds what you’d expect given their mean expression level. The ranking roughly looks like:</p>
+<ul>
+<li><strong>Top ~500</strong>: Strongly variable — key immune markers, cell cycle genes, lineage transcription factors. Clear biological signal.</li>
+<li><strong>~500-2,000</strong>: Moderately variable — still biologically relevant, includes many genes that distinguish cell states (CX3CR1, GZMB, exhaustion markers)</li>
+<li><strong>~2,000-5,000</strong>: Weakly variable — some real signal mixed with increasing technical noise</li>
+<li><strong>~5,000+</strong>: Flat — housekeeping, undetected, noise. Including these dilutes NMF factors.</li>
+</ul>
+</section>
+<section id="why-2000-specifically" class="level3">
+<h3 class="anchored" data-anchor-id="why-2000-specifically">Why 2,000 specifically?</h3>
+<p>The number 2,000 is a <strong>field convention</strong>, not a theoretically derived threshold. It comes from Seurat’s default <code>FindVariableFeatures(nfeatures = 2000)</code>. The Satija lab found empirically that ~2,000 genes captures enough biological variation for clustering and dimensionality reduction across most scRNA-seq datasets. Nearly every published single-cell paper uses 2,000-3,000 HVGs.</p>
+<p>We test whether this default is optimal in the <strong>Gene Count Sweep</strong> section below, where we run NMF at 500, 1000, 2000, 3000, and 5000 genes to find the sweet spot.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">DefaultAssay</span>(sobj) <span class="ot">&lt;-</span> <span class="st">"SCT"</span></span>
+<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a>hvgs <span class="ot">&lt;-</span> <span class="fu">VariableFeatures</span>(sobj)</span>
+<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Pre-computed HVGs from SCTransform:"</span>, <span class="fu">length</span>(hvgs), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Pre-computed HVGs from SCTransform: 3000 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">length</span>(hvgs) <span class="sc">&lt;</span> <span class="dv">2000</span>) {</span>
+<span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a>  sobj <span class="ot">&lt;-</span> <span class="fu">FindVariableFeatures</span>(sobj, <span class="at">nfeatures =</span> <span class="dv">2000</span>)</span>
+<span id="cb78-3"><a href="#cb78-3" aria-hidden="true" tabindex="-1"></a>  hvgs <span class="ot">&lt;-</span> <span class="fu">VariableFeatures</span>(sobj)</span>
+<span id="cb78-4"><a href="#cb78-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb78-5"><a href="#cb78-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-6"><a href="#cb78-6" aria-hidden="true" tabindex="-1"></a>hvgs_2k <span class="ot">&lt;-</span> <span class="fu">head</span>(hvgs, <span class="dv">2000</span>)</span>
+<span id="cb78-7"><a href="#cb78-7" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Using top"</span>, <span class="fu">length</span>(hvgs_2k), <span class="st">"HVGs for Fixes 3-5</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Using top 2000 HVGs for Fixes 3-5</code></pre>
+</div>
+</div>
+</section>
+<section id="biology-gene-coverage-check" class="level3">
+<h3 class="anchored" data-anchor-id="biology-gene-coverage-check">Biology gene coverage check</h3>
+<p>We have 16 genes of known biological importance from the source paper (Abdelfatah et al.&nbsp;2023). These include CX3CR1+ effector markers (GZMB, PRF1, NKG7), early activation markers (GZMK, CXCR3), naive/memory markers (TCF7, SELL), exhaustion markers (LAG3, TIGIT, PDCD1, HAVCR2), and a proliferation marker (MKI67). We need to verify our HVG cutoff captures them.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>bio_genes <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"CX3CR1"</span>, <span class="st">"GZMB"</span>, <span class="st">"GZMH"</span>, <span class="st">"PRF1"</span>, <span class="st">"NKG7"</span>, <span class="st">"CCL4"</span>, <span class="st">"CCL5"</span>,</span>
+<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a>               <span class="st">"GZMK"</span>, <span class="st">"CXCR3"</span>, <span class="st">"TCF7"</span>, <span class="st">"SELL"</span>, <span class="st">"LAG3"</span>, <span class="st">"TIGIT"</span>, <span class="st">"PDCD1"</span>,</span>
+<span id="cb80-3"><a href="#cb80-3" aria-hidden="true" tabindex="-1"></a>               <span class="st">"HAVCR2"</span>, <span class="st">"MKI67"</span>)</span>
+<span id="cb80-4"><a href="#cb80-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb80-5"><a href="#cb80-5" aria-hidden="true" tabindex="-1"></a>in_hvg <span class="ot">&lt;-</span> bio_genes <span class="sc">%in%</span> hvgs_2k</span>
+<span id="cb80-6"><a href="#cb80-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Key biology genes in top 2k HVGs:"</span>, <span class="fu">sum</span>(in_hvg), <span class="st">"of"</span>, <span class="fu">length</span>(bio_genes), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Key biology genes in top 2k HVGs: 14 of 16 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Captured:"</span>, <span class="fu">paste</span>(bio_genes[in_hvg], <span class="at">collapse =</span> <span class="st">", "</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Captured: CX3CR1, GZMB, GZMH, PRF1, NKG7, CCL4, CCL5, GZMK, CXCR3, TCF7, SELL, LAG3, TIGIT, MKI67 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Missing:"</span>, <span class="fu">paste</span>(bio_genes[<span class="sc">!</span>in_hvg], <span class="at">collapse =</span> <span class="st">", "</span>), <span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Missing: PDCD1, HAVCR2 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Where do the missing genes rank?</span></span>
+<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a>missing <span class="ot">&lt;-</span> bio_genes[<span class="sc">!</span>in_hvg]</span>
+<span id="cb86-3"><a href="#cb86-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">length</span>(missing) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb86-4"><a href="#cb86-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (g <span class="cf">in</span> missing) {</span>
+<span id="cb86-5"><a href="#cb86-5" aria-hidden="true" tabindex="-1"></a>    rank_pos <span class="ot">&lt;-</span> <span class="fu">which</span>(hvgs <span class="sc">==</span> g)</span>
+<span id="cb86-6"><a href="#cb86-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">length</span>(rank_pos) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb86-7"><a href="#cb86-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  %s: ranked #%d out of %d HVGs</span><span class="sc">\n</span><span class="st">"</span>, g, rank_pos, <span class="fu">length</span>(hvgs)))</span>
+<span id="cb86-8"><a href="#cb86-8" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb86-9"><a href="#cb86-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  %s: not in HVG list at all (very low variance)</span><span class="sc">\n</span><span class="st">"</span>, g))</span>
+<span id="cb86-10"><a href="#cb86-10" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb86-11"><a href="#cb86-11" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb86-12"><a href="#cb86-12" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  PDCD1: ranked #2594 out of 3000 HVGs
+  HAVCR2: not in HVG list at all (very low variance)</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="fix-3-feature-selection-only-rna-ethans-normalization" class="level2">
+<h2 class="anchored" data-anchor-id="fix-3-feature-selection-only-rna-ethans-normalization">Fix 3: Feature Selection Only (RNA, Ethan’s normalization)</h2>
+<p><strong>What this fixes</strong>: Gene count only. Uses Ethan’s exact normalization path (RNA data slot = single log-normalized averages) but restricted to top 2,000 HVGs. This isolates the effect of removing noise genes from the effect of changing normalization.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="fu">DefaultAssay</span>(sobj) <span class="ot">&lt;-</span> <span class="st">"RNA"</span></span>
+<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-3"><a href="#cb88-3" aria-hidden="true" tabindex="-1"></a>hvgs_available <span class="ot">&lt;-</span> hvgs_2k[hvgs_2k <span class="sc">%in%</span> <span class="fu">rownames</span>(sobj)]</span>
+<span id="cb88-4"><a href="#cb88-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-5"><a href="#cb88-5" aria-hidden="true" tabindex="-1"></a>avg_rna_hvg <span class="ot">&lt;-</span> <span class="fu">AverageExpression</span>(sobj, <span class="at">group.by =</span> <span class="st">"HTO_maxID"</span>,</span>
+<span id="cb88-6"><a href="#cb88-6" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">assays =</span> <span class="st">"RNA"</span>, <span class="at">slot =</span> <span class="st">"data"</span>,</span>
+<span id="cb88-7"><a href="#cb88-7" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">features =</span> hvgs_available)<span class="sc">$</span>RNA</span>
+<span id="cb88-8"><a href="#cb88-8" aria-hidden="true" tabindex="-1"></a>avg_rna_hvg <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(avg_rna_hvg)</span>
+<span id="cb88-9"><a href="#cb88-9" aria-hidden="true" tabindex="-1"></a>avg_rna_hvg <span class="ot">&lt;-</span> avg_rna_hvg[, <span class="fu">c</span>(<span class="st">"HashTag1"</span>, <span class="st">"HashTag2"</span>, <span class="st">"HashTag3"</span>, <span class="st">"HashTag4"</span>)]</span>
+<span id="cb88-10"><a href="#cb88-10" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(avg_rna_hvg) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Pre"</span>, <span class="st">"Wk3"</span>, <span class="st">"Wk6"</span>, <span class="st">"Wk9"</span>)</span>
+<span id="cb88-11"><a href="#cb88-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-12"><a href="#cb88-12" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Fix3 (Ethan's norm + HVGs):"</span>, <span class="fu">nrow</span>(avg_rna_hvg), <span class="st">"x"</span>, <span class="fu">ncol</span>(avg_rna_hvg), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Fix3 (Ethan's norm + HVGs): 2000 x 4 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Range:"</span>, <span class="fu">range</span>(avg_rna_hvg), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Range: 0 137.2963 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb93"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a>fix3_errors <span class="ot">&lt;-</span> <span class="fu">compute_errors</span>(avg_rna_hvg, <span class="st">"Fix3: RNA + 2k HVGs"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Runs: |                                                        
+Runs: |                                                  |   0%
+Runs: |                                                        
+Runs: |==================================================| 100%
+System time:
+   user  system elapsed 
+   2.57    0.00    4.92 
+[Fix3: RNA + 2k HVGs] k=2: LAD=700.56, LAD_norm=0.0006, Frobenius=38.19, Rows=2000</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Runs: |                                                        
+Runs: |                                                  |   0%
+Runs: |                                                        
+Runs: |==================================================| 100%
+System time:
+   user  system elapsed 
+   2.52    0.01    5.28 
+[Fix3: RNA + 2k HVGs] k=3: LAD=326.97, LAD_norm=0.0003, Frobenius=13.87, Rows=2000</code></pre>
+</div>
+</div>
+</section>
+<section id="fix-4-sct-feature-selection-best-of-everything" class="level2">
+<h2 class="anchored" data-anchor-id="fix-4-sct-feature-selection-best-of-everything">Fix 4: SCT + Feature Selection (Best of Everything)</h2>
+<p><strong>What this fixes</strong>: Both normalization and gene selection. Uses SCTransform variance-stabilized values restricted to the 2,000 most informative genes. The idea: SCT puts all genes on a comparable scale (no single gene dominates the factorization) AND HVG filtering removes genes that don’t vary across timepoints. We expect these improvements to compound.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb96"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="fu">DefaultAssay</span>(sobj) <span class="ot">&lt;-</span> <span class="st">"SCT"</span></span>
+<span id="cb96-2"><a href="#cb96-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb96-3"><a href="#cb96-3" aria-hidden="true" tabindex="-1"></a>hvgs_in_sct <span class="ot">&lt;-</span> hvgs_2k[hvgs_2k <span class="sc">%in%</span> <span class="fu">rownames</span>(sobj)]</span>
+<span id="cb96-4"><a href="#cb96-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb96-5"><a href="#cb96-5" aria-hidden="true" tabindex="-1"></a>avg_sct_hvg <span class="ot">&lt;-</span> <span class="fu">AverageExpression</span>(sobj, <span class="at">group.by =</span> <span class="st">"HTO_maxID"</span>,</span>
+<span id="cb96-6"><a href="#cb96-6" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">assays =</span> <span class="st">"SCT"</span>, <span class="at">slot =</span> <span class="st">"data"</span>,</span>
+<span id="cb96-7"><a href="#cb96-7" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">features =</span> hvgs_in_sct)<span class="sc">$</span>SCT</span>
+<span id="cb96-8"><a href="#cb96-8" aria-hidden="true" tabindex="-1"></a>avg_sct_hvg <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(avg_sct_hvg)</span>
+<span id="cb96-9"><a href="#cb96-9" aria-hidden="true" tabindex="-1"></a>avg_sct_hvg <span class="ot">&lt;-</span> avg_sct_hvg[, <span class="fu">c</span>(<span class="st">"HashTag1"</span>, <span class="st">"HashTag2"</span>, <span class="st">"HashTag3"</span>, <span class="st">"HashTag4"</span>)]</span>
+<span id="cb96-10"><a href="#cb96-10" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(avg_sct_hvg) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Pre"</span>, <span class="st">"Wk3"</span>, <span class="st">"Wk6"</span>, <span class="st">"Wk9"</span>)</span>
+<span id="cb96-11"><a href="#cb96-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb96-12"><a href="#cb96-12" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Fix4 (SCT + HVGs):"</span>, <span class="fu">nrow</span>(avg_sct_hvg), <span class="st">"x"</span>, <span class="fu">ncol</span>(avg_sct_hvg), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Fix4 (SCT + HVGs): 2000 x 4 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb98"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Range:"</span>, <span class="fu">range</span>(avg_sct_hvg), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Range: 0 48.22649 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb100"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Negatives:"</span>, <span class="fu">sum</span>(avg_sct_hvg <span class="sc">&lt;</span> <span class="dv">0</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Negatives: 0 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a>fix4_mat <span class="ot">&lt;-</span> <span class="fu">pmax</span>(avg_sct_hvg, <span class="dv">0</span>)</span>
+<span id="cb102-2"><a href="#cb102-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb102-3"><a href="#cb102-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb103"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a>fix4_errors <span class="ot">&lt;-</span> <span class="fu">compute_errors</span>(fix4_mat, <span class="st">"Fix4: SCT + 2k HVGs"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Runs: |                                                        
+Runs: |                                                  |   0%
+Runs: |                                                        
+Runs: |==================================================| 100%
+System time:
+   user  system elapsed 
+   2.64    0.02    5.08 
+[Fix4: SCT + 2k HVGs] k=2: LAD=252.80, LAD_norm=0.0007, Frobenius=14.00, Rows=2000</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Runs: |                                                        
+Runs: |                                                  |   0%
+Runs: |                                                        
+Runs: |==================================================| 100%
+System time:
+   user  system elapsed 
+   3.06    0.01    5.65 
+[Fix4: SCT + 2k HVGs] k=3: LAD=110.11, LAD_norm=0.0003, Frobenius=5.25, Rows=2000</code></pre>
+</div>
+</div>
+</section>
+<section id="fix-5-raw-counts-feature-selection-no-log-at-all" class="level2">
+<h2 class="anchored" data-anchor-id="fix-5-raw-counts-feature-selection-no-log-at-all">Fix 5: Raw Counts + Feature Selection (No Log at All)</h2>
+<p><strong>What this fixes</strong>: Tests whether we should normalize at all before MEGPath.</p>
+<p>MEGPath normalizes every input to [0,1] internally before running NMF. So if we feed it <code>log1p(counts)</code>, MEGPath sees <code>normalize_to_01(log(counts))</code>. If we feed it raw counts, MEGPath sees <code>normalize_to_01(counts)</code>. The log transform might add information (compressing the dynamic range to help NMF), or it might be redundant since MEGPath handles scaling internally.</p>
+<p>This fix gives MEGPath the rawest informative data: averaged raw counts for only the top 2,000 HVGs. No log, no normalization — just the arithmetic mean of counts per gene per timepoint.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb106"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a><span class="fu">DefaultAssay</span>(sobj) <span class="ot">&lt;-</span> <span class="st">"RNA"</span></span>
+<span id="cb106-2"><a href="#cb106-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb106-3"><a href="#cb106-3" aria-hidden="true" tabindex="-1"></a>avg_counts_hvg <span class="ot">&lt;-</span> <span class="fu">AverageExpression</span>(sobj, <span class="at">group.by =</span> <span class="st">"HTO_maxID"</span>,</span>
+<span id="cb106-4"><a href="#cb106-4" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">assays =</span> <span class="st">"RNA"</span>, <span class="at">slot =</span> <span class="st">"counts"</span>,</span>
+<span id="cb106-5"><a href="#cb106-5" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">features =</span> hvgs_available)<span class="sc">$</span>RNA</span>
+<span id="cb106-6"><a href="#cb106-6" aria-hidden="true" tabindex="-1"></a>avg_counts_hvg <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(avg_counts_hvg)</span>
+<span id="cb106-7"><a href="#cb106-7" aria-hidden="true" tabindex="-1"></a>avg_counts_hvg <span class="ot">&lt;-</span> avg_counts_hvg[, <span class="fu">c</span>(<span class="st">"HashTag1"</span>, <span class="st">"HashTag2"</span>, <span class="st">"HashTag3"</span>, <span class="st">"HashTag4"</span>)]</span>
+<span id="cb106-8"><a href="#cb106-8" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(avg_counts_hvg) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Pre"</span>, <span class="st">"Wk3"</span>, <span class="st">"Wk6"</span>, <span class="st">"Wk9"</span>)</span>
+<span id="cb106-9"><a href="#cb106-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb106-10"><a href="#cb106-10" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Fix5 (raw counts + HVGs):"</span>, <span class="fu">nrow</span>(avg_counts_hvg), <span class="st">"x"</span>, <span class="fu">ncol</span>(avg_counts_hvg), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Fix5 (raw counts + HVGs): 2000 x 4 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb108"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Range:"</span>, <span class="fu">range</span>(avg_counts_hvg), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Range: 0 61.58259 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb110"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb111"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a>fix5_errors <span class="ot">&lt;-</span> <span class="fu">compute_errors</span>(avg_counts_hvg, <span class="st">"Fix5: counts + 2k HVGs"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Runs: |                                                        
+Runs: |                                                  |   0%
+Runs: |                                                        
+Runs: |==================================================| 100%
+System time:
+   user  system elapsed 
+   2.77    0.06    5.17 
+[Fix5: counts + 2k HVGs] k=2: LAD=318.48, LAD_norm=0.0006, Frobenius=16.26, Rows=2000</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Runs: |                                                        
+Runs: |                                                  |   0%
+Runs: |                                                        
+Runs: |==================================================| 100%
+System time:
+   user  system elapsed 
+   2.49    0.02    5.22 
+[Fix5: counts + 2k HVGs] k=3: LAD=115.72, LAD_norm=0.0002, Frobenius=5.69, Rows=2000</code></pre>
+</div>
+</div>
+</section>
+<section id="gene-count-sweep" class="level2">
+<h2 class="anchored" data-anchor-id="gene-count-sweep">Gene Count Sweep</h2>
+<p>The 2,000 HVG cutoff is a convention, not an optimization. Here we test whether a different number of genes would perform better for NMF specifically. We run NMF on SCT + HVGs (our best normalization from Fix 4) at gene counts of 500, 1000, 2000, 3000, and 5000.</p>
+<p><strong>Tradeoff</strong>: Fewer genes → less noise, but risk losing biology. More genes → more coverage, but NMF wastes capacity on flat genes. We also check biology gene coverage at each cutoff.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb114"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a><span class="co"># SCT pre-computed 3000 HVGs. For 5000 we need to recompute.</span></span>
+<span id="cb114-2"><a href="#cb114-2" aria-hidden="true" tabindex="-1"></a><span class="fu">DefaultAssay</span>(sobj) <span class="ot">&lt;-</span> <span class="st">"SCT"</span></span>
+<span id="cb114-3"><a href="#cb114-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">length</span>(hvgs) <span class="sc">&lt;</span> <span class="dv">5000</span>) {</span>
+<span id="cb114-4"><a href="#cb114-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"Recomputing HVGs with nfeatures=5000 for sweep...</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb114-5"><a href="#cb114-5" aria-hidden="true" tabindex="-1"></a>  sobj <span class="ot">&lt;-</span> <span class="fu">FindVariableFeatures</span>(sobj, <span class="at">nfeatures =</span> <span class="dv">5000</span>)</span>
+<span id="cb114-6"><a href="#cb114-6" aria-hidden="true" tabindex="-1"></a>  hvgs_extended <span class="ot">&lt;-</span> <span class="fu">VariableFeatures</span>(sobj)</span>
+<span id="cb114-7"><a href="#cb114-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Extended HVG list: %d genes</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">length</span>(hvgs_extended)))</span>
+<span id="cb114-8"><a href="#cb114-8" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb114-9"><a href="#cb114-9" aria-hidden="true" tabindex="-1"></a>  hvgs_extended <span class="ot">&lt;-</span> hvgs</span>
+<span id="cb114-10"><a href="#cb114-10" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Recomputing HVGs with nfeatures=5000 for sweep...
+Extended HVG list: 5000 genes</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb116"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a>gene_counts <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">500</span>, <span class="dv">1000</span>, <span class="dv">2000</span>, <span class="dv">3000</span>, <span class="dv">5000</span>)</span>
+<span id="cb116-2"><a href="#cb116-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb116-3"><a href="#cb116-3" aria-hidden="true" tabindex="-1"></a>bio_genes_all <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"CX3CR1"</span>, <span class="st">"GZMB"</span>, <span class="st">"GZMH"</span>, <span class="st">"PRF1"</span>, <span class="st">"NKG7"</span>, <span class="st">"CCL4"</span>, <span class="st">"CCL5"</span>,</span>
+<span id="cb116-4"><a href="#cb116-4" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"GZMK"</span>, <span class="st">"CXCR3"</span>, <span class="st">"TCF7"</span>, <span class="st">"SELL"</span>, <span class="st">"LAG3"</span>, <span class="st">"TIGIT"</span>, <span class="st">"PDCD1"</span>,</span>
+<span id="cb116-5"><a href="#cb116-5" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"HAVCR2"</span>, <span class="st">"MKI67"</span>)</span>
+<span id="cb116-6"><a href="#cb116-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb116-7"><a href="#cb116-7" aria-hidden="true" tabindex="-1"></a>sweep_results <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb116-8"><a href="#cb116-8" aria-hidden="true" tabindex="-1"></a>sweep_bio <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb116-9"><a href="#cb116-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb116-10"><a href="#cb116-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (ng <span class="cf">in</span> gene_counts) {</span>
+<span id="cb116-11"><a href="#cb116-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">=== %d genes ===</span><span class="sc">\n</span><span class="st">"</span>, ng))</span>
+<span id="cb116-12"><a href="#cb116-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb116-13"><a href="#cb116-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Select top N HVGs from extended list</span></span>
+<span id="cb116-14"><a href="#cb116-14" aria-hidden="true" tabindex="-1"></a>  hvg_subset <span class="ot">&lt;-</span> <span class="fu">head</span>(hvgs_extended, ng)</span>
+<span id="cb116-15"><a href="#cb116-15" aria-hidden="true" tabindex="-1"></a>  hvg_in_sct <span class="ot">&lt;-</span> hvg_subset[hvg_subset <span class="sc">%in%</span> <span class="fu">rownames</span>(sobj)]</span>
+<span id="cb116-16"><a href="#cb116-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Requested: %d, Available in SCT: %d</span><span class="sc">\n</span><span class="st">"</span>, ng, <span class="fu">length</span>(hvg_in_sct)))</span>
+<span id="cb116-17"><a href="#cb116-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb116-18"><a href="#cb116-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Biology coverage</span></span>
+<span id="cb116-19"><a href="#cb116-19" aria-hidden="true" tabindex="-1"></a>  n_bio <span class="ot">&lt;-</span> <span class="fu">sum</span>(bio_genes_all <span class="sc">%in%</span> hvg_in_sct)</span>
+<span id="cb116-20"><a href="#cb116-20" aria-hidden="true" tabindex="-1"></a>  captured <span class="ot">&lt;-</span> bio_genes_all[bio_genes_all <span class="sc">%in%</span> hvg_in_sct]</span>
+<span id="cb116-21"><a href="#cb116-21" aria-hidden="true" tabindex="-1"></a>  missing_bio <span class="ot">&lt;-</span> bio_genes_all[<span class="sc">!</span>bio_genes_all <span class="sc">%in%</span> hvg_in_sct]</span>
+<span id="cb116-22"><a href="#cb116-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Biology genes captured: %d / %d</span><span class="sc">\n</span><span class="st">"</span>, n_bio, <span class="fu">length</span>(bio_genes_all)))</span>
+<span id="cb116-23"><a href="#cb116-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(missing_bio) <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="fu">cat</span>(<span class="st">"Missing:"</span>, <span class="fu">paste</span>(missing_bio, <span class="at">collapse =</span> <span class="st">", "</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb116-24"><a href="#cb116-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb116-25"><a href="#cb116-25" aria-hidden="true" tabindex="-1"></a>  sweep_bio[[<span class="fu">as.character</span>(ng)]] <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb116-26"><a href="#cb116-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_genes =</span> ng, <span class="at">n_bio_captured =</span> n_bio,</span>
+<span id="cb116-27"><a href="#cb116-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">missing =</span> <span class="fu">paste</span>(missing_bio, <span class="at">collapse =</span> <span class="st">", "</span>),</span>
+<span id="cb116-28"><a href="#cb116-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span></span>
+<span id="cb116-29"><a href="#cb116-29" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb116-30"><a href="#cb116-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb116-31"><a href="#cb116-31" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Build matrix</span></span>
+<span id="cb116-32"><a href="#cb116-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">DefaultAssay</span>(sobj) <span class="ot">&lt;-</span> <span class="st">"SCT"</span></span>
+<span id="cb116-33"><a href="#cb116-33" aria-hidden="true" tabindex="-1"></a>  avg_tmp <span class="ot">&lt;-</span> <span class="fu">AverageExpression</span>(sobj, <span class="at">group.by =</span> <span class="st">"HTO_maxID"</span>,</span>
+<span id="cb116-34"><a href="#cb116-34" aria-hidden="true" tabindex="-1"></a>                                <span class="at">assays =</span> <span class="st">"SCT"</span>, <span class="at">slot =</span> <span class="st">"data"</span>,</span>
+<span id="cb116-35"><a href="#cb116-35" aria-hidden="true" tabindex="-1"></a>                                <span class="at">features =</span> hvg_in_sct)<span class="sc">$</span>SCT</span>
+<span id="cb116-36"><a href="#cb116-36" aria-hidden="true" tabindex="-1"></a>  avg_tmp <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(avg_tmp)</span>
+<span id="cb116-37"><a href="#cb116-37" aria-hidden="true" tabindex="-1"></a>  avg_tmp <span class="ot">&lt;-</span> avg_tmp[, <span class="fu">c</span>(<span class="st">"HashTag1"</span>, <span class="st">"HashTag2"</span>, <span class="st">"HashTag3"</span>, <span class="st">"HashTag4"</span>)]</span>
+<span id="cb116-38"><a href="#cb116-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(avg_tmp) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Pre"</span>, <span class="st">"Wk3"</span>, <span class="st">"Wk6"</span>, <span class="st">"Wk9"</span>)</span>
+<span id="cb116-39"><a href="#cb116-39" aria-hidden="true" tabindex="-1"></a>  avg_tmp <span class="ot">&lt;-</span> <span class="fu">pmax</span>(avg_tmp, <span class="dv">0</span>)</span>
+<span id="cb116-40"><a href="#cb116-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb116-41"><a href="#cb116-41" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Run NMF</span></span>
+<span id="cb116-42"><a href="#cb116-42" aria-hidden="true" tabindex="-1"></a>  errors_tmp <span class="ot">&lt;-</span> <span class="fu">compute_errors</span>(avg_tmp, <span class="fu">sprintf</span>(<span class="st">"SCT + %d HVGs"</span>, ng), <span class="at">ranks =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">nrun =</span> <span class="dv">10</span>)</span>
+<span id="cb116-43"><a href="#cb116-43" aria-hidden="true" tabindex="-1"></a>  sweep_results[[<span class="fu">length</span>(sweep_results) <span class="sc">+</span> <span class="dv">1</span>]] <span class="ot">&lt;-</span> errors_tmp</span>
+<span id="cb116-44"><a href="#cb116-44" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+=== 500 genes ===
+Requested: 500, Available in SCT: 500
+Biology genes captured: 10 / 16
+Missing: CXCR3, TCF7, SELL, TIGIT, PDCD1, HAVCR2 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Runs: |                                                        
+Runs: |                                                  |   0%
+Runs: |                                                        
+Runs: |==================================================| 100%
+System time:
+   user  system elapsed 
+   2.47    0.06    4.36 
+[SCT + 500 HVGs] k=2: LAD=153.78, LAD_norm=0.0016, Frobenius=12.88, Rows=500</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Runs: |                                                        
+Runs: |                                                  |   0%
+Runs: |                                                        
+Runs: |==================================================| 100%
+System time:
+   user  system elapsed 
+   2.42    0.03    4.61 
+[SCT + 500 HVGs] k=3: LAD=53.28, LAD_norm=0.0006, Frobenius=4.10, Rows=500
+
+=== 1000 genes ===
+Requested: 1000, Available in SCT: 1000
+Biology genes captured: 13 / 16
+Missing: TCF7, PDCD1, HAVCR2 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Runs: |                                                        
+Runs: |                                                  |   0%
+Runs: |                                                        
+Runs: |==================================================| 100%
+System time:
+   user  system elapsed 
+   2.67    0.00    4.72 
+[SCT + 1000 HVGs] k=2: LAD=191.97, LAD_norm=0.0010, Frobenius=13.51, Rows=1000</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Runs: |                                                        
+Runs: |                                                  |   0%
+Runs: |                                                        
+Runs: |==================================================| 100%
+System time:
+   user  system elapsed 
+   2.50    0.03    4.94 
+[SCT + 1000 HVGs] k=3: LAD=78.33, LAD_norm=0.0004, Frobenius=4.71, Rows=1000
+
+=== 2000 genes ===
+Requested: 2000, Available in SCT: 2000
+Biology genes captured: 14 / 16
+Missing: PDCD1, HAVCR2 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Runs: |                                                        
+Runs: |                                                  |   0%
+Runs: |                                                        
+Runs: |==================================================| 100%
+System time:
+   user  system elapsed 
+   2.45    0.02    4.73 
+[SCT + 2000 HVGs] k=2: LAD=252.86, LAD_norm=0.0007, Frobenius=14.00, Rows=2000</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Runs: |                                                        
+Runs: |                                                  |   0%
+Runs: |                                                        
+Runs: |==================================================| 100%
+System time:
+   user  system elapsed 
+   2.52    0.04    4.98 
+[SCT + 2000 HVGs] k=3: LAD=98.69, LAD_norm=0.0003, Frobenius=4.85, Rows=2000
+
+=== 3000 genes ===
+Requested: 3000, Available in SCT: 3000
+Biology genes captured: 15 / 16
+Missing: HAVCR2 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Runs: |                                                        
+Runs: |                                                  |   0%
+Runs: |                                                        
+Runs: |==================================================| 100%
+System time:
+   user  system elapsed 
+   2.52    0.03    5.00 
+[SCT + 3000 HVGs] k=2: LAD=304.60, LAD_norm=0.0005, Frobenius=14.30, Rows=3000</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Runs: |                                                        
+Runs: |                                                  |   0%
+Runs: |                                                        
+Runs: |==================================================| 100%
+System time:
+   user  system elapsed 
+   2.44    0.07    5.35 
+[SCT + 3000 HVGs] k=3: LAD=142.55, LAD_norm=0.0002, Frobenius=5.63, Rows=3000
+
+=== 5000 genes ===
+Requested: 5000, Available in SCT: 5000
+Biology genes captured: 16 / 16</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Runs: |                                                        
+Runs: |                                                  |   0%
+Runs: |                                                        
+Runs: |==================================================| 100%
+System time:
+   user  system elapsed 
+   2.47    0.03    5.13 
+[SCT + 5000 HVGs] k=2: LAD=392.51, LAD_norm=0.0004, Frobenius=14.62, Rows=5000</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Runs: |                                                        
+Runs: |                                                  |   0%
+Runs: |                                                        
+Runs: |==================================================| 100%
+System time:
+   user  system elapsed 
+   2.53    0.03    5.49 
+[SCT + 5000 HVGs] k=3: LAD=159.17, LAD_norm=0.0002, Frobenius=5.14, Rows=5000</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb128"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb128-1"><a href="#cb128-1" aria-hidden="true" tabindex="-1"></a>sweep_errors <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(sweep_results)</span>
+<span id="cb128-2"><a href="#cb128-2" aria-hidden="true" tabindex="-1"></a>sweep_bio_df <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(sweep_bio)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb129"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb129-1"><a href="#cb129-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"=== Biology Gene Coverage by HVG Cutoff ===</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>=== Biology Gene Coverage by HVG Cutoff ===</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb131"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb131-1"><a href="#cb131-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">as.data.frame</span>(sweep_bio_df))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  n_genes n_bio_captured                                 missing
+1     500             10 CXCR3, TCF7, SELL, TIGIT, PDCD1, HAVCR2
+2    1000             13                     TCF7, PDCD1, HAVCR2
+3    2000             14                           PDCD1, HAVCR2
+4    3000             15                                  HAVCR2
+5    5000             16                                        </code></pre>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb133"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb133-1"><a href="#cb133-1" aria-hidden="true" tabindex="-1"></a>sweep_plot_data <span class="ot">&lt;-</span> sweep_errors <span class="sc">|&gt;</span></span>
+<span id="cb133-2"><a href="#cb133-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">n_genes =</span> <span class="fu">as.numeric</span>(<span class="fu">gsub</span>(<span class="st">"SCT </span><span class="sc">\\</span><span class="st">+ (</span><span class="sc">\\</span><span class="st">d+) HVGs"</span>, <span class="st">"</span><span class="sc">\\</span><span class="st">1"</span>, label)))</span>
+<span id="cb133-3"><a href="#cb133-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb133-4"><a href="#cb133-4" aria-hidden="true" tabindex="-1"></a>p_sweep <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(sweep_plot_data, <span class="fu">aes</span>(<span class="at">x =</span> n_genes, <span class="at">y =</span> nmae, <span class="at">color =</span> <span class="fu">factor</span>(rank))) <span class="sc">+</span></span>
+<span id="cb133-5"><a href="#cb133-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb133-6"><a href="#cb133-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb133-7"><a href="#cb133-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_donq</span>() <span class="sc">+</span></span>
+<span id="cb133-8"><a href="#cb133-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_donq</span>() <span class="sc">+</span></span>
+<span id="cb133-9"><a href="#cb133-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> gene_counts) <span class="sc">+</span></span>
+<span id="cb133-10"><a href="#cb133-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb133-11"><a href="#cb133-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Gene Count Sweep: Normalized Error vs Number of HVGs"</span>,</span>
+<span id="cb133-12"><a href="#cb133-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"SCT assay | Normalized MAE (LAD on [0,1]-scaled matrix / n_elements)"</span>,</span>
+<span id="cb133-13"><a href="#cb133-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Number of Highly Variable Genes"</span>,</span>
+<span id="cb133-14"><a href="#cb133-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Normalized MAE"</span>,</span>
+<span id="cb133-15"><a href="#cb133-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Rank (k)"</span>,</span>
+<span id="cb133-16"><a href="#cb133-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"Lee algorithm, 10 random starts | eigen.io"</span></span>
+<span id="cb133-17"><a href="#cb133-17" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb133-18"><a href="#cb133-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb133-19"><a href="#cb133-19" aria-hidden="true" tabindex="-1"></a>p_sweep</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02_improved_scrna_matrix_files/figure-html/sweep-plot-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb134"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb134-1"><a href="#cb134-1" aria-hidden="true" tabindex="-1"></a><span class="fu">save_donq</span>(p_sweep, <span class="st">"02_gene_sweep.png"</span>, <span class="at">width =</span> <span class="dv">10</span>, <span class="at">height =</span> <span class="dv">6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb135"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb135-1"><a href="#cb135-1" aria-hidden="true" tabindex="-1"></a>p_sweep_lad <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(sweep_plot_data, <span class="fu">aes</span>(<span class="at">x =</span> n_genes, <span class="at">y =</span> lad, <span class="at">color =</span> <span class="fu">factor</span>(rank))) <span class="sc">+</span></span>
+<span id="cb135-2"><a href="#cb135-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb135-3"><a href="#cb135-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb135-4"><a href="#cb135-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_donq</span>() <span class="sc">+</span></span>
+<span id="cb135-5"><a href="#cb135-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_donq</span>() <span class="sc">+</span></span>
+<span id="cb135-6"><a href="#cb135-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> gene_counts) <span class="sc">+</span></span>
+<span id="cb135-7"><a href="#cb135-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb135-8"><a href="#cb135-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Gene Count Sweep: Total LAD vs Number of HVGs"</span>,</span>
+<span id="cb135-9"><a href="#cb135-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Total reconstruction error increases with more genes (more to fit)"</span>,</span>
+<span id="cb135-10"><a href="#cb135-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Number of Highly Variable Genes"</span>,</span>
+<span id="cb135-11"><a href="#cb135-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Least Absolute Deviation (LAD)"</span>,</span>
+<span id="cb135-12"><a href="#cb135-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Rank (k)"</span>,</span>
+<span id="cb135-13"><a href="#cb135-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"Lee algorithm, 10 random starts | eigen.io"</span></span>
+<span id="cb135-14"><a href="#cb135-14" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb135-15"><a href="#cb135-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb135-16"><a href="#cb135-16" aria-hidden="true" tabindex="-1"></a>p_sweep_lad</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02_improved_scrna_matrix_files/figure-html/sweep-lad-plot-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb136"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb136-1"><a href="#cb136-1" aria-hidden="true" tabindex="-1"></a><span class="fu">save_donq</span>(p_sweep_lad, <span class="st">"02_gene_sweep_lad.png"</span>, <span class="at">width =</span> <span class="dv">10</span>, <span class="at">height =</span> <span class="dv">6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="compare-all-errors" class="level2">
+<h2 class="anchored" data-anchor-id="compare-all-errors">Compare All Errors</h2>
+<section id="raw-lad-scale-dependent" class="level3">
+<h3 class="anchored" data-anchor-id="raw-lad-scale-dependent">Raw LAD (scale-dependent)</h3>
+<p><strong>Caution</strong>: Raw LAD is not directly comparable across matrices with different value ranges. A matrix with values in [0, 560] will naturally have higher LAD than one in [0, 6] even if the relative fit quality is identical. This is why Ethan’s double-log (which compressed values to [0, 6.33]) appeared to have lower error — the values were smaller, not the fit better.</p>
+<p>Within the same matrix (comparing k=2 vs k=3), raw LAD is valid. Across matrices with similar scales (e.g., Fix 4 vs Fix 5, both HVG-filtered), it’s approximately valid.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb137"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb137-1"><a href="#cb137-1" aria-hidden="true" tabindex="-1"></a>all_errors <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb137-2"><a href="#cb137-2" aria-hidden="true" tabindex="-1"></a>  baseline,</span>
+<span id="cb137-3"><a href="#cb137-3" aria-hidden="true" tabindex="-1"></a>  fix1_errors,</span>
+<span id="cb137-4"><a href="#cb137-4" aria-hidden="true" tabindex="-1"></a>  fix2_errors,</span>
+<span id="cb137-5"><a href="#cb137-5" aria-hidden="true" tabindex="-1"></a>  fix3_errors,</span>
+<span id="cb137-6"><a href="#cb137-6" aria-hidden="true" tabindex="-1"></a>  fix4_errors,</span>
+<span id="cb137-7"><a href="#cb137-7" aria-hidden="true" tabindex="-1"></a>  fix5_errors</span>
+<span id="cb137-8"><a href="#cb137-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb137-9"><a href="#cb137-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb137-10"><a href="#cb137-10" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"=== All Error Comparisons (raw LAD) ===</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>=== All Error Comparisons (raw LAD) ===</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb139"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb139-1"><a href="#cb139-1" aria-hidden="true" tabindex="-1"></a>all_errors <span class="sc">|&gt;</span></span>
+<span id="cb139-2"><a href="#cb139-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"TCR"</span>, label)) <span class="sc">|&gt;</span></span>
+<span id="cb139-3"><a href="#cb139-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(rank, lad) <span class="sc">|&gt;</span></span>
+<span id="cb139-4"><a href="#cb139-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(label, rank, n_rows, lad, frobenius, nmae) <span class="sc">|&gt;</span></span>
+<span id="cb139-5"><a href="#cb139-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span></span>
+<span id="cb139-6"><a href="#cb139-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    label rank n_rows       lad frobenius         nmae
+1     Fix4: SCT + 2k HVGs    2   2000  252.7993 13.999031 6.552398e-04
+2  Fix5: counts + 2k HVGs    2   2000  318.4837 16.259852 6.464565e-04
+3        Fix1: single log    2  17759  514.3735  4.114701 1.505996e-03
+4     Fix3: RNA + 2k HVGs    2   2000  700.5550 38.192316 6.378129e-04
+5         Fix2: SCT assay    2  15320  880.6825 18.404199 1.176236e-04
+6               scRNA log    2  17759 1073.0888  7.707395 2.385939e-03
+7               scRNA raw    2  17759 2402.8158 44.576401 6.030257e-05
+8     Fix4: SCT + 2k HVGs    3   2000  110.1084  5.249164 2.853941e-04
+9  Fix5: counts + 2k HVGs    3   2000  115.7164  5.693247 2.348805e-04
+10       Fix1: single log    3  17759  213.6954  1.994523 6.256630e-04
+11    Fix3: RNA + 2k HVGs    3   2000  326.9715 13.872048 2.976877e-04
+12        Fix2: SCT assay    3  15320  456.9076 11.104950 6.102440e-05
+13              scRNA log    3  17759  543.2310  3.943797 1.207837e-03
+14              scRNA raw    3  17759 1340.0597 20.851860 3.363097e-05</code></pre>
+</div>
+</div>
+</section>
+<section id="normalized-comparison-scale-independent" class="level3">
+<h3 class="anchored" data-anchor-id="normalized-comparison-scale-independent">Normalized comparison (scale-independent)</h3>
+<p>To fairly compare across matrices with different value ranges, we normalize each matrix to [0, 1] before computing error. This is also what MEGPath does internally — it rescales to [0, 1] first, then runs NMF. So the <strong>normalized MAE</strong> (NMAE) is the closest proxy we have for how MEGPath will rank these matrices.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb141"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb141-1"><a href="#cb141-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"=== Normalized MAE (error after [0,1] scaling, per element) ===</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>=== Normalized MAE (error after [0,1] scaling, per element) ===</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb143"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb143-1"><a href="#cb143-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"This is the fairest cross-matrix comparison.</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>This is the fairest cross-matrix comparison.</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb145"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb145-1"><a href="#cb145-1" aria-hidden="true" tabindex="-1"></a>all_errors <span class="sc">|&gt;</span></span>
+<span id="cb145-2"><a href="#cb145-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"TCR"</span>, label)) <span class="sc">|&gt;</span></span>
+<span id="cb145-3"><a href="#cb145-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(rank, nmae) <span class="sc">|&gt;</span></span>
+<span id="cb145-4"><a href="#cb145-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(label, rank, n_rows, nmae) <span class="sc">|&gt;</span></span>
+<span id="cb145-5"><a href="#cb145-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span></span>
+<span id="cb145-6"><a href="#cb145-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    label rank n_rows         nmae
+1               scRNA raw    2  17759 6.030257e-05
+2         Fix2: SCT assay    2  15320 1.176236e-04
+3     Fix3: RNA + 2k HVGs    2   2000 6.378129e-04
+4  Fix5: counts + 2k HVGs    2   2000 6.464565e-04
+5     Fix4: SCT + 2k HVGs    2   2000 6.552398e-04
+6        Fix1: single log    2  17759 1.505996e-03
+7               scRNA log    2  17759 2.385939e-03
+8               scRNA raw    3  17759 3.363097e-05
+9         Fix2: SCT assay    3  15320 6.102440e-05
+10 Fix5: counts + 2k HVGs    3   2000 2.348805e-04
+11    Fix4: SCT + 2k HVGs    3   2000 2.853941e-04
+12    Fix3: RNA + 2k HVGs    3   2000 2.976877e-04
+13       Fix1: single log    3  17759 6.256630e-04
+14              scRNA log    3  17759 1.207837e-03</code></pre>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb147"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb147-1"><a href="#cb147-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">=== Improvement vs Ethan's Baseline (Normalized MAE) ===</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+=== Improvement vs Ethan's Baseline (Normalized MAE) ===</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb149"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb149-1"><a href="#cb149-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Use Ethan's double-log (scRNA log) as the baseline — that's what he actually used</span></span>
+<span id="cb149-2"><a href="#cb149-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>) {</span>
+<span id="cb149-3"><a href="#cb149-3" aria-hidden="true" tabindex="-1"></a>  baseline_best <span class="ot">&lt;-</span> all_errors <span class="sc">|&gt;</span></span>
+<span id="cb149-4"><a href="#cb149-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(label <span class="sc">==</span> <span class="st">"scRNA log"</span>, rank <span class="sc">==</span> k)</span>
+<span id="cb149-5"><a href="#cb149-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb149-6"><a href="#cb149-6" aria-hidden="true" tabindex="-1"></a>  improved <span class="ot">&lt;-</span> all_errors <span class="sc">|&gt;</span></span>
+<span id="cb149-7"><a href="#cb149-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"scRNA|TCR"</span>, label), rank <span class="sc">==</span> k) <span class="sc">|&gt;</span></span>
+<span id="cb149-8"><a href="#cb149-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(nmae)</span>
+<span id="cb149-9"><a href="#cb149-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb149-10"><a href="#cb149-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"--- Rank k=%d (baseline NMAE: %.6f from %s) ---</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb149-11"><a href="#cb149-11" aria-hidden="true" tabindex="-1"></a>              k, baseline_best<span class="sc">$</span>nmae[<span class="dv">1</span>], baseline_best<span class="sc">$</span>label[<span class="dv">1</span>]))</span>
+<span id="cb149-12"><a href="#cb149-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb149-13"><a href="#cb149-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(improved)) {</span>
+<span id="cb149-14"><a href="#cb149-14" aria-hidden="true" tabindex="-1"></a>    pct <span class="ot">&lt;-</span> <span class="dv">100</span> <span class="sc">*</span> (baseline_best<span class="sc">$</span>nmae[<span class="dv">1</span>] <span class="sc">-</span> improved<span class="sc">$</span>nmae[i]) <span class="sc">/</span> baseline_best<span class="sc">$</span>nmae[<span class="dv">1</span>]</span>
+<span id="cb149-15"><a href="#cb149-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  %s: NMAE=%.6f (%+.1f%%, %d rows)</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb149-16"><a href="#cb149-16" aria-hidden="true" tabindex="-1"></a>                improved<span class="sc">$</span>label[i], improved<span class="sc">$</span>nmae[i], <span class="sc">-</span>pct, improved<span class="sc">$</span>n_rows[i]))</span>
+<span id="cb149-17"><a href="#cb149-17" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb149-18"><a href="#cb149-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb149-19"><a href="#cb149-19" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>--- Rank k=2 (baseline NMAE: 0.002386 from scRNA log) ---
+  Fix2: SCT assay: NMAE=0.000118 (-95.1%, 15320 rows)
+  Fix3: RNA + 2k HVGs: NMAE=0.000638 (-73.3%, 2000 rows)
+  Fix5: counts + 2k HVGs: NMAE=0.000646 (-72.9%, 2000 rows)
+  Fix4: SCT + 2k HVGs: NMAE=0.000655 (-72.5%, 2000 rows)
+  Fix1: single log: NMAE=0.001506 (-36.9%, 17759 rows)
+
+--- Rank k=3 (baseline NMAE: 0.001208 from scRNA log) ---
+  Fix2: SCT assay: NMAE=0.000061 (-94.9%, 15320 rows)
+  Fix5: counts + 2k HVGs: NMAE=0.000235 (-80.6%, 2000 rows)
+  Fix4: SCT + 2k HVGs: NMAE=0.000285 (-76.4%, 2000 rows)
+  Fix3: RNA + 2k HVGs: NMAE=0.000298 (-75.4%, 2000 rows)
+  Fix1: single log: NMAE=0.000626 (-48.2%, 17759 rows)</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="visualization-error-comparison" class="level2">
+<h2 class="anchored" data-anchor-id="visualization-error-comparison">Visualization: Error Comparison</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb151"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb151-1"><a href="#cb151-1" aria-hidden="true" tabindex="-1"></a>plot_data <span class="ot">&lt;-</span> all_errors <span class="sc">|&gt;</span></span>
+<span id="cb151-2"><a href="#cb151-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"TCR"</span>, label)) <span class="sc">|&gt;</span></span>
+<span id="cb151-3"><a href="#cb151-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">label =</span> <span class="fu">factor</span>(label, <span class="at">levels =</span> <span class="fu">unique</span>(label)))</span>
+<span id="cb151-4"><a href="#cb151-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb151-5"><a href="#cb151-5" aria-hidden="true" tabindex="-1"></a>p_compare <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(plot_data, <span class="fu">aes</span>(<span class="at">x =</span> label, <span class="at">y =</span> lad, <span class="at">fill =</span> <span class="fu">factor</span>(rank))) <span class="sc">+</span></span>
+<span id="cb151-6"><a href="#cb151-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"dodge"</span>, <span class="at">width =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb151-7"><a href="#cb151-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_donq</span>() <span class="sc">+</span></span>
+<span id="cb151-8"><a href="#cb151-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_donq</span>() <span class="sc">+</span></span>
+<span id="cb151-9"><a href="#cb151-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">35</span>, <span class="at">hjust =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">10</span>)) <span class="sc">+</span></span>
+<span id="cb151-10"><a href="#cb151-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb151-11"><a href="#cb151-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"scRNA NMF Error: Baseline vs Improved Preprocessing"</span>,</span>
+<span id="cb151-12"><a href="#cb151-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Raw LAD (sum |V - WH|) — lower is better, but not comparable across different value scales"</span>,</span>
+<span id="cb151-13"><a href="#cb151-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="cn">NULL</span>,</span>
+<span id="cb151-14"><a href="#cb151-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Least Absolute Deviation"</span>,</span>
+<span id="cb151-15"><a href="#cb151-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Rank (k)"</span>,</span>
+<span id="cb151-16"><a href="#cb151-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"Lee algorithm, 10 random starts | eigen.io"</span></span>
+<span id="cb151-17"><a href="#cb151-17" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb151-18"><a href="#cb151-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb151-19"><a href="#cb151-19" aria-hidden="true" tabindex="-1"></a>p_compare</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02_improved_scrna_matrix_files/figure-html/error-comparison-plot-1.png" class="img-fluid figure-img" width="1152"></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb152"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb152-1"><a href="#cb152-1" aria-hidden="true" tabindex="-1"></a><span class="fu">save_donq</span>(p_compare, <span class="st">"02_error_comparison.png"</span>, <span class="at">width =</span> <span class="dv">12</span>, <span class="at">height =</span> <span class="dv">7</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb153"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb153-1"><a href="#cb153-1" aria-hidden="true" tabindex="-1"></a>p_nmae <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(plot_data, <span class="fu">aes</span>(<span class="at">x =</span> label, <span class="at">y =</span> nmae, <span class="at">fill =</span> <span class="fu">factor</span>(rank))) <span class="sc">+</span></span>
+<span id="cb153-2"><a href="#cb153-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"dodge"</span>, <span class="at">width =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb153-3"><a href="#cb153-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_donq</span>() <span class="sc">+</span></span>
+<span id="cb153-4"><a href="#cb153-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_donq</span>() <span class="sc">+</span></span>
+<span id="cb153-5"><a href="#cb153-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">35</span>, <span class="at">hjust =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">10</span>)) <span class="sc">+</span></span>
+<span id="cb153-6"><a href="#cb153-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb153-7"><a href="#cb153-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"scRNA NMF Error: Normalized MAE (Scale-Independent)"</span>,</span>
+<span id="cb153-8"><a href="#cb153-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Each matrix scaled to [0,1] before computing error — fair comparison across all variants"</span>,</span>
+<span id="cb153-9"><a href="#cb153-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="cn">NULL</span>,</span>
+<span id="cb153-10"><a href="#cb153-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Normalized MAE"</span>,</span>
+<span id="cb153-11"><a href="#cb153-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Rank (k)"</span>,</span>
+<span id="cb153-12"><a href="#cb153-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"Lee algorithm, 10 random starts | eigen.io"</span></span>
+<span id="cb153-13"><a href="#cb153-13" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb153-14"><a href="#cb153-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb153-15"><a href="#cb153-15" aria-hidden="true" tabindex="-1"></a>p_nmae</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02_improved_scrna_matrix_files/figure-html/nmae-comparison-plot-1.png" class="img-fluid figure-img" width="1152"></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb154"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb154-1"><a href="#cb154-1" aria-hidden="true" tabindex="-1"></a><span class="fu">save_donq</span>(p_nmae, <span class="st">"02_nmae_comparison.png"</span>, <span class="at">width =</span> <span class="dv">12</span>, <span class="at">height =</span> <span class="dv">7</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="export-improved-csvs-for-megpath" class="level2">
+<h2 class="anchored" data-anchor-id="export-improved-csvs-for-megpath">Export Improved CSVs for MEGPath</h2>
+<p>All matrices exported without headers or row names — MEGPath reads raw CSV. MEGPath normalizes to [0,1] internally, so the absolute scale doesn’t matter. Ethan needs to update <code>arguments.txt</code> to reflect the new row count (2000 instead of 17857 for HVG-filtered variants).</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb155"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb155-1"><a href="#cb155-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(<span class="st">"megpath_inputs"</span>, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb155-2"><a href="#cb155-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb155-3"><a href="#cb155-3" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(fix1_mat, <span class="at">file =</span> <span class="st">"megpath_inputs/scrna_single_log.csv"</span>,</span>
+<span id="cb155-4"><a href="#cb155-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">sep =</span> <span class="st">","</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>, <span class="at">col.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb155-5"><a href="#cb155-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb155-6"><a href="#cb155-6" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(fix2_mat, <span class="at">file =</span> <span class="st">"megpath_inputs/scrna_sct_all.csv"</span>,</span>
+<span id="cb155-7"><a href="#cb155-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">sep =</span> <span class="st">","</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>, <span class="at">col.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb155-8"><a href="#cb155-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb155-9"><a href="#cb155-9" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(avg_rna_hvg, <span class="at">file =</span> <span class="st">"megpath_inputs/scrna_rna_hvg2k.csv"</span>,</span>
+<span id="cb155-10"><a href="#cb155-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">sep =</span> <span class="st">","</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>, <span class="at">col.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb155-11"><a href="#cb155-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb155-12"><a href="#cb155-12" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(fix4_mat, <span class="at">file =</span> <span class="st">"megpath_inputs/scrna_sct_hvg2k.csv"</span>,</span>
+<span id="cb155-13"><a href="#cb155-13" aria-hidden="true" tabindex="-1"></a>            <span class="at">sep =</span> <span class="st">","</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>, <span class="at">col.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb155-14"><a href="#cb155-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb155-15"><a href="#cb155-15" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(avg_counts_hvg, <span class="at">file =</span> <span class="st">"megpath_inputs/scrna_counts_hvg2k.csv"</span>,</span>
+<span id="cb155-16"><a href="#cb155-16" aria-hidden="true" tabindex="-1"></a>            <span class="at">sep =</span> <span class="st">","</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>, <span class="at">col.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb155-17"><a href="#cb155-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb155-18"><a href="#cb155-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Labeled version for biological interpretation later</span></span>
+<span id="cb155-19"><a href="#cb155-19" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(fix4_mat, <span class="at">file =</span> <span class="st">"megpath_inputs/scrna_sct_hvg2k_labeled.csv"</span>)</span>
+<span id="cb155-20"><a href="#cb155-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb155-21"><a href="#cb155-21" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"=== Exported CSVs for MEGPath ===</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>=== Exported CSVs for MEGPath ===</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb157"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb157-1"><a href="#cb157-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"megpath_inputs/scrna_single_log.csv      —"</span>, <span class="fu">nrow</span>(fix1_mat), <span class="st">"genes (all, single log)</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>megpath_inputs/scrna_single_log.csv      — 17857 genes (all, single log)</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb159"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb159-1"><a href="#cb159-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"megpath_inputs/scrna_sct_all.csv          —"</span>, <span class="fu">nrow</span>(fix2_mat), <span class="st">"genes (all, SCT)</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>megpath_inputs/scrna_sct_all.csv          — 15320 genes (all, SCT)</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb161"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb161-1"><a href="#cb161-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"megpath_inputs/scrna_rna_hvg2k.csv        —"</span>, <span class="fu">nrow</span>(avg_rna_hvg), <span class="st">"genes (2k HVGs, RNA)</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>megpath_inputs/scrna_rna_hvg2k.csv        — 2000 genes (2k HVGs, RNA)</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb163"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb163-1"><a href="#cb163-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"megpath_inputs/scrna_sct_hvg2k.csv        —"</span>, <span class="fu">nrow</span>(fix4_mat), <span class="st">"genes (2k HVGs, SCT)</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>megpath_inputs/scrna_sct_hvg2k.csv        — 2000 genes (2k HVGs, SCT)</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb165"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb165-1"><a href="#cb165-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"megpath_inputs/scrna_counts_hvg2k.csv     —"</span>, <span class="fu">nrow</span>(avg_counts_hvg), <span class="st">"genes (2k HVGs, raw counts)</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>megpath_inputs/scrna_counts_hvg2k.csv     — 2000 genes (2k HVGs, raw counts)</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb167"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb167-1"><a href="#cb167-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"megpath_inputs/scrna_sct_hvg2k_labeled.csv — same as above with gene names</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>megpath_inputs/scrna_sct_hvg2k_labeled.csv — same as above with gene names</code></pre>
+</div>
+</div>
+</section>
+<section id="save-results" class="level2">
+<h2 class="anchored" data-anchor-id="save-results">Save Results</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb169"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb169-1"><a href="#cb169-1" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(<span class="fu">list</span>(</span>
+<span id="cb169-2"><a href="#cb169-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">all_errors =</span> all_errors,</span>
+<span id="cb169-3"><a href="#cb169-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">sweep_errors =</span> sweep_errors,</span>
+<span id="cb169-4"><a href="#cb169-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">sweep_bio =</span> sweep_bio_df,</span>
+<span id="cb169-5"><a href="#cb169-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">fix1_mat =</span> fix1_mat,</span>
+<span id="cb169-6"><a href="#cb169-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">fix2_mat =</span> fix2_mat,</span>
+<span id="cb169-7"><a href="#cb169-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">fix3_mat =</span> avg_rna_hvg,</span>
+<span id="cb169-8"><a href="#cb169-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">fix4_mat =</span> fix4_mat,</span>
+<span id="cb169-9"><a href="#cb169-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">fix5_mat =</span> avg_counts_hvg,</span>
+<span id="cb169-10"><a href="#cb169-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">hvgs_2k =</span> hvgs_2k,</span>
+<span id="cb169-11"><a href="#cb169-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">hvgs_all =</span> hvgs,</span>
+<span id="cb169-12"><a href="#cb169-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">bio_genes_in_hvg =</span> bio_genes[bio_genes <span class="sc">%in%</span> hvgs_2k]</span>
+<span id="cb169-13"><a href="#cb169-13" aria-hidden="true" tabindex="-1"></a>), <span class="st">"02_improved_outputs.rds"</span>)</span>
+<span id="cb169-14"><a href="#cb169-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb169-15"><a href="#cb169-15" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Saved to 02_improved_outputs.rds</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Saved to 02_improved_outputs.rds</code></pre>
+</div>
+</div>
+</section>
+<section id="summary-takeaways" class="level2">
+<h2 class="anchored" data-anchor-id="summary-takeaways">Summary &amp; Takeaways</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb171"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb171-1"><a href="#cb171-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"=== Script 02 Summary ===</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>=== Script 02 Summary ===</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb173"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb173-1"><a href="#cb173-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Best baseline: Ethan's double-log (what he actually used)</span></span>
+<span id="cb173-2"><a href="#cb173-2" aria-hidden="true" tabindex="-1"></a>baseline_ref <span class="ot">&lt;-</span> all_errors <span class="sc">|&gt;</span></span>
+<span id="cb173-3"><a href="#cb173-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(label <span class="sc">==</span> <span class="st">"scRNA log"</span>, rank <span class="sc">==</span> <span class="dv">3</span>)</span>
+<span id="cb173-4"><a href="#cb173-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb173-5"><a href="#cb173-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Best improvement</span></span>
+<span id="cb173-6"><a href="#cb173-6" aria-hidden="true" tabindex="-1"></a>best <span class="ot">&lt;-</span> all_errors <span class="sc">|&gt;</span></span>
+<span id="cb173-7"><a href="#cb173-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"scRNA|TCR"</span>, label), rank <span class="sc">==</span> <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
+<span id="cb173-8"><a href="#cb173-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_min</span>(nmae, <span class="at">n =</span> <span class="dv">1</span>)</span>
+<span id="cb173-9"><a href="#cb173-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb173-10"><a href="#cb173-10" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Ethan's baseline (dense_dataLT.csv, k=3):</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Ethan's baseline (dense_dataLT.csv, k=3):</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb175"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb175-1"><a href="#cb175-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  NMAE=%.6f, LAD=%.1f, %d genes</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb175-2"><a href="#cb175-2" aria-hidden="true" tabindex="-1"></a>            baseline_ref<span class="sc">$</span>nmae[<span class="dv">1</span>], baseline_ref<span class="sc">$</span>lad[<span class="dv">1</span>], baseline_ref<span class="sc">$</span>n_rows[<span class="dv">1</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  NMAE=0.001208, LAD=543.2, 17759 genes</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb177"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb177-1"><a href="#cb177-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Best improved (k=3):</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Best improved (k=3):</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb179"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb179-1"><a href="#cb179-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  %s: NMAE=%.6f, LAD=%.1f, %d genes</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb179-2"><a href="#cb179-2" aria-hidden="true" tabindex="-1"></a>            best<span class="sc">$</span>label[<span class="dv">1</span>], best<span class="sc">$</span>nmae[<span class="dv">1</span>], best<span class="sc">$</span>lad[<span class="dv">1</span>], best<span class="sc">$</span>n_rows[<span class="dv">1</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Fix2: SCT assay: NMAE=0.000061, LAD=456.9, 15320 genes</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb181"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb181-1"><a href="#cb181-1" aria-hidden="true" tabindex="-1"></a>pct <span class="ot">&lt;-</span> <span class="dv">100</span> <span class="sc">*</span> (baseline_ref<span class="sc">$</span>nmae[<span class="dv">1</span>] <span class="sc">-</span> best<span class="sc">$</span>nmae[<span class="dv">1</span>]) <span class="sc">/</span> baseline_ref<span class="sc">$</span>nmae[<span class="dv">1</span>]</span>
+<span id="cb181-2"><a href="#cb181-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Normalized error reduction: %.1f%%</span><span class="sc">\n</span><span class="st">"</span>, pct))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Normalized error reduction: 94.9%</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb183"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb183-1"><a href="#cb183-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">--- Key Findings ---</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+--- Key Findings ---</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb185"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb185-1"><a href="#cb185-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"1. Feature selection (removing noise genes) is the biggest single improvement</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>1. Feature selection (removing noise genes) is the biggest single improvement</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb187"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb187-1"><a href="#cb187-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"2. SCT normalization + HVG filtering compound for the best result</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>2. SCT normalization + HVG filtering compound for the best result</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb189"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb189-1"><a href="#cb189-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"3. Raw counts + HVGs performs nearly as well — MEGPath may prefer un-logged data</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>3. Raw counts + HVGs performs nearly as well — MEGPath may prefer un-logged data</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb191"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb191-1"><a href="#cb191-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"4. Ethan's double-log compression made errors LOOK lower but distorted the data</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>4. Ethan's double-log compression made errors LOOK lower but distorted the data</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb193"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb193-1"><a href="#cb193-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">--- Gene Count Sweep ---</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+--- Gene Count Sweep ---</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb195"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb195-1"><a href="#cb195-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"See sweep plots above for optimal gene count.</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>See sweep plots above for optimal gene count.</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb197"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb197-1"><a href="#cb197-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Biology coverage: 14/16 key genes at 2k, check table for other cutoffs.</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Biology coverage: 14/16 key genes at 2k, check table for other cutoffs.</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb199"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb199-1"><a href="#cb199-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">--- Next Steps ---</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+--- Next Steps ---</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb201"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb201-1"><a href="#cb201-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"1. Hand megpath_inputs/ CSVs to Ethan for MEGPath testing</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>1. Hand megpath_inputs/ CSVs to Ethan for MEGPath testing</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb203"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb203-1"><a href="#cb203-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"2. Script 03: TCR matrix preprocessing (96% of clonotypes are single-timepoint noise)</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>2. Script 03: TCR matrix preprocessing (96% of clonotypes are single-timepoint noise)</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb205"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb205-1"><a href="#cb205-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"3. Biological interpretation of NMF factors from best matrix</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>3. Biological interpretation of NMF factors from best matrix</code></pre>
+</div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

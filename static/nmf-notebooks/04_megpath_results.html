@@ -1,0 +1,1826 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Script 04 — MEGPath Production Results</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="04_megpath_results_files/libs/clipboard/clipboard.min.js"></script>
+<script src="04_megpath_results_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="04_megpath_results_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="04_megpath_results_files/libs/quarto-html/popper.min.js"></script>
+<script src="04_megpath_results_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="04_megpath_results_files/libs/quarto-html/anchor.min.js"></script>
+<link href="04_megpath_results_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="04_megpath_results_files/libs/quarto-html/quarto-syntax-highlighting-dark-2fef5ea3f8957b3e4ecc936fc74692ca.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="04_megpath_results_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="04_megpath_results_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="04_megpath_results_files/libs/bootstrap/bootstrap-dd69d3d26763a1884eb60582decffdb7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#background" id="toc-background" class="nav-link active" data-scroll-target="#background">Background</a>
+  <ul class="collapse">
+  <li><a href="#reproducing-these-runs" id="toc-reproducing-these-runs" class="nav-link" data-scroll-target="#reproducing-these-runs">Reproducing these runs</a></li>
+  </ul></li>
+  <li><a href="#parse-megpath-output-files" id="toc-parse-megpath-output-files" class="nav-link" data-scroll-target="#parse-megpath-output-files">1. Parse MEGPath Output Files</a></li>
+  <li><a href="#error-comparison" id="toc-error-comparison" class="nav-link" data-scroll-target="#error-comparison">2. Error Comparison</a></li>
+  <li><a href="#scrna-flat-temporal-patterns-reveal-a-pseudobulk-limitation" id="toc-scrna-flat-temporal-patterns-reveal-a-pseudobulk-limitation" class="nav-link" data-scroll-target="#scrna-flat-temporal-patterns-reveal-a-pseudobulk-limitation">3. scRNA: Flat Temporal Patterns Reveal a Pseudobulk Limitation</a>
+  <ul class="collapse">
+  <li><a href="#a.-h-matrix-no-temporal-signal" id="toc-a.-h-matrix-no-temporal-signal" class="nav-link" data-scroll-target="#a.-h-matrix-no-temporal-signal">3a. H Matrix — No Temporal Signal</a></li>
+  <li><a href="#b.-w-matrix-nmf-separates-expression-programs-not-temporal-ones" id="toc-b.-w-matrix-nmf-separates-expression-programs-not-temporal-ones" class="nav-link" data-scroll-target="#b.-w-matrix-nmf-separates-expression-programs-not-temporal-ones">3b. W Matrix — NMF Separates Expression Programs, Not Temporal Ones</a></li>
+  <li><a href="#c.-biology-gene-factor-assignments" id="toc-c.-biology-gene-factor-assignments" class="nav-link" data-scroll-target="#c.-biology-gene-factor-assignments">3c. Biology Gene Factor Assignments</a></li>
+  </ul></li>
+  <li><a href="#tcr-three-distinct-temporal-programs" id="toc-tcr-three-distinct-temporal-programs" class="nav-link" data-scroll-target="#tcr-three-distinct-temporal-programs">4. TCR: Three Distinct Temporal Programs</a>
+  <ul class="collapse">
+  <li><a href="#a.-h-matrix-three-temporal-programs-k3" id="toc-a.-h-matrix-three-temporal-programs-k3" class="nav-link" data-scroll-target="#a.-h-matrix-three-temporal-programs-k3">4a. H Matrix — Three Temporal Programs (k=3)</a></li>
+  <li><a href="#b.-two-factor-version-k2" id="toc-b.-two-factor-version-k2" class="nav-link" data-scroll-target="#b.-two-factor-version-k2">4b. Two-Factor Version (k=2)</a></li>
+  <li><a href="#c.-w-matrix-top-clonotypes-per-factor" id="toc-c.-w-matrix-top-clonotypes-per-factor" class="nav-link" data-scroll-target="#c.-w-matrix-top-clonotypes-per-factor">4c. W Matrix — Top Clonotypes per Factor</a></li>
+  <li><a href="#d.-clonotype-trajectories-by-factor" id="toc-d.-clonotype-trajectories-by-factor" class="nav-link" data-scroll-target="#d.-clonotype-trajectories-by-factor">4d. Clonotype Trajectories by Factor</a></li>
+  <li><a href="#e.-key-clonotypes-from-the-paper" id="toc-e.-key-clonotypes-from-the-paper" class="nav-link" data-scroll-target="#e.-key-clonotypes-from-the-paper">4e. Key Clonotypes from the Paper</a></li>
+  </ul></li>
+  <li><a href="#baseline-vs-improved-how-preprocessing-changes-what-nmf-finds" id="toc-baseline-vs-improved-how-preprocessing-changes-what-nmf-finds" class="nav-link" data-scroll-target="#baseline-vs-improved-how-preprocessing-changes-what-nmf-finds">5. Baseline vs Improved: How Preprocessing Changes What NMF Finds</a>
+  <ul class="collapse">
+  <li><a href="#a.-scrna-comparison" id="toc-a.-scrna-comparison" class="nav-link" data-scroll-target="#a.-scrna-comparison">5a. scRNA Comparison</a></li>
+  <li><a href="#b.-tcr-comparison" id="toc-b.-tcr-comparison" class="nav-link" data-scroll-target="#b.-tcr-comparison">5b. TCR Comparison</a></li>
+  </ul></li>
+  <li><a href="#conclusions" id="toc-conclusions" class="nav-link" data-scroll-target="#conclusions">6. Conclusions</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Script 04 — MEGPath Production Results</h1>
+<p class="subtitle lead">Parse, visualize, and interpret NMF factors from MEGPath runs</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="background" class="level1">
+<h1>Background</h1>
+<p>Scripts 01–03 screened preprocessing approaches using R’s <code>NMF</code> package. The best candidates were then run through <strong>MEGPath</strong> — the production C++ NMF algorithm (Dyer &amp; Dymacek 2018) that uses Monte Carlo Markov Chain + simulated annealing. MEGPath normalizes each input matrix to [0, 1] internally and minimizes <strong>LAD</strong> (Least Absolute Deviation = <span class="math inline">\(\sum|V - WH|\)</span>).</p>
+<p>We compiled MEGPath locally and ran 8 configurations at 100K iterations each:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Configuration</th>
+<th>Matrix</th>
+<th>k</th>
+<th>Rows</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>scRNA Baseline</td>
+<td>Ethan’s <code>dense_dataLT.csv</code> (double-log, all 17,857 genes)</td>
+<td>2, 3</td>
+<td>17,857</td>
+</tr>
+<tr class="even">
+<td>scRNA Improved</td>
+<td>SCTransform + 2,000 HVGs</td>
+<td>2, 3</td>
+<td>2,000</td>
+</tr>
+<tr class="odd">
+<td>TCR Baseline</td>
+<td>Ethan’s <code>tcr_expansion.csv</code> (all 2,541 clonotypes)</td>
+<td>2, 3</td>
+<td>2,541</td>
+</tr>
+<tr class="even">
+<td>TCR Improved</td>
+<td>Bio Filter C (Expanded <span class="math inline">\(\cup\)</span> TIL-observed, 416 clonotypes)</td>
+<td>2, 3</td>
+<td>416</td>
+</tr>
+</tbody>
+</table>
+<section id="reproducing-these-runs" class="level3">
+<h3 class="anchored" data-anchor-id="reproducing-these-runs">Reproducing these runs</h3>
+<p>MEGPath is installed permanently at <code>megpath/</code> within this project (with Eigen 3.4.0 bundled at <code>megpath/eigen-3.4.0/</code>). To rerun or add new configurations:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># MinGW must be in PATH for runtime libraries</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">PATH</span><span class="op">=</span><span class="st">"/c/Users/mattj/AppData/Local/Microsoft/WinGet/Packages/BrechtSanders.WinLibs.POSIX.UCRT_Microsoft.Winget.Source_8wekyb3d8bbwe/mingw64/bin:</span><span class="va">$PATH</span><span class="st">"</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Run from megpath_runs/ directory</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> megpath_runs</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="ex">../megpath/standard/connmf.exe</span> <span class="at">-a</span> args_tcr_baseline_k2.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Argument files specify the input CSV, rank (via <code>one_patterns</code> — number of empty strings = k), output directory, and iteration count. Pre-create the output directory before running (<code>mkdir -p ./output_dir/</code>). Set <code>stats = "all"</code> or no output files are written. <strong>File paths must not contain spaces</strong> (MEGPath crashes on them).</p>
+<p>To recompile after modifying source:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> megpath/shared <span class="kw">&amp;&amp;</span> <span class="ex">mingw32-make</span> clean <span class="kw">&amp;&amp;</span> <span class="ex">mingw32-make</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ../standard <span class="kw">&amp;&amp;</span> <span class="ex">mingw32-make</span> clean <span class="kw">&amp;&amp;</span> <span class="ex">mingw32-make</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This script parses the MEGPath output files, extracts the <strong>H matrix</strong> (temporal patterns: how each factor behaves across the 4 timepoints) and <strong>W matrix</strong> (gene/clonotype loadings: which features belong to each factor), and interprets the results biologically.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reshape2)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"theme_donq.R"</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>timepoints <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Pre"</span>, <span class="st">"Wk3"</span>, <span class="st">"Wk6"</span>, <span class="st">"Wk9"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+</section>
+<section id="parse-megpath-output-files" class="level1">
+<h1>1. Parse MEGPath Output Files</h1>
+<p>MEGPath output format:</p>
+<ul>
+<li>Header lines (<code>#</code>): metadata + H matrix (patterns <span class="math inline">\(\times\)</span> timepoints), space-separated</li>
+<li>Data lines: <code>row-id, W[0], W[1], ..., W[k-1], row_error</code> — W matrix coefficients followed by the per-row reconstruction error</li>
+</ul>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>parse_megpath <span class="ot">&lt;-</span> <span class="cf">function</span>(filepath) {</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  lines <span class="ot">&lt;-</span> <span class="fu">readLines</span>(filepath)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- Metadata ---</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  meta <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  meta<span class="sc">$</span>file <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"^#File : "</span>, <span class="st">""</span>, lines[<span class="fu">grep</span>(<span class="st">"^#File"</span>, lines)])</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  meta<span class="sc">$</span>n_genes <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(<span class="fu">gsub</span>(<span class="st">"^#Number_of_genes : "</span>, <span class="st">""</span>, lines[<span class="fu">grep</span>(<span class="st">"^#Number_of_genes"</span>, lines)]))</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  meta<span class="sc">$</span>max_runs <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(<span class="fu">gsub</span>(<span class="st">"^#MAX_RUNS : "</span>, <span class="st">""</span>, lines[<span class="fu">grep</span>(<span class="st">"^#MAX_RUNS"</span>, lines)]))</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  meta<span class="sc">$</span>k <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(<span class="fu">gsub</span>(<span class="st">"^#Num_Patterns : "</span>, <span class="st">""</span>, lines[<span class="fu">grep</span>(<span class="st">"^#Num_Patterns"</span>, lines)]))</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  meta<span class="sc">$</span>total_error <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">gsub</span>(<span class="st">"^#Total_error : "</span>, <span class="st">""</span>, lines[<span class="fu">grep</span>(<span class="st">"^#Total_error"</span>, lines)]))</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  meta<span class="sc">$</span>runtime <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"^#Total_running_time : "</span>, <span class="st">""</span>, lines[<span class="fu">grep</span>(<span class="st">"^#Total_running_time"</span>, lines)])</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- H matrix (patterns) ---</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Lines like: #"",0.464416 0.464727  0.46484 0.464863</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  h_lines <span class="ot">&lt;-</span> <span class="fu">grep</span>(<span class="st">'^#"",'</span>, lines, <span class="at">value =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  H <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(h_lines, <span class="cf">function</span>(l) {</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    vals <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">'^#"",'</span>, <span class="st">''</span>, l)</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.numeric</span>(<span class="fu">strsplit</span>(<span class="fu">trimws</span>(vals), <span class="st">"</span><span class="sc">\\</span><span class="st">s+"</span>)[[<span class="dv">1</span>]])</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  }))</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(H) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Pre"</span>, <span class="st">"Wk3"</span>, <span class="st">"Wk6"</span>, <span class="st">"Wk9"</span>)</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames</span>(H) <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"Factor_"</span>, <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(H))</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># --- W matrix (coefficients) + per-row error ---</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>  data_lines <span class="ot">&lt;-</span> <span class="fu">grep</span>(<span class="st">"^row-"</span>, lines, <span class="at">value =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>  parsed <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(data_lines, <span class="cf">function</span>(l) {</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    parts <span class="ot">&lt;-</span> <span class="fu">strsplit</span>(l, <span class="st">","</span>)[[<span class="dv">1</span>]]</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.numeric</span>(parts[<span class="sc">-</span><span class="dv">1</span>])  <span class="co"># drop row-id</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>  }))</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>  k <span class="ot">&lt;-</span> meta<span class="sc">$</span>k</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>  W <span class="ot">&lt;-</span> parsed[, <span class="dv">1</span><span class="sc">:</span>k, drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>  row_errors <span class="ot">&lt;-</span> parsed[, k <span class="sc">+</span> <span class="dv">1</span>]</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(W) <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"Factor_"</span>, <span class="dv">1</span><span class="sc">:</span>k)</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">meta =</span> meta, <span class="at">H =</span> H, <span class="at">W =</span> W, <span class="at">row_errors =</span> row_errors)</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>runs <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">scrna_baseline_k2 =</span> <span class="st">"megpath_runs/scrna_baseline_k2/one_results.csv"</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">scrna_baseline_k3 =</span> <span class="st">"megpath_runs/scrna_baseline_k3/one_results.csv"</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">scrna_sct2k_k2    =</span> <span class="st">"megpath_runs/scrna_sct2k_k2/one_results.csv"</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">scrna_sct2k_k3    =</span> <span class="st">"megpath_runs/scrna_sct2k_k3/one_results.csv"</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">tcr_baseline_k2   =</span> <span class="st">"megpath_runs/tcr_baseline_k2/one_results.csv"</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">tcr_baseline_k3   =</span> <span class="st">"megpath_runs/tcr_baseline_k3/one_results.csv"</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">tcr_bio_k2        =</span> <span class="st">"megpath_runs/tcr_bio_k2/one_results.csv"</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">tcr_bio_k3        =</span> <span class="st">"megpath_runs/tcr_bio_k3_full/one_results.csv"</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">lapply</span>(runs, parse_megpath)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="error-comparison" class="level1">
+<h1>2. Error Comparison</h1>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>summary_df <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(<span class="fu">names</span>(results), <span class="cf">function</span>(name) {</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  m <span class="ot">&lt;-</span> results[[name]]<span class="sc">$</span>meta</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">Run =</span> name,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">Data =</span> <span class="fu">ifelse</span>(<span class="fu">grepl</span>(<span class="st">"scrna"</span>, name), <span class="st">"scRNA"</span>, <span class="st">"TCR"</span>),</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">Matrix =</span> <span class="fu">ifelse</span>(<span class="fu">grepl</span>(<span class="st">"baseline"</span>, name), <span class="st">"Baseline"</span>, <span class="st">"Improved"</span>),</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">k =</span> m<span class="sc">$</span>k,</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">Rows =</span> m<span class="sc">$</span>n_genes,</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">LAD =</span> <span class="fu">round</span>(m<span class="sc">$</span>total_error, <span class="dv">1</span>),</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">LAD_per_element =</span> <span class="fu">round</span>(m<span class="sc">$</span>total_error <span class="sc">/</span> (m<span class="sc">$</span>n_genes <span class="sc">*</span> <span class="dv">4</span>), <span class="dv">5</span>),</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">Runtime =</span> m<span class="sc">$</span>runtime,</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>}))</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(summary_df, <span class="at">caption =</span> <span class="st">"MEGPath Production Results (100K iterations)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>MEGPath Production Results (100K iterations)</caption>
+<colgroup>
+<col style="width: 22%">
+<col style="width: 7%">
+<col style="width: 11%">
+<col style="width: 3%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 20%">
+<col style="width: 18%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Run</th>
+<th style="text-align: left;">Data</th>
+<th style="text-align: left;">Matrix</th>
+<th style="text-align: right;">k</th>
+<th style="text-align: right;">Rows</th>
+<th style="text-align: right;">LAD</th>
+<th style="text-align: right;">LAD_per_element</th>
+<th style="text-align: left;">Runtime</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">scrna_baseline_k2</td>
+<td style="text-align: left;">scRNA</td>
+<td style="text-align: left;">Baseline</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">17857</td>
+<td style="text-align: right;">452.0</td>
+<td style="text-align: right;">0.00633</td>
+<td style="text-align: left;">0d0h26m35.285s</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">scrna_baseline_k3</td>
+<td style="text-align: left;">scRNA</td>
+<td style="text-align: left;">Baseline</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">17857</td>
+<td style="text-align: right;">237.3</td>
+<td style="text-align: right;">0.00332</td>
+<td style="text-align: left;">0d0h42m28.254s</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">scrna_sct2k_k2</td>
+<td style="text-align: left;">scRNA</td>
+<td style="text-align: left;">Improved</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2000</td>
+<td style="text-align: right;">14.1</td>
+<td style="text-align: right;">0.00176</td>
+<td style="text-align: left;">0d0h2m51.015s</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">scrna_sct2k_k3</td>
+<td style="text-align: left;">scRNA</td>
+<td style="text-align: left;">Improved</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">2000</td>
+<td style="text-align: right;">14.1</td>
+<td style="text-align: right;">0.00177</td>
+<td style="text-align: left;">0d0h4m25.178s</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">tcr_baseline_k2</td>
+<td style="text-align: left;">TCR</td>
+<td style="text-align: left;">Baseline</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2541</td>
+<td style="text-align: right;">20.5</td>
+<td style="text-align: right;">0.00202</td>
+<td style="text-align: left;">0d0h3m38.207s</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">tcr_baseline_k3</td>
+<td style="text-align: left;">TCR</td>
+<td style="text-align: left;">Baseline</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">2541</td>
+<td style="text-align: right;">20.2</td>
+<td style="text-align: right;">0.00199</td>
+<td style="text-align: left;">0d0h5m44.855s</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">tcr_bio_k2</td>
+<td style="text-align: left;">TCR</td>
+<td style="text-align: left;">Improved</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">416</td>
+<td style="text-align: right;">5.4</td>
+<td style="text-align: right;">0.00327</td>
+<td style="text-align: left;">0d0h0m35.94s</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">tcr_bio_k3</td>
+<td style="text-align: left;">TCR</td>
+<td style="text-align: left;">Improved</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">416</td>
+<td style="text-align: right;">5.2</td>
+<td style="text-align: right;">0.00315</td>
+<td style="text-align: left;">0d0h0m55.798s</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>plot_df <span class="ot">&lt;-</span> summary_df <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Label =</span> <span class="fu">paste0</span>(Matrix, <span class="st">" k="</span>, k),</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">Label =</span> <span class="fu">factor</span>(Label, <span class="at">levels =</span> <span class="fu">unique</span>(Label)))</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(plot_df, <span class="fu">aes</span>(<span class="at">x =</span> Label, <span class="at">y =</span> LAD_per_element, <span class="at">fill =</span> Matrix)) <span class="sc">+</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">width =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">sprintf</span>(<span class="st">"%.5f"</span>, LAD_per_element)),</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">"#b0b0b0"</span>, <span class="at">size =</span> <span class="fl">3.5</span>) <span class="sc">+</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Data, <span class="at">scales =</span> <span class="st">"free"</span>) <span class="sc">+</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Baseline"</span> <span class="ot">=</span> <span class="st">"#555555"</span>, <span class="st">"Improved"</span> <span class="ot">=</span> <span class="st">"#ffffff"</span>)) <span class="sc">+</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"MEGPath Error per Element: Baseline vs Improved"</span>,</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Lower = better reconstruction. 100K simulated annealing iterations."</span>,</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"LAD / (rows × columns)"</span>) <span class="sc">+</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_donq</span>() <span class="sc">+</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>,</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">30</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="04_megpath_results_files/figure-html/error-barplot-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>scRNA</strong> (left panel): Our preprocessing — SCTransform normalization + filtering to 2,000 highly variable genes — cuts error per element by <strong>47%</strong> compared to Ethan’s baseline (0.00177 vs 0.00332). The improved k=2 and k=3 bars are identical, meaning 2 factors fully describe the improved matrix and a 3rd adds nothing. The baseline k=2 is worst (0.00633) because 2 factors can’t fit the noise structure in 17,857 genes; baseline k=3 is better but still ~2x worse than improved. The improved matrix also runs <strong>10x faster</strong> (3 min vs 42 min).</p>
+<p><strong>TCR</strong> (right panel): The bio-filtered bars are <em>taller</em> than baseline — this is not a failure. Most of the 2,541 baseline clonotypes are present at a single timepoint (96% zeros), so they’re trivially easy to reconstruct (just predict zero). Removing them leaves 416 clonotypes with actual temporal dynamics, which are harder to compress but carry the real biological signal.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># scRNA: labeled CSV has gene names as row names</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>scrna_labels <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"megpath_inputs/scrna_sct_hvg2k_labeled.csv"</span>,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">row.names =</span> <span class="dv">1</span>, <span class="at">check.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>gene_names <span class="ot">&lt;-</span> <span class="fu">rownames</span>(scrna_labels)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co"># TCR bio: read from Table S8 and apply Filter C</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># S8 uses "Expanded" / "TIL.observed" as column values (not "Yes")</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'readxl' was built under R version 4.5.2</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>s8 <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"NMF Research Data/crc-22-0383-s01.xlsx"</span>,</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">sheet =</span> <span class="st">"Table S8"</span>, <span class="at">skip =</span> <span class="dv">4</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>is_expanded <span class="ot">&lt;-</span> <span class="sc">!</span><span class="fu">is.na</span>(s8[[<span class="st">"Expanded"</span>]]) <span class="sc">&amp;</span> s8[[<span class="st">"Expanded"</span>]] <span class="sc">==</span> <span class="st">"Expanded"</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>is_til <span class="ot">&lt;-</span> <span class="sc">!</span><span class="fu">is.na</span>(s8[[<span class="st">"TIL.observed"</span>]]) <span class="sc">&amp;</span> s8[[<span class="st">"TIL.observed"</span>]] <span class="sc">==</span> <span class="st">"TIL.observed"</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>bio_idx <span class="ot">&lt;-</span> <span class="fu">which</span>(is_expanded <span class="sc">|</span> is_til)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>bio_clones <span class="ot">&lt;-</span> s8[[<span class="st">"TCRB.clonotype"</span>]][bio_idx]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="scrna-flat-temporal-patterns-reveal-a-pseudobulk-limitation" class="level1">
+<h1>3. scRNA: Flat Temporal Patterns Reveal a Pseudobulk Limitation</h1>
+<section id="a.-h-matrix-no-temporal-signal" class="level2">
+<h2 class="anchored" data-anchor-id="a.-h-matrix-no-temporal-signal">3a. H Matrix — No Temporal Signal</h2>
+<p>The H matrix shows how each NMF factor’s weight varies across the 4 timepoints. If NMF discovers temporal programs (e.g., “genes that rise during treatment”), the H matrix lines should diverge across timepoints.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>H_k2 <span class="ot">&lt;-</span> results<span class="sc">$</span>scrna_sct2k_k2<span class="sc">$</span>H</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>h_df <span class="ot">&lt;-</span> <span class="fu">melt</span>(H_k2)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(h_df) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Factor"</span>, <span class="st">"Timepoint"</span>, <span class="st">"Weight"</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>h_df<span class="sc">$</span>Timepoint <span class="ot">&lt;-</span> <span class="fu">factor</span>(h_df<span class="sc">$</span>Timepoint, <span class="at">levels =</span> timepoints)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(h_df, <span class="fu">aes</span>(<span class="at">x =</span> Timepoint, <span class="at">y =</span> Weight, <span class="at">group =</span> Factor, <span class="at">color =</span> Factor)) <span class="sc">+</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_donq</span>() <span class="sc">+</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"scRNA Temporal Patterns (k=2)"</span>,</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"H matrix from SCT+2k HVGs — how each factor varies over treatment"</span>,</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Pattern weight"</span>) <span class="sc">+</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_donq</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="04_megpath_results_files/figure-html/scrna-H-k2-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>H_k3 <span class="ot">&lt;-</span> results<span class="sc">$</span>scrna_sct2k_k3<span class="sc">$</span>H</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>h_df3 <span class="ot">&lt;-</span> <span class="fu">melt</span>(H_k3)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(h_df3) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Factor"</span>, <span class="st">"Timepoint"</span>, <span class="st">"Weight"</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>h_df3<span class="sc">$</span>Timepoint <span class="ot">&lt;-</span> <span class="fu">factor</span>(h_df3<span class="sc">$</span>Timepoint, <span class="at">levels =</span> timepoints)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(h_df3, <span class="fu">aes</span>(<span class="at">x =</span> Timepoint, <span class="at">y =</span> Weight, <span class="at">group =</span> Factor, <span class="at">color =</span> Factor)) <span class="sc">+</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_donq</span>() <span class="sc">+</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"scRNA Temporal Patterns (k=3)"</span>,</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"H matrix from SCT+2k HVGs — identical total error to k=2"</span>,</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Pattern weight"</span>) <span class="sc">+</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_donq</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="04_megpath_results_files/figure-html/scrna-H-k3-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Both plots show perfectly flat lines.</strong> Factor 1 sits at ~0.549 and Factor 2 at ~0.437 across all four timepoints (k=2). Adding a third factor (k=3) just splits the weights into three flat lines (~0.465, ~0.383, ~0.333) without reducing error.</p>
+<p>NMF found <strong>zero temporal variation</strong> in the pseudobulk scRNA matrix. This doesn’t mean gene expression doesn’t change during treatment — it means that averaging all ~4,876 cells per timepoint into a single column <strong>buries the signal</strong>. The CX3CR1+ effectors that expand are a few hundred cells out of thousands. Their increase gets diluted by the much larger number of cells (naive, memory, etc.) that don’t change. The pseudobulk average barely moves, so the H matrix stays flat.</p>
+<p><strong>Implication</strong>: Pseudobulk scRNA with only 4 columns is insufficient for temporal NMF. To recover cell-type-specific temporal signals, we would need a genes <span class="math inline">\(\times\)</span> (timepoint <span class="math inline">\(\times\)</span> cluster) matrix (e.g., 2,000 <span class="math inline">\(\times\)</span> 52) that preserves within-timepoint heterogeneity.</p>
+</section>
+<section id="b.-w-matrix-nmf-separates-expression-programs-not-temporal-ones" class="level2">
+<h2 class="anchored" data-anchor-id="b.-w-matrix-nmf-separates-expression-programs-not-temporal-ones">3b. W Matrix — NMF Separates Expression Programs, Not Temporal Ones</h2>
+<p>Since the H matrix is flat, NMF isn’t separating “genes that change over time.” Instead, it’s decomposing the expression matrix into two <strong>static expression programs</strong> — grouping genes by their overall abundance pattern.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Use k=2 since it's the more parsimonious model (same error as k=3)</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>W_scrna <span class="ot">&lt;-</span> results<span class="sc">$</span>scrna_sct2k_k2<span class="sc">$</span>W</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Assign gene names</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(W_scrna) <span class="ot">&lt;-</span> gene_names</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co"># For each factor, find top 20 genes by loading</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (f <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">ncol</span>(W_scrna)) {</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  top <span class="ot">&lt;-</span> <span class="fu">sort</span>(W_scrna[, f], <span class="at">decreasing =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>]</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">=== Factor %d: Top 20 Genes ===</span><span class="sc">\n</span><span class="st">"</span>, f))</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="fu">paste</span>(<span class="fu">sprintf</span>(<span class="st">"  %s: %.4f"</span>, <span class="fu">names</span>(top), top), <span class="at">collapse =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+=== Factor 1: Top 20 Genes ===
+  RASSF6: 0.8836
+  AL590807.1: 0.8816
+  EEF1A1: 0.8784
+  PDE3B: 0.8598
+  PRSS23: 0.8485
+  CPT1C: 0.8448
+  AC009093.2: 0.8370
+  AC051619.8: 0.8361
+  ITGA4: 0.8346
+  NEXN: 0.8320
+  AL591623.1: 0.8304
+  AC027031.2: 0.8298
+  GADD45B: 0.8268
+  MT-ND5: 0.8235
+  TIGIT: 0.8228
+  KNL1: 0.8183
+  IL7R: 0.8175
+  AC100835.1: 0.8162
+  SH3BGRL3: 0.8096
+  CTSW: 0.8090 
+
+=== Factor 2: Top 20 Genes ===
+  RPS12: 0.9513
+  EEF1A1: 0.9131
+  RPL10: 0.8948
+  RPS4X: 0.8504
+  RPS15A: 0.8429
+  RPS3A: 0.8387
+  ZNF66: 0.8055
+  AL138963.4: 0.7882
+  RPLP1: 0.7786
+  TPT1: 0.7557
+  RTKN2: 0.7549
+  PPP1R15A: 0.7497
+  RPS28: 0.7474
+  RPL30: 0.7471
+  RPS23: 0.7426
+  MT2A: 0.7330
+  H3F3B: 0.7313
+  KRTAP16-1: 0.7310
+  CBLN3: 0.7271
+  AL590133.1: 0.7260 </code></pre>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get top 15 genes per factor</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>top_n <span class="ot">&lt;-</span> <span class="dv">15</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>top_genes <span class="ot">&lt;-</span> <span class="fu">unique</span>(<span class="fu">unlist</span>(<span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">ncol</span>(W_scrna), <span class="cf">function</span>(f) {</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(<span class="fu">sort</span>(W_scrna[, f], <span class="at">decreasing =</span> <span class="cn">TRUE</span>))[<span class="dv">1</span><span class="sc">:</span>top_n]</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>})))</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>W_top <span class="ot">&lt;-</span> W_scrna[top_genes, , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>w_df <span class="ot">&lt;-</span> <span class="fu">melt</span>(W_top)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(w_df) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Gene"</span>, <span class="st">"Factor"</span>, <span class="st">"Loading"</span>)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Mark known biology genes</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>bio_genes <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"CX3CR1"</span>, <span class="st">"GZMB"</span>, <span class="st">"GZMH"</span>, <span class="st">"PRF1"</span>, <span class="st">"NKG7"</span>, <span class="st">"CCL4"</span>, <span class="st">"CCL5"</span>,  <span class="co"># cytotoxicity</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>               <span class="st">"LAG3"</span>, <span class="st">"TIGIT"</span>, <span class="st">"PDCD1"</span>, <span class="st">"HAVCR2"</span>, <span class="st">"CTLA4"</span>,                 <span class="co"># exhaustion</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>               <span class="st">"MKI67"</span>, <span class="st">"TOP2A"</span>,                                             <span class="co"># proliferation</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>               <span class="st">"TCF7"</span>, <span class="st">"SELL"</span>, <span class="st">"CCR7"</span>, <span class="st">"LEF1"</span>,                               <span class="co"># naive/memory</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>               <span class="st">"GZMK"</span>, <span class="st">"CXCR3"</span>,                                              <span class="co"># early effector</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>               <span class="st">"GNLY"</span>, <span class="st">"IFNG"</span>)                                               <span class="co"># effector cytokines</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>w_df<span class="sc">$</span>Biology <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(w_df<span class="sc">$</span>Gene <span class="sc">%in%</span> bio_genes, <span class="st">"Known marker"</span>, <span class="st">""</span>)</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(w_df, <span class="fu">aes</span>(<span class="at">x =</span> Factor, <span class="at">y =</span> <span class="fu">reorder</span>(Gene, Loading), <span class="at">fill =</span> Loading)) <span class="sc">+</span></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"#1a1a1a"</span>) <span class="sc">+</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">ifelse</span>(Biology <span class="sc">!=</span> <span class="st">""</span>, <span class="st">"*"</span>, <span class="st">""</span>)),</span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>            <span class="at">color =</span> <span class="st">"#ffffff"</span>, <span class="at">size =</span> <span class="dv">5</span>, <span class="at">vjust =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_donq_heatmap</span>() <span class="sc">+</span></span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"scRNA W Matrix: Gene Loadings (k=2)"</span>,</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Top 15 genes per factor. * = known biology marker."</span>,</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"NMF Factor"</span>, <span class="at">y =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_donq</span>() <span class="sc">+</span></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">9</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="04_megpath_results_files/figure-html/scrna-heatmap-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Factor 2</strong> is dominated by <strong>ribosomal protein genes</strong>: RPS12, RPL10, RPS4X, RPS15A, RPS3A, RPL30, RPLP1, RPS28, RPS23. These are housekeeping translation machinery — the “general cell maintenance” program.</p>
+<p><strong>Factor 1</strong> contains more immune-relevant genes: TIGIT (immune checkpoint), IL7R (T cell survival), CTSW (cytotoxic lymphocyte protease), GADD45B (stress response), ITGA4 (integrin). This captures the “immune/functional” program.</p>
+</section>
+<section id="c.-biology-gene-factor-assignments" class="level2">
+<h2 class="anchored" data-anchor-id="c.-biology-gene-factor-assignments">3c. Biology Gene Factor Assignments</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>bio_in_matrix <span class="ot">&lt;-</span> <span class="fu">intersect</span>(bio_genes, gene_names)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Biology genes found in 2k HVGs:"</span>, <span class="fu">length</span>(bio_in_matrix), <span class="st">"/"</span>, <span class="fu">length</span>(bio_genes), <span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Biology genes found in 2k HVGs: 19 / 22 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">length</span>(bio_in_matrix) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  bio_W <span class="ot">&lt;-</span> W_scrna[bio_in_matrix, , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  bio_assignment <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">Gene =</span> bio_in_matrix,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">Factor_1 =</span> <span class="fu">round</span>(bio_W[, <span class="dv">1</span>], <span class="dv">4</span>),</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">Factor_2 =</span> <span class="fu">round</span>(bio_W[, <span class="dv">2</span>], <span class="dv">4</span>),</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">Dominant =</span> <span class="fu">apply</span>(bio_W, <span class="dv">1</span>, which.max),</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  bio_assignment <span class="ot">&lt;-</span> bio_assignment[<span class="fu">order</span>(bio_assignment<span class="sc">$</span>Dominant, <span class="sc">-</span>bio_assignment[, <span class="dv">2</span> <span class="sc">+</span> <span class="dv">1</span>]), ]</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(bio_assignment, <span class="at">caption =</span> <span class="st">"Biology marker genes: factor assignments"</span>,</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>               <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Biology marker genes: factor assignments</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Gene</th>
+<th style="text-align: right;">Factor_1</th>
+<th style="text-align: right;">Factor_2</th>
+<th style="text-align: right;">Dominant</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">NKG7</td>
+<td style="text-align: right;">0.6376</td>
+<td style="text-align: right;">0.6095</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">GNLY</td>
+<td style="text-align: right;">0.6122</td>
+<td style="text-align: right;">0.5682</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PRF1</td>
+<td style="text-align: right;">0.5739</td>
+<td style="text-align: right;">0.5642</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">MKI67</td>
+<td style="text-align: right;">0.5662</td>
+<td style="text-align: right;">0.5603</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">SELL</td>
+<td style="text-align: right;">0.6180</td>
+<td style="text-align: right;">0.5101</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">GZMK</td>
+<td style="text-align: right;">0.6132</td>
+<td style="text-align: right;">0.4942</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CX3CR1</td>
+<td style="text-align: right;">0.6342</td>
+<td style="text-align: right;">0.4807</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CCR7</td>
+<td style="text-align: right;">0.6325</td>
+<td style="text-align: right;">0.4776</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">LEF1</td>
+<td style="text-align: right;">0.6874</td>
+<td style="text-align: right;">0.4265</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">GZMH</td>
+<td style="text-align: right;">0.7305</td>
+<td style="text-align: right;">0.4033</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">GZMB</td>
+<td style="text-align: right;">0.7085</td>
+<td style="text-align: right;">0.4001</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">TCF7</td>
+<td style="text-align: right;">0.7008</td>
+<td style="text-align: right;">0.3835</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">TIGIT</td>
+<td style="text-align: right;">0.8228</td>
+<td style="text-align: right;">0.2395</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">IFNG</td>
+<td style="text-align: right;">0.4646</td>
+<td style="text-align: right;">0.6913</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CCL5</td>
+<td style="text-align: right;">0.5704</td>
+<td style="text-align: right;">0.6905</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CXCR3</td>
+<td style="text-align: right;">0.5188</td>
+<td style="text-align: right;">0.6120</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CTLA4</td>
+<td style="text-align: right;">0.5275</td>
+<td style="text-align: right;">0.6084</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CCL4</td>
+<td style="text-align: right;">0.5545</td>
+<td style="text-align: right;">0.6023</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">LAG3</td>
+<td style="text-align: right;">0.5590</td>
+<td style="text-align: right;">0.5715</td>
+<td style="text-align: right;">2</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Nearly all biology markers load onto Factor 1, but the <strong>margins are slim</strong> — e.g., NKG7 loads 0.638 on F1 vs 0.610 on F2 (a ~5% difference). Both cytotoxic markers (GZMB, GZMH, PRF1) and naive/memory markers (TCF7, LEF1, SELL) end up in the same factor. This confirms NMF isn’t finding functional programs here, just a coarse split between “immune genes” (F1) and “housekeeping genes” (F2).</p>
+<p>The exceptions are interesting: <strong>IFNG</strong>, <strong>CCL5</strong>, <strong>CXCR3</strong>, and <strong>CTLA4</strong> load more on Factor 2 (the ribosomal factor). These are activation/exhaustion markers, suggesting some coupling between T cell activation and translational activity.</p>
+</section>
+</section>
+<section id="tcr-three-distinct-temporal-programs" class="level1">
+<h1>4. TCR: Three Distinct Temporal Programs</h1>
+<p>This is where the biology is. Unlike the flat scRNA patterns, the TCR H matrix shows genuine temporal dynamics — NMF discovered three distinct clonotype expansion behaviors.</p>
+<section id="a.-h-matrix-three-temporal-programs-k3" class="level2">
+<h2 class="anchored" data-anchor-id="a.-h-matrix-three-temporal-programs-k3">4a. H Matrix — Three Temporal Programs (k=3)</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>H_tcr3 <span class="ot">&lt;-</span> results<span class="sc">$</span>tcr_bio_k3<span class="sc">$</span>H</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>h_tcr <span class="ot">&lt;-</span> <span class="fu">melt</span>(H_tcr3)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(h_tcr) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Factor"</span>, <span class="st">"Timepoint"</span>, <span class="st">"Weight"</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>h_tcr<span class="sc">$</span>Timepoint <span class="ot">&lt;-</span> <span class="fu">factor</span>(h_tcr<span class="sc">$</span>Timepoint, <span class="at">levels =</span> timepoints)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(h_tcr, <span class="fu">aes</span>(<span class="at">x =</span> Timepoint, <span class="at">y =</span> Weight, <span class="at">group =</span> Factor, <span class="at">color =</span> Factor)) <span class="sc">+</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_donq</span>() <span class="sc">+</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"TCR Temporal Patterns (Bio Filter C, k=3)"</span>,</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"H matrix — 416 expanded/TIL-observed clonotypes"</span>,</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Pattern weight"</span>) <span class="sc">+</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_donq</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="04_megpath_results_files/figure-html/tcr-H-k3-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The three factors capture three biologically distinct clonotype behaviors:</p>
+<ul>
+<li><p><strong>Factor 1</strong> (~0.139 at Pre, drops to ~0.122 and stays flat): The <strong>“stable/persistent”</strong> pattern. Clonotypes that maintain roughly constant frequency throughout treatment. Likely memory or homeostatic clones unaffected by therapy.</p></li>
+<li><p><strong>Factor 2</strong> (highest at Pre ~0.189, drops sharply to ~0.120 by Wk3, lowest at Wk6 ~0.100, partial recovery at Wk9): The <strong>“pre-treatment dominant / contracting”</strong> pattern. Clonotypes abundant before treatment that decline during therapy. These are bystander clones being displaced as treatment-responsive clones expand.</p></li>
+<li><p><strong>Factor 3</strong> (lowest at Pre ~0.077, rises to ~0.145 at Wk3, <strong>peaks at ~0.187 at Wk6</strong>, then falls to ~0.145 at Wk9): The <strong>“treatment-responsive expansion”</strong> pattern. Clonotypes that are rare or absent pre-treatment and expand dramatically during chemo-immunotherapy, peaking at week 6.</p></li>
+</ul>
+<p><strong>The week 6 peak in Factor 3 is the key result.</strong> Abdelfatah et al.&nbsp;showed that a $$10% increase in CX3CR1+ CD8+ T cells from baseline (“CX3CR1 score”) at <strong>6 weeks</strong> predicts treatment response with 85.7% accuracy. NMF independently rediscovered the same timing from clonotype frequency data alone — Factor 3 peaks at exactly the same timepoint, without any prior knowledge of CX3CR1 or response status.</p>
+</section>
+<section id="b.-two-factor-version-k2" class="level2">
+<h2 class="anchored" data-anchor-id="b.-two-factor-version-k2">4b. Two-Factor Version (k=2)</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>H_tcr2 <span class="ot">&lt;-</span> results<span class="sc">$</span>tcr_bio_k2<span class="sc">$</span>H</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>h_tcr2 <span class="ot">&lt;-</span> <span class="fu">melt</span>(H_tcr2)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(h_tcr2) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Factor"</span>, <span class="st">"Timepoint"</span>, <span class="st">"Weight"</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>h_tcr2<span class="sc">$</span>Timepoint <span class="ot">&lt;-</span> <span class="fu">factor</span>(h_tcr2<span class="sc">$</span>Timepoint, <span class="at">levels =</span> timepoints)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(h_tcr2, <span class="fu">aes</span>(<span class="at">x =</span> Timepoint, <span class="at">y =</span> Weight, <span class="at">group =</span> Factor, <span class="at">color =</span> Factor)) <span class="sc">+</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_donq</span>() <span class="sc">+</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"TCR Temporal Patterns (Bio Filter C, k=2)"</span>,</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"H matrix — 416 expanded/TIL-observed clonotypes"</span>,</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Pattern weight"</span>) <span class="sc">+</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_donq</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="04_megpath_results_files/figure-html/tcr-H-k2-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>With k=2 the same biology simplifies into a clean <strong>X-shaped crossover</strong>:</p>
+<ul>
+<li><strong>Factor 1</strong> rises from 0.114 <span class="math inline">\(\rightarrow\)</span> 0.169 <span class="math inline">\(\rightarrow\)</span> <strong>0.206</strong> <span class="math inline">\(\rightarrow\)</span> 0.169 = expansion (peaks Wk6)</li>
+<li><strong>Factor 2</strong> falls from <strong>0.208</strong> <span class="math inline">\(\rightarrow\)</span> 0.140 <span class="math inline">\(\rightarrow\)</span> 0.121 <span class="math inline">\(\rightarrow\)</span> 0.140 = contraction (trough Wk6)</li>
+</ul>
+<p>This captures the fundamental expansion-vs-contraction dichotomy. The k=3 version refines this by splitting Factor 1 into “stable” and “expanding” populations.</p>
+</section>
+<section id="c.-w-matrix-top-clonotypes-per-factor" class="level2">
+<h2 class="anchored" data-anchor-id="c.-w-matrix-top-clonotypes-per-factor">4c. W Matrix — Top Clonotypes per Factor</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>W_tcr <span class="ot">&lt;-</span> results<span class="sc">$</span>tcr_bio_k3<span class="sc">$</span>W</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Verify label count matches W matrix rows</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">length</span>(bio_clones) <span class="sc">==</span> <span class="fu">nrow</span>(W_tcr)) {</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames</span>(W_tcr) <span class="ot">&lt;-</span> bio_clones</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  tcr_labeled <span class="ot">&lt;-</span> <span class="cn">TRUE</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"WARNING: Label mismatch! bio_clones:"</span>, <span class="fu">length</span>(bio_clones),</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>      <span class="st">"vs W rows:"</span>, <span class="fu">nrow</span>(W_tcr), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames</span>(W_tcr) <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"clone_"</span>, <span class="fu">seq_len</span>(<span class="fu">nrow</span>(W_tcr)))</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  tcr_labeled <span class="ot">&lt;-</span> <span class="cn">FALSE</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (f <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">ncol</span>(W_tcr)) {</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>  top <span class="ot">&lt;-</span> <span class="fu">sort</span>(W_tcr[, f], <span class="at">decreasing =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>]</span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">=== Factor %d: Top 10 Clonotypes ===</span><span class="sc">\n</span><span class="st">"</span>, f))</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="fu">paste</span>(<span class="fu">sprintf</span>(<span class="st">"  %s: %.4f"</span>, <span class="fu">names</span>(top), top), <span class="at">collapse =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+=== Factor 1: Top 10 Clonotypes ===
+  CASSSLGSFDEQFF: 0.9983
+  CASSQDRGWGLNTEAFF: 0.3612
+  CASSEGSATDTQYF: 0.3608
+  CASSSHPGQGSNQPQHF: 0.3595
+  CASSLPLLAGETQYF: 0.3416
+  CASSPILNRGGNEQFF: 0.3359
+  CASSQVQGALAGYTF: 0.3322
+  CASSEASGTRGSSYGYTF: 0.3310
+  CASSLREGYGYTF: 0.3243
+  CASSLVGTGDWDTEAFF: 0.3221 
+
+=== Factor 2: Top 10 Clonotypes ===
+  CASSSLGSFDEQFF: 0.8967
+  CASSLAGTGYEQYF: 0.3614
+  CASSVPSGGNEQFF: 0.3599
+  CASSSTRFSTGELFF: 0.3598
+  CASSLPGGYGYTF: 0.3588
+  CASSLGGTGDNEQFF: 0.3573
+  CASIPAGRTDTQYF: 0.3549
+  CASSLGGGGDTDTQYF: 0.3522
+  CASSQDTDRVRSEAFF: 0.3333
+  CAWRTGGKVRTEAFF: 0.3297 
+
+=== Factor 3: Top 10 Clonotypes ===
+  CASSSLGSFDEQFF: 0.9992
+  CASSYRGRSTGELFF: 0.9166
+  CASSQVRRGNYGYTF: 0.7162
+  CSVEERWTLTEAFF: 0.7017
+  CASSYTGFEQYF: 0.6953
+  CASSGRYEQYF: 0.6732
+  CASSIGTSTDTQYF: 0.6579
+  CASSQPEQFF: 0.5137
+  CAYYRTGTNPYAQYF: 0.4222
+  CASSSSRGISTDTQYF: 0.3651 </code></pre>
+</div>
+</div>
+<p><strong>CASSSLGSFDEQFF</strong> (the dominant expander: 13 <span class="math inline">\(\rightarrow\)</span> 20 <span class="math inline">\(\rightarrow\)</span> 81 <span class="math inline">\(\rightarrow\)</span> 28 cells) tops all three factors because it’s so abundant it contributes to every pattern. Factor 3 uniquely captures the key treatment-responsive clonotypes from the paper: CASSYRGRSTGELFF (0.917), CSVEERWTLTEAFF (0.702), CASSYTGFEQYF (0.695), CASSGRYEQYF (0.673).</p>
+</section>
+<section id="d.-clonotype-trajectories-by-factor" class="level2">
+<h2 class="anchored" data-anchor-id="d.-clonotype-trajectories-by-factor">4d. Clonotype Trajectories by Factor</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Assign each clonotype to its dominant factor</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>dominant_factor <span class="ot">&lt;-</span> <span class="fu">apply</span>(W_tcr, <span class="dv">1</span>, which.max)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>max_loading <span class="ot">&lt;-</span> <span class="fu">apply</span>(W_tcr, <span class="dv">1</span>, max)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="co"># How many clonotypes per factor?</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>factor_counts <span class="ot">&lt;-</span> <span class="fu">table</span>(dominant_factor)</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Clonotypes per factor:</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Clonotypes per factor:</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(factor_counts)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>dominant_factor
+  1   2   3 
+158 142 116 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the original frequency data to show trajectories</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>tcr_freq <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"megpath_inputs/tcr_bio_freq.csv"</span>, <span class="at">header =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(tcr_freq) <span class="ot">&lt;-</span> timepoints</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (tcr_labeled) <span class="fu">rownames</span>(tcr_freq) <span class="ot">&lt;-</span> bio_clones</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Top 5 clonotypes per factor by loading, plot trajectories</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>top_per_factor <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="cf">function</span>(f) {</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>  idx <span class="ot">&lt;-</span> <span class="fu">which</span>(dominant_factor <span class="sc">==</span> f)</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>  loadings <span class="ot">&lt;-</span> W_tcr[idx, f]</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(<span class="fu">sort</span>(loadings, <span class="at">decreasing =</span> <span class="cn">TRUE</span>))[<span class="dv">1</span><span class="sc">:</span><span class="fu">min</span>(<span class="dv">5</span>, <span class="fu">length</span>(idx))]</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>traj_clones <span class="ot">&lt;-</span> <span class="fu">unlist</span>(top_per_factor)</span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>traj_df <span class="ot">&lt;-</span> tcr_freq[traj_clones, ]</span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>traj_df<span class="sc">$</span>Clonotype <span class="ot">&lt;-</span> <span class="fu">rownames</span>(traj_df)</span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>traj_df<span class="sc">$</span>Factor <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"Factor_"</span>, dominant_factor[traj_clones])</span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>traj_long <span class="ot">&lt;-</span> <span class="fu">melt</span>(traj_df, <span class="at">id.vars =</span> <span class="fu">c</span>(<span class="st">"Clonotype"</span>, <span class="st">"Factor"</span>),</span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>                  <span class="at">variable.name =</span> <span class="st">"Timepoint"</span>, <span class="at">value.name =</span> <span class="st">"Frequency"</span>)</span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>traj_long<span class="sc">$</span>Timepoint <span class="ot">&lt;-</span> <span class="fu">factor</span>(traj_long<span class="sc">$</span>Timepoint, <span class="at">levels =</span> timepoints)</span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(traj_long, <span class="fu">aes</span>(<span class="at">x =</span> Timepoint, <span class="at">y =</span> Frequency, <span class="at">group =</span> Clonotype, <span class="at">color =</span> Factor)) <span class="sc">+</span></span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">0.8</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Factor, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_donq</span>() <span class="sc">+</span></span>
+<span id="cb27-26"><a href="#cb27-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Top Clonotype Trajectories by NMF Factor"</span>,</span>
+<span id="cb27-27"><a href="#cb27-27" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Top 5 clonotypes per factor (by W loading). Bio Filter C, k=3."</span>,</span>
+<span id="cb27-28"><a href="#cb27-28" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Frequency (% of repertoire)"</span>) <span class="sc">+</span></span>
+<span id="cb27-29"><a href="#cb27-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_donq</span>() <span class="sc">+</span></span>
+<span id="cb27-30"><a href="#cb27-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="04_megpath_results_files/figure-html/tcr-assignment-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The trajectory plot confirms the H matrix interpretation with the actual clonotype data:</p>
+<ul>
+<li><p><strong>Factor 1 clonotypes</strong>: Spike at Wk3 then collapse back to near-zero. These are <strong>early transient responders</strong> — they expand quickly after treatment initiation but don’t sustain. This may represent an initial immune activation wave that fades.</p></li>
+<li><p><strong>Factor 2 clonotypes</strong>: Start high pre-treatment and drop sharply by Wk3. These are <strong>pre-existing clones being displaced</strong> as treatment reshapes the TCR repertoire. Classic bystander clonotypes that contract when treatment-responsive clones expand.</p></li>
+<li><p><strong>Factor 3 clonotypes</strong>: Low or absent pre-treatment, dramatic rise peaking at Wk3 (the dominant CASSSLGSFDEQFF reaches ~12.5% of the repertoire), then partial contraction but remaining elevated at Wk6/Wk9. Note the y-axis scale — these clonotypes reach frequencies <strong>20x higher</strong> than the other factors. These are the <strong>dominant treatment-responsive clones</strong> that drive the CX3CR1 score.</p></li>
+</ul>
+</section>
+<section id="e.-key-clonotypes-from-the-paper" class="level2">
+<h2 class="anchored" data-anchor-id="e.-key-clonotypes-from-the-paper">4e. Key Clonotypes from the Paper</h2>
+<p>These six clonotypes were selected from Table S8 as the most prominent expanded, TIL-observed clones (highest cell counts and TIL frequencies). The paper does not name individual CDR3 sequences — these are our picks from the supplementary data:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>key_clones <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"CASSSLGSFDEQFF"</span>, <span class="st">"CASSYRGRSTGELFF"</span>, <span class="st">"CSVEERWTLTEAFF"</span>,</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>                <span class="st">"CASSYTGFEQYF"</span>, <span class="st">"CASSGRYEQYF"</span>, <span class="st">"CASSSSRGISTDTQYF"</span>)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>found <span class="ot">&lt;-</span> <span class="cf">if</span> (tcr_labeled) <span class="fu">intersect</span>(key_clones, bio_clones) <span class="cf">else</span> <span class="fu">character</span>(<span class="dv">0</span>)</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">length</span>(found) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  key_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">Clonotype =</span> found,</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">Factor_1 =</span> <span class="fu">round</span>(W_tcr[found, <span class="dv">1</span>], <span class="dv">4</span>),</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">Factor_2 =</span> <span class="fu">round</span>(W_tcr[found, <span class="dv">2</span>], <span class="dv">4</span>),</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">Factor_3 =</span> <span class="fu">round</span>(W_tcr[found, <span class="dv">3</span>], <span class="dv">4</span>),</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">Dominant =</span> <span class="fu">paste0</span>(<span class="st">"Factor_"</span>, <span class="fu">apply</span>(W_tcr[found, , <span class="at">drop =</span> <span class="cn">FALSE</span>], <span class="dv">1</span>, which.max)),</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Add expansion info from S8</span></span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>  s8_key <span class="ot">&lt;-</span> s8[s8[[<span class="st">"TCRB.clonotype"</span>]] <span class="sc">%in%</span> found,</span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>               <span class="fu">c</span>(<span class="st">"TCRB.clonotype"</span>, <span class="st">"Expanded"</span>, <span class="st">"TIL.observed"</span>, <span class="st">"TIL.freq"</span>)]</span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>  key_df <span class="ot">&lt;-</span> <span class="fu">merge</span>(key_df, s8_key, <span class="at">by.x =</span> <span class="st">"Clonotype"</span>, <span class="at">by.y =</span> <span class="st">"TCRB.clonotype"</span>, <span class="at">all.x =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(key_df, <span class="at">caption =</span> <span class="st">"Key clonotypes: NMF factor assignment"</span>)</span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Key clonotypes: NMF factor assignment</caption>
+<colgroup>
+<col style="width: 19%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 14%">
+<col style="width: 13%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Clonotype</th>
+<th style="text-align: right;">Factor_1</th>
+<th style="text-align: right;">Factor_2</th>
+<th style="text-align: right;">Factor_3</th>
+<th style="text-align: left;">Dominant</th>
+<th style="text-align: left;">Expanded</th>
+<th style="text-align: left;">TIL.observed</th>
+<th style="text-align: left;">TIL.freq</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">CASSGRYEQYF</td>
+<td style="text-align: right;">0.1192</td>
+<td style="text-align: right;">0.0022</td>
+<td style="text-align: right;">0.6732</td>
+<td style="text-align: left;">Factor_3</td>
+<td style="text-align: left;">Expanded</td>
+<td style="text-align: left;">TIL.observed</td>
+<td style="text-align: left;">0.409014144</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CASSSLGSFDEQFF</td>
+<td style="text-align: right;">0.9983</td>
+<td style="text-align: right;">0.8967</td>
+<td style="text-align: right;">0.9992</td>
+<td style="text-align: left;">Factor_3</td>
+<td style="text-align: left;">Expanded</td>
+<td style="text-align: left;">TIL.observed</td>
+<td style="text-align: left;">0.047498417</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CASSSSRGISTDTQYF</td>
+<td style="text-align: right;">0.1428</td>
+<td style="text-align: right;">0.1093</td>
+<td style="text-align: right;">0.3651</td>
+<td style="text-align: left;">Factor_3</td>
+<td style="text-align: left;">Expanded</td>
+<td style="text-align: left;">TIL.observed</td>
+<td style="text-align: left;">0.139856449</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CASSYRGRSTGELFF</td>
+<td style="text-align: right;">0.2547</td>
+<td style="text-align: right;">0.0044</td>
+<td style="text-align: right;">0.9166</td>
+<td style="text-align: left;">Factor_3</td>
+<td style="text-align: left;">Expanded</td>
+<td style="text-align: left;">TIL.observed</td>
+<td style="text-align: left;">0.060692421</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CASSYTGFEQYF</td>
+<td style="text-align: right;">0.1096</td>
+<td style="text-align: right;">0.0003</td>
+<td style="text-align: right;">0.6953</td>
+<td style="text-align: left;">Factor_3</td>
+<td style="text-align: left;">Expanded</td>
+<td style="text-align: left;">TIL.observed</td>
+<td style="text-align: left;">0.013194005</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CSVEERWTLTEAFF</td>
+<td style="text-align: right;">0.1606</td>
+<td style="text-align: right;">0.0003</td>
+<td style="text-align: right;">0.7017</td>
+<td style="text-align: left;">Factor_3</td>
+<td style="text-align: left;">Expanded</td>
+<td style="text-align: left;">TIL.observed</td>
+<td style="text-align: left;">0.073886426</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><strong>All six key clonotypes are assigned to Factor 3</strong> — the treatment-responsive expansion factor that peaks at week 6. Every single one. This is NMF independently recovering the paper’s central finding: the clonotypes that expand during chemo-immunotherapy, that are found in the tumor biopsy (TIL-observed), and that correlate with CX3CR1+ effector differentiation, all follow the same temporal program.</p>
+<p>CASSGRYEQYF is notable: it has the highest TIL frequency (0.41%) — meaning it’s the most represented treatment-responsive clone in the actual tumor — and it loads almost exclusively on Factor 3 (0.673) with near-zero loading on Factor 2 (0.002).</p>
+</section>
+</section>
+<section id="baseline-vs-improved-how-preprocessing-changes-what-nmf-finds" class="level1">
+<h1>5. Baseline vs Improved: How Preprocessing Changes What NMF Finds</h1>
+<section id="a.-scrna-comparison" class="level2">
+<h2 class="anchored" data-anchor-id="a.-scrna-comparison">5a. scRNA Comparison</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Baseline k=3 vs Improved k=2</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>H_base <span class="ot">&lt;-</span> results<span class="sc">$</span>scrna_baseline_k3<span class="sc">$</span>H</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>h_base_df <span class="ot">&lt;-</span> <span class="fu">melt</span>(H_base)</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(h_base_df) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Factor"</span>, <span class="st">"Timepoint"</span>, <span class="st">"Weight"</span>)</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>h_base_df<span class="sc">$</span>Timepoint <span class="ot">&lt;-</span> <span class="fu">factor</span>(h_base_df<span class="sc">$</span>Timepoint, <span class="at">levels =</span> timepoints)</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>h_base_df<span class="sc">$</span>Matrix <span class="ot">&lt;-</span> <span class="st">"Baseline (17,857 genes, k=3)"</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>H_imp <span class="ot">&lt;-</span> results<span class="sc">$</span>scrna_sct2k_k2<span class="sc">$</span>H</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>h_imp_df <span class="ot">&lt;-</span> <span class="fu">melt</span>(H_imp)</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(h_imp_df) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Factor"</span>, <span class="st">"Timepoint"</span>, <span class="st">"Weight"</span>)</span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>h_imp_df<span class="sc">$</span>Timepoint <span class="ot">&lt;-</span> <span class="fu">factor</span>(h_imp_df<span class="sc">$</span>Timepoint, <span class="at">levels =</span> timepoints)</span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>h_imp_df<span class="sc">$</span>Matrix <span class="ot">&lt;-</span> <span class="st">"Improved (2,000 HVGs, k=2)"</span></span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>h_compare <span class="ot">&lt;-</span> <span class="fu">rbind</span>(h_base_df, h_imp_df)</span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(h_compare, <span class="fu">aes</span>(<span class="at">x =</span> Timepoint, <span class="at">y =</span> Weight, <span class="at">group =</span> Factor, <span class="at">color =</span> Factor)) <span class="sc">+</span></span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Matrix, <span class="at">ncol =</span> <span class="dv">1</span>, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_donq</span>() <span class="sc">+</span></span>
+<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"scRNA: Baseline vs Improved Temporal Patterns"</span>,</span>
+<span id="cb29-22"><a href="#cb29-22" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Baseline shows apparent temporal variation — but it's noise fitting"</span>,</span>
+<span id="cb29-23"><a href="#cb29-23" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Pattern weight"</span>) <span class="sc">+</span></span>
+<span id="cb29-24"><a href="#cb29-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_donq</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="04_megpath_results_files/figure-html/compare-scrna-H-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The baseline (top panel) appears to show temporal variation — factors crossing and diverging. But this is <strong>noise fitting, not biology</strong>. Ethan’s 17,857-gene matrix includes thousands of non-variable genes that add random structure, and the double-log transformation distorts relative magnitudes. MEGPath is fitting this noise.</p>
+<p>The improved matrix (bottom, flat lines) is being <strong>honest</strong>: there simply isn’t temporal signal in pseudobulk averages of 2,000 properly-normalized HVGs. The baseline “patterns” are artifacts of bad preprocessing — they look like signal but carry no biological meaning.</p>
+<p><strong>Lesson</strong>: Lower error + flat patterns is more trustworthy than higher error + dramatic patterns. The apparent structure in the baseline is noise that MEGPath can partially but not fully fit (hence the 2x higher error).</p>
+</section>
+<section id="b.-tcr-comparison" class="level2">
+<h2 class="anchored" data-anchor-id="b.-tcr-comparison">5b. TCR Comparison</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>H_tcr_base <span class="ot">&lt;-</span> results<span class="sc">$</span>tcr_baseline_k3<span class="sc">$</span>H</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>h_tbase_df <span class="ot">&lt;-</span> <span class="fu">melt</span>(H_tcr_base)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(h_tbase_df) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Factor"</span>, <span class="st">"Timepoint"</span>, <span class="st">"Weight"</span>)</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>h_tbase_df<span class="sc">$</span>Timepoint <span class="ot">&lt;-</span> <span class="fu">factor</span>(h_tbase_df<span class="sc">$</span>Timepoint, <span class="at">levels =</span> timepoints)</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>h_tbase_df<span class="sc">$</span>Matrix <span class="ot">&lt;-</span> <span class="st">"Baseline (2,541 clonotypes, k=3)"</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>h_tbio_df <span class="ot">&lt;-</span> h_tcr  <span class="co"># already built above</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>h_tbio_df<span class="sc">$</span>Matrix <span class="ot">&lt;-</span> <span class="st">"Bio Filter C (416 clonotypes, k=3)"</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>h_tcompare <span class="ot">&lt;-</span> <span class="fu">rbind</span>(h_tbase_df, h_tbio_df)</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(h_tcompare, <span class="fu">aes</span>(<span class="at">x =</span> Timepoint, <span class="at">y =</span> Weight, <span class="at">group =</span> Factor, <span class="at">color =</span> Factor)) <span class="sc">+</span></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Matrix, <span class="at">ncol =</span> <span class="dv">1</span>, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_donq</span>() <span class="sc">+</span></span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"TCR: Baseline vs Bio-Filtered Temporal Patterns (k=3)"</span>,</span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Filter C focuses on treatment-responsive clonotypes"</span>,</span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Pattern weight"</span>) <span class="sc">+</span></span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_donq</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="04_megpath_results_files/figure-html/compare-tcr-H-k3-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>H_tcr_base2 <span class="ot">&lt;-</span> results<span class="sc">$</span>tcr_baseline_k2<span class="sc">$</span>H</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>h_tbase2_df <span class="ot">&lt;-</span> <span class="fu">melt</span>(H_tcr_base2)</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(h_tbase2_df) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Factor"</span>, <span class="st">"Timepoint"</span>, <span class="st">"Weight"</span>)</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>h_tbase2_df<span class="sc">$</span>Timepoint <span class="ot">&lt;-</span> <span class="fu">factor</span>(h_tbase2_df<span class="sc">$</span>Timepoint, <span class="at">levels =</span> timepoints)</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>h_tbase2_df<span class="sc">$</span>Matrix <span class="ot">&lt;-</span> <span class="st">"Baseline (2,541 clonotypes, k=2)"</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>h_tbio2_df <span class="ot">&lt;-</span> h_tcr2  <span class="co"># already built above</span></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>h_tbio2_df<span class="sc">$</span>Matrix <span class="ot">&lt;-</span> <span class="st">"Bio Filter C (416 clonotypes, k=2)"</span></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>h_tcompare2 <span class="ot">&lt;-</span> <span class="fu">rbind</span>(h_tbase2_df, h_tbio2_df)</span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(h_tcompare2, <span class="fu">aes</span>(<span class="at">x =</span> Timepoint, <span class="at">y =</span> Weight, <span class="at">group =</span> Factor, <span class="at">color =</span> Factor)) <span class="sc">+</span></span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Matrix, <span class="at">ncol =</span> <span class="dv">1</span>, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_donq</span>() <span class="sc">+</span></span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"TCR: Baseline vs Bio-Filtered Temporal Patterns (k=2)"</span>,</span>
+<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Same expansion-vs-contraction dichotomy, sharper after filtering"</span>,</span>
+<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Pattern weight"</span>) <span class="sc">+</span></span>
+<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_donq</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="04_megpath_results_files/figure-html/compare-tcr-H-k2-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>At <strong>k=3</strong>, the baseline (top panel, 2,541 clonotypes) shows weak, compressed patterns — all three factors hover between 0.10 and 0.17 with mild variation. The ~2,100 single-timepoint clonotypes (96% zeros) act as dead weight, washing out the signal from the ~400 biologically relevant ones. The bio-filtered version (bottom, 416 clonotypes) has <strong>much wider separation</strong> between factors (range 0.077–0.189) and sharper temporal contrasts. The three distinct programs (stable, contracting, expanding) are clearly resolved.</p>
+<p>At <strong>k=2</strong>, the same pattern holds: the baseline shows a mild crossover, but the bio-filtered version amplifies it into a clean X with wider dynamic range. Both baselines (k=2: LAD/element = 0.00202, k=3: 0.00199) give nearly identical error, suggesting k=2 already captures the dominant structure in the unfiltered data.</p>
+</section>
+</section>
+<section id="conclusions" class="level1">
+<h1>6. Conclusions</h1>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"=== Key Findings ===</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>=== Key Findings ===</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"1. TCR NMF works: Factor 3 peaks at week 6, independently recovering</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>1. TCR NMF works: Factor 3 peaks at week 6, independently recovering</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"   the paper's key finding about CX3CR1+ expansion timing.</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>   the paper's key finding about CX3CR1+ expansion timing.</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"   All 6 known treatment-responsive clonotypes assigned to Factor 3.</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>   All 6 known treatment-responsive clonotypes assigned to Factor 3.</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"2. scRNA pseudobulk NMF does NOT work: flat H matrices = no temporal</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>2. scRNA pseudobulk NMF does NOT work: flat H matrices = no temporal</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"   signal at this resolution. Need cluster-level pseudobulk</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>   signal at this resolution. Need cluster-level pseudobulk</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"   (genes × [timepoint × cluster]) to preserve cell-type variation.</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>   (genes × [timepoint × cluster]) to preserve cell-type variation.</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"3. Preprocessing matters more than the algorithm:</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>3. Preprocessing matters more than the algorithm:</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"   - Feature selection (17,857 → 2,000 genes): 47% error reduction</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>   - Feature selection (17,857 → 2,000 genes): 47% error reduction</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"   - Biological filtering (2,541 → 416 clonotypes): cleaner dynamics</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>   - Biological filtering (2,541 → 416 clonotypes): cleaner dynamics</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"   - Both changes make runs 6-10x faster</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>   - Both changes make runs 6-10x faster</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"4. Baseline 'patterns' are noise: the apparent temporal variation in</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>4. Baseline 'patterns' are noise: the apparent temporal variation in</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"   Ethan's 17,857-gene baseline is artifact from noise genes + double-log.</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Ethan's 17,857-gene baseline is artifact from noise genes + double-log.</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"   Lower error + flat patterns &gt; higher error + fake patterns.</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Lower error + flat patterns &gt; higher error + fake patterns.</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"=== Next Steps ===</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>=== Next Steps ===</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"1. Build cluster-level scRNA matrix: genes × (timepoint × cluster)</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>1. Build cluster-level scRNA matrix: genes × (timepoint × cluster)</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"   to recover temporal signal from cell-type-specific changes.</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>   to recover temporal signal from cell-type-specific changes.</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"2. Explore MEGPath constraint feature: fix one pattern to the known</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>2. Explore MEGPath constraint feature: fix one pattern to the known</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"   CX3CR1 expansion trajectory and let NMF find the rest.</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>   CX3CR1 expansion trajectory and let NMF find the rest.</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"3. Link TCR Factor 3 clonotypes back to scRNA clusters: which</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>3. Link TCR Factor 3 clonotypes back to scRNA clusters: which</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"   transcriptional programs do the expanding clonotypes express?</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>   transcriptional programs do the expanding clonotypes express?</code></pre>
+</div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
