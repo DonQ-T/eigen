@@ -2,12 +2,12 @@
 title: "TR-NMF: Temporally-Regularized Non-Negative Matrix Factorization"
 date: 2026-03-05
 author: "Matt Jacob"
-description: "A research plan for developing a novel NMF variant that exploits temporal ordering in longitudinal biological data — with derived update rules, convergence proof strategy, and a full reading roadmap."
-tags: ["NMF", "optimization", "research", "linear algebra", "bioinformatics"]
+description: "A research plan for developing a novel NMF variant that exploits temporal ordering in longitudinal data — with derived update rules, convergence proof strategy, and a full reading roadmap."
+tags: ["NMF", "optimization", "research", "linear algebra"]
 draft: false
 ---
 
-**Goal**: Develop an NMF variant that exploits temporal ordering in the columns of $V$ to improve factorization quality for longitudinal biological data. Derive update rules, prove convergence, and benchmark against [Lee & Seung (2001)](https://papers.nips.cc/paper/1861-algorithms-for-non-negative-matrix-factorization) and [MEGPath](https://doi.org/10.1145/3233547.3233579) on chemo-immunotherapy matrices from the [NMF analysis project](/eigen/blog/nmf-chemoimmuno-analysis/).
+**Goal**: Develop an NMF variant that exploits temporal ordering in the columns of $V$ to improve factorization quality for longitudinal data. Derive update rules, prove convergence, and benchmark against [Lee & Seung (2001)](https://papers.nips.cc/paper/1861-algorithms-for-non-negative-matrix-factorization) and existing NMF solvers.
 
 **Thesis in one sentence**: When the columns of $V$ have a known ordering (timepoints), penalizing non-smooth temporal patterns in $H$ yields lower reconstruction error and more interpretable factors than standard NMF, with provable convergence guarantees.
 
@@ -130,7 +130,7 @@ This penalizes consecutive-column differences in each row of $H$. Large $\lambda
 **Why this penalty**:
 - Convex in $H$ (quadratic), so combining it with the Frobenius reconstruction term gives a well-behaved sub-problem
 - $D^T D$ is a known matrix (tridiagonal, positive semi-definite) — the discrete Laplacian on a path graph. This connects to graph regularization literature ([Cai et al. 2011](https://doi.org/10.1109/TPAMI.2010.231)), where the graph is specifically the temporal chain
-- The penalty is on $H$ (temporal patterns), not $W$ (loadings). Temporal programs should be smooth, but clonotype memberships have no reason to be
+- The penalty is on $H$ (temporal patterns), not $W$ (loadings). Temporal programs should be smooth, but row memberships have no reason to be
 
 ### Derive the gradient
 
@@ -186,13 +186,13 @@ may work, but needs careful verification. **This is where the actual mathematica
 
 As $\lambda$ increases from 0 to $\infty$:
 - $\lambda = 0$: standard NMF
-- $\lambda \to \infty$: $H$ rows become constant (perfectly flat) — no temporal variation, similar to the scRNA null result
+- $\lambda \to \infty$: $H$ rows become constant (perfectly flat) — no temporal variation allowed
 - Intermediate $\lambda$: the interesting regime
 
 **Experiments**:
-1. Sweep $\lambda \in \{0, 0.01, 0.1, 1, 10, 100\}$ on the TCR bio-filtered matrix (416 $\times$ 4)
-2. Plot reconstruction error vs $\lambda$ (expect U-shaped)
-3. Plot Factor 3 week-6 peak height vs $\lambda$ — does moderate smoothing sharpen or blur the peak?
+1. Sweep $\lambda \in \{0, 0.01, 0.1, 1, 10, 100\}$ on test matrices with known temporal structure
+2. Plot reconstruction error vs $\lambda$ (expect U-shaped: too low = overfitting noise, too high = underfitting by forcing flat patterns)
+3. Plot recovered factor peak height vs $\lambda$ — does moderate smoothing sharpen or blur known features?
 4. Compare factor stability ([cophenetic correlation](https://doi.org/10.1073/pnas.0308531101) across random starts) at each $\lambda$ — the hypothesis is that temporal regularization reduces sensitivity to initialization
 
 ### Cross-validation for $\lambda$ selection
@@ -225,18 +225,14 @@ tr_nmf <- function(V, k, lambda, max_iter = 1000, tol = 1e-6) {
 | Method | Loss | Optimizer | Source |
 |--------|------|-----------|--------|
 | Lee & Seung MU | Frobenius | Multiplicative updates | R NMF package |
-| MEGPath | LAD | Simulated annealing | Existing C++ binary |
+| HALS | Frobenius | Hierarchical ALS | R / Python |
 | **TR-NMF** | **Frobenius + temporal** | **Modified MU** | **New R code** |
 | Projected gradient | Frobenius | Projected gradient descent | New R code |
 | TR-NMF + NNDSVD | Frobenius + temporal | Modified MU, NNDSVD init | New R code |
 
-Test matrices (all already exported):
-- TCR bio-filtered: 416 $\times$ 4
-- TCR baseline: 2,541 $\times$ 4
-- scRNA improved: 2,000 $\times$ 4
-- (Future) Cluster-level pseudobulk: 2,000 $\times$ 52
+Test on any $n \times p$ non-negative matrix where the $p$ columns have a known ordering (time series, sequential measurements, ordered experimental conditions). Synthetic matrices with planted temporal factors are useful for controlled benchmarks since ground truth is known.
 
-Metrics: reconstruction error (NMAE, LAD), factor interpretability (does Factor 3 peak at week 6?), stability across random starts (cophenetic correlation), convergence speed (iterations to tolerance).
+Metrics: reconstruction error (NMAE, Frobenius), factor recovery accuracy (on synthetic data with known ground truth), stability across random starts ([cophenetic correlation](https://doi.org/10.1073/pnas.0308531101)), convergence speed (iterations to tolerance).
 
 ---
 
@@ -244,18 +240,18 @@ Metrics: reconstruction error (NMAE, LAD), factor interpretability (does Factor 
 
 ### Structure
 
-1. **Introduction**: Longitudinal biological data has ordered columns; standard NMF ignores this structure
+1. **Introduction**: Many data matrices have ordered columns (time series, longitudinal studies, sequential experiments); standard NMF ignores this structure
 2. **Related work**: Lee & Seung, TRMF (allows negatives), Chiovetto (hard constraint), graph-regularized NMF (arbitrary graph, not temporal chain)
 3. **Method**: Formulation, update rules, convergence proof
-4. **Experiments**: Benchmarks on chemo-immunotherapy data + simulated data
+4. **Experiments**: Benchmarks on synthetic data with planted factors + real-world longitudinal matrices
 5. **Discussion**: When does temporal regularization help? When doesn't it?
 
 ### Target venues
 
-- **Bioinformatics** (Oxford) — framed as a tool for longitudinal scRNA-seq
 - **NeurIPS / ICML** — framed as an algorithmic contribution with theory
 - **SIAM Journal on Matrix Analysis** — if the convergence proof is the main result
-- **Annals of Applied Statistics** — framed as methodology for biological applications
+- **Annals of Applied Statistics** — framed as methodology with applications
+- **Journal of Machine Learning Research** — if both theory and experiments are strong
 
 ---
 
