@@ -16,8 +16,10 @@ Outside of math, I'm a former D1 cross country and track athlete. I still train 
 ## What I'm Working Through Right Now
 
 - *The Elements of Statistical Learning* (Hastie, Tibshirani, Friedman)
+- *Deep Learning* (Goodfellow, Bengio, Courville)
 - Andrew Ng's Machine Learning and Deep Learning Specializations
 - Recently finished *Why Machines Learn* (Ananthaswamy) and *Everything is Predictable* (Chivers)
+- Recently finished [Lee & Seung (1999)](https://www.cs.columbia.edu/~blei/fogm/2020F/readings/LeeSeung1999.pdf) — *Learning the parts of objects by non-negative matrix factorization*
 
 I'll write about what I'm learning in real time, this site is meant to document that.
 
