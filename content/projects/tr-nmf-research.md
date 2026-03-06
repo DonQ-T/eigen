@@ -51,7 +51,7 @@ Read in this order:
 
 ### The standard update rules
 
-**Problem**: $\min_{W,H \geq 0} F(W,H) = \frac{1}{2}\|V - WH\|_F^2$
+**Problem**: $\min_{W,H \geq 0} F(W,H) = \frac{1}{2}\lVert V - WH \rVert_F^2$
 
 Taking derivatives:
 
@@ -67,7 +67,7 @@ $$W \leftarrow W \odot \frac{V H^T}{W H H^T}$$
 
 where $\odot$ is element-wise multiplication and division is element-wise.
 
-**Exercises**: Verify on paper that (1) if $H_{ij} > 0$ initially, it stays positive; (2) at a fixed point, $\nabla_H F = 0$; (3) this is equivalent to gradient descent with step size $\eta_{ij} = H_{ij} / (W^T W H)\_{ij}$ — an element-wise adaptive learning rate.
+**Exercises**: Verify on paper that (1) if $H_{ij} > 0$ initially, it stays positive; (2) at a fixed point, $\nabla_H F = 0$; (3) this is equivalent to gradient descent with step size $\eta_{ij} = H_{ij} / (W^T W H)_{ij}$ — an element-wise adaptive learning rate.
 
 ### The convergence proof
 
@@ -113,15 +113,19 @@ where $K(h^t) = \text{diag}((W^T W H)_i / h^t_i)$.
 
 ### The formulation
 
-$$\min_{W,H \geq 0} \underbrace{\frac{1}{2}\|V - WH\|_F^2}\_{\text{reconstruction}} + \underbrace{\frac{\lambda}{2} \|H D^T\|_F^2}\_{\text{temporal smoothness}}$$
+$$\min_{W,H \geq 0} \frac{1}{2}\lVert V - WH \rVert_F^2 + \frac{\lambda}{2} \lVert H D^T \rVert_F^2$$
 
-where $D$ is the $(p-1) \times p$ first-difference matrix:
+The first term is reconstruction error. The second is the temporal smoothness penalty, where $D$ is the $(p-1) \times p$ first-difference matrix:
 
 $$D = \begin{pmatrix} -1 & 1 & 0 & 0 \\\ 0 & -1 & 1 & 0 \\\ 0 & 0 & -1 & 1 \end{pmatrix}$$
 
 For a 4-column matrix, $D$ is $3 \times 4$.
 
-The penalty $\|HD^T\|_F^2 = \text{tr}(H D^T D H^T) = \sum_i \sum_{j=1}^{p-1}(H_{i,j+1} - H_{i,j})^2$ penalizes consecutive-column differences in each row of $H$. Large $\lambda$ forces smoother temporal patterns. $\lambda = 0$ recovers standard NMF.
+The penalty expands as:
+
+$$\lVert H D^T \rVert_F^2 = \text{tr}(H D^T D H^T) = \sum_i \sum_{j=1}^{p-1}(H_{i,j+1} - H_{i,j})^2$$
+
+This penalizes consecutive-column differences in each row of $H$. Large $\lambda$ forces smoother temporal patterns. $\lambda = 0$ recovers standard NMF.
 
 **Why this penalty**:
 - Convex in $H$ (quadratic), so combining it with the Frobenius reconstruction term gives a well-behaved sub-problem
@@ -152,7 +156,9 @@ For our $\Phi$:
 
 $$\Phi^+ = \begin{pmatrix} 1&0&0&0 \\\ 0&2&0&0 \\\ 0&0&2&0 \\\ 0&0&0&1 \end{pmatrix}, \quad \Phi^- = \begin{pmatrix} 0&1&0&0 \\\ 1&0&1&0 \\\ 0&1&0&1 \\\ 0&0&1&0 \end{pmatrix}$$
 
-Then $\nabla_H F = \underbrace{(W^T W H + \lambda H \Phi^+)}\_{\text{positive part}} - \underbrace{(W^T V + \lambda H \Phi^-)}\_{\text{negative part}}$
+Then the gradient splits as:
+
+$$\nabla_H F = \overbrace{(W^T W H + \lambda H \Phi^+)}^{\text{positive part}} - \overbrace{(W^T V + \lambda H \Phi^-)}^{\text{negative part}}$$
 
 The multiplicative updates:
 
