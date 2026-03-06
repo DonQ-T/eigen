@@ -213,7 +213,7 @@ The $H$ matrix tells you the temporal *shape* of each factor. To see which clono
 
 Each panel shows a different story. **Factor 1's** top clonotypes hover near zero with one brief spike at Wk3 --- transient appearances, not sustained expansion. **Factor 2's** top clonotype starts at ~0.5% pre-treatment and drops to near zero --- these were present before therapy and got displaced as treatment-responsive clones expanded. The T cell repertoire is zero-sum: frequencies must add to 100% at each timepoint, so when some families grow, others shrink as a proportion.
 
-**Factor 3** is where the biology is. The y-axis scale jumps to 12.5% --- these clonotypes are orders of magnitude more abundant than the other groups. The dominant clone surges from near-zero pre-treatment to 12.5% of the entire repertoire at Wk3, sustains ~5% at Wk6, then partially contracts by Wk9. All five lines follow the same shape: low $\to$ high $\to$ sustained. These are the clonotypes the immune system mass-produced in response to treatment.
+**Factor 3** is where the biology is. The y-axis scale jumps to 12.5% --- these clonotypes are orders of magnitude more abundant than the other groups. The dominant clone surges from near-zero pre-treatment to 12.5% of the entire repertoire at Wk3, then tapers through Wk6 and Wk9 --- but the other four clonotypes are still expanding through Wk9, their frequencies rising or holding steady. The overall shape: low pre-treatment $\to$ rapid expansion $\to$ sustained or still growing. These are the clonotypes the immune system mass-produced in response to treatment.
 
 ## What This Means
 
