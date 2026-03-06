@@ -17,7 +17,7 @@ Learn the baseline algorithm and its convergence theory well enough to extend it
 
 **Core reading**:
 
-1. [**Lee & Seung (1999)**](https://doi.org/10.1038/44565) — *Learning the parts of objects by non-negative matrix factorization*, Nature. The paper that started it all. Short (3 pages). Why non-negativity forces parts-based decomposition.
+1. [**Lee & Seung (1999)**](https://www.cs.columbia.edu/~blei/fogm/2020F/readings/LeeSeung1999.pdf) — *Learning the parts of objects by non-negative matrix factorization*, Nature. The paper that started it all. Short (3 pages). Why non-negativity forces parts-based decomposition.
 
 2. [**Lee & Seung (2001)**](https://papers.nips.cc/paper/1861-algorithms-for-non-negative-matrix-factorization) — *Algorithms for Non-negative Matrix Factorization*, NeurIPS. **The most important paper in the reading list.** Multiplicative update rules, the auxiliary function convergence proof, and the diagonal rescaling interpretation. Work through every line of the proof — the auxiliary function technique is exactly what gets extended for regularized variants.
 
@@ -113,7 +113,7 @@ This penalizes jagged temporal patterns in $H$. $\lambda = 0$ recovers standard 
 
 | Order | Paper | Objective | Time |
 |-------|-------|-----------|------|
-| 1 | [Lee & Seung (1999)](https://doi.org/10.1038/44565) | Intuition for NMF | 1 hour |
+| 1 | [Lee & Seung (1999)](https://www.cs.columbia.edu/~blei/fogm/2020F/readings/LeeSeung1999.pdf) | Intuition for NMF | 1 hour |
 | 2 | [Lee & Seung (2001)](https://papers.nips.cc/paper/1861-algorithms-for-non-negative-matrix-factorization) | Update rules + convergence proof | 1 day |
 | 3 | [Supplementary proof guide (2025)](https://arxiv.org/abs/2501.11341) | Fill proof gaps | 2 hours |
 | 4 | [Hunter & Lange (2004)](https://doi.org/10.1198/0003130042836) | General MM framework | 3 hours |
