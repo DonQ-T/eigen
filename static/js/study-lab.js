@@ -325,7 +325,7 @@
   function fcGetFilteredCards() {
     if (fcSelectedChapters.size === 0) return fcAllCards;
     return fcAllCards.filter(function (c) {
-      return fcSelectedChapters.has(c.chapter);
+      return fcSelectedChapters.has(String(c.chapter));
     });
   }
 
