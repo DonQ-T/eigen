@@ -28,12 +28,25 @@
         </svg>
         Eigen
       </a>
-      <ul class="nav-links">
+      <ul class="nav-links" id="nav-links">
         {{ range .Site.Menus.main }}
         <li><a href="{{ .URL | relURL }}"{{ if $.IsMenuCurrent "main" . }} class="active"{{ end }}>{{ .Name }}</a></li>
         {{ end }}
       </ul>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
     </nav>
+    <script>
+      (function(){
+        var btn = document.getElementById('nav-toggle');
+        var nav = document.getElementById('nav-links');
+        if(btn && nav) btn.addEventListener('click', function(){
+          nav.classList.toggle('nav-open');
+          btn.classList.toggle('nav-toggle-open');
+        });
+      })();
+    </script>
   </header>
 
   <main>
