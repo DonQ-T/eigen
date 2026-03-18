@@ -1433,13 +1433,14 @@ footer {
 
 .fc-chapter-tag {
   font-family: var(--font-code);
-  font-size: 0.625rem;
-  letter-spacing: 0.03em;
+  font-size: 0.5625rem;
+  letter-spacing: 0.05em;
   padding: 0.15rem 0.5rem;
   background: rgba(255, 255, 255, 0.06);
   color: var(--text-dim);
   border-radius: 9999px;
   display: inline-block;
+  margin-bottom: 0.75rem;
 }
 
 .fc-browse-status {
@@ -1480,22 +1481,45 @@ footer {
     grid-template-columns: repeat(2, 1fr);
   }
 
+  /* Disable 3D flip on mobile — use show/hide instead */
   .fc-card {
     height: auto;
-    min-height: 300px;
+    min-height: 250px;
+    transform-style: flat;
+  }
+
+  .fc-card.fc-card-flipped {
+    transform: none;
   }
 
   .fc-card-front,
   .fc-card-back {
     position: relative;
     height: auto;
-    min-height: 300px;
+    min-height: 250px;
+    backface-visibility: visible;
+    transform: none;
+  }
+
+  .fc-card-front {
+    display: flex;
   }
 
   .fc-card-back {
-    position: absolute;
-    top: 0;
-    left: 0;
+    display: none;
+    transform: none;
+  }
+
+  .fc-card.fc-card-flipped .fc-card-front {
+    display: none;
+  }
+
+  .fc-card.fc-card-flipped .fc-card-back {
+    display: flex;
+  }
+
+  .fc-rating-row {
+    margin-top: 0.75rem;
   }
 
   .fc-rating-btn {
@@ -1506,6 +1530,10 @@ footer {
 
   .fc-rating-interval {
     font-size: 0.5625rem;
+  }
+
+  .fc-chapter-tag {
+    margin-bottom: 0.5rem;
   }
 
   .fc-browse-list {

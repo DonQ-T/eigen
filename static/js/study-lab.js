@@ -499,6 +499,7 @@
 
     if (frontEl) {
       frontEl.innerHTML = '<div class="fc-card-content">' +
+        '<span class="fc-chapter-tag">' + (card.chapter || '') + '</span>' +
         renderText(card.front) +
         '</div>';
       renderMath(frontEl);
