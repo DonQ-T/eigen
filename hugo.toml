@@ -20,7 +20,7 @@ title = "Eigen"
     weight = 2
   [[menu.main]]
     name = "Study"
-    url = "/study/"
+    url = "/study/deep-learning/"
     weight = 3
   [[menu.main]]
     name = "Blog"

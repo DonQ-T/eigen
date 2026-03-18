@@ -1,5 +1,6 @@
 {{ define "main" }}
 <article class="project-article">
+  {{ if not .Params.hideHeader }}
   <div class="post-header">
     {{ if not .Date.IsZero }}
     <span class="post-date">{{ .Date.Format "January 2, 2006" }}</span>
@@ -14,6 +15,7 @@
     </div>
     {{ end }}
   </div>
+  {{ end }}
 
   <div class="post-content">
     {{ .Content }}

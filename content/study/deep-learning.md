@@ -5,13 +5,8 @@ author: "Matt Jacob"
 description: "Unified study tools for Goodfellow, Bengio & Courville's Deep Learning — flashcards, quizzes, and progress tracking with spaced repetition."
 tags: ["deep learning", "study", "interactive"]
 js: "js/study-lab.js"
+hideHeader: true
 draft: false
----
-
-A unified study environment for [*Deep Learning*](https://www.deeplearningbook.org/) by Goodfellow, Bengio & Courville. Combines spaced-repetition flashcards, multiple choice quizzes, and progress tracking in one place.
-
-All progress is saved in your browser's localStorage. **Keyboard shortcuts:** 1–5 to switch tabs, then use tab-specific shortcuts (Space to flip cards, 1–4 to rate/answer, Escape to go back).
-
 ---
 
 <div id="sl-app">
