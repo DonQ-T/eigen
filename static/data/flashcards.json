@@ -1,0 +1,2930 @@
+{
+  "meta": {
+    "title": "Deep Learning (Goodfellow et al.)",
+    "version": 2
+  },
+  "cards": [
+    {
+      "id": "ch01-001",
+      "chapter": 1,
+      "section": "1.0",
+      "tags": [
+        "introduction",
+        "definition"
+      ],
+      "front": "What is **deep learning**, and how does it relate to AI and machine learning?",
+      "back": "Deep learning is a subset of **representation learning**, which is itself a subset of **machine learning**, which is a subset of **AI**.\n\nDeep learning lets computers learn from experience and understand the world as a **hierarchy of concepts**, where each concept is defined in terms of simpler concepts. The \"depth\" refers to the many layers of composition in the learned representation."
+    },
+    {
+      "id": "ch01-002",
+      "chapter": 1,
+      "section": "1.0",
+      "tags": [
+        "introduction",
+        "intuition"
+      ],
+      "front": "Why is deep learning needed? What problem does it solve that classical ML cannot?",
+      "back": "Classical ML depends on **hand-crafted features** (representations) chosen by a human. Deep learning solves this by learning representations automatically from raw data.\n\nThe key difficulty is extracting high-level, abstract **factors of variation** from raw inputs (e.g., pixels). Deep learning builds complex concepts out of simpler ones across multiple layers -- edges to corners to object parts to objects."
+    },
+    {
+      "id": "ch01-003",
+      "chapter": 1,
+      "section": "1.2",
+      "tags": [
+        "introduction",
+        "intuition"
+      ],
+      "front": "What are the **three historical waves** of neural network research, and what characterized each?",
+      "back": "1. **Cybernetics** (1940s--1960s): Simple linear models (perceptron, ADALINE), biological inspiration. Ended after Minsky & Papert showed linear models cannot learn XOR.\n2. **Connectionism** (1980s--1990s): Back-propagation, distributed representations, LSTMs. Declined as kernel machines and graphical models rose.\n3. **Deep learning** (2006--present): Greedy layer-wise pretraining breakthrough, then massive gains from bigger data, GPUs, and deeper architectures."
+    },
+    {
+      "id": "ch01-004",
+      "chapter": 1,
+      "section": "1.2",
+      "tags": [
+        "introduction",
+        "definition"
+      ],
+      "front": "What is **representation learning**, and how does an **autoencoder** exemplify it?",
+      "back": "Representation learning uses ML to discover not just the mapping from representation to output, but **the representation itself**.\n\nAn **autoencoder** combines:\n- An **encoder** $f$ that maps input to a new representation\n- A **decoder** $g$ that reconstructs the original from the new representation\n\nIt is trained to preserve information ($g(f(\\mathbf{x})) \\approx \\mathbf{x}$) while the new representation has desirable properties."
+    },
+    {
+      "id": "ch01-005",
+      "chapter": 1,
+      "section": "1.2",
+      "tags": [
+        "introduction",
+        "intuition"
+      ],
+      "front": "What three factors have driven the current success of deep learning (the third wave)?",
+      "back": "1. **Increasing dataset sizes**: Benchmark datasets grew from hundreds of examples (Iris, 1930s) to millions (ImageNet, 2010s). Rule of thumb: ~5,000 labeled examples per category for acceptable performance; ~10 million for human-level.\n2. **Increasing model sizes**: Neural networks doubled in size every ~2.4 years, powered by GPUs and faster hardware.\n3. **Increasing accuracy & complexity**: From recognizing single digits to reading full addresses, translating languages, and playing Atari games."
+    },
+    {
+      "id": "ch01-006",
+      "chapter": 1,
+      "section": "1.2.1",
+      "tags": [
+        "history",
+        "knowledge-base",
+        "Cyc"
+      ],
+      "front": "What is the **knowledge base** approach to AI, and why did it fail? Give the classic example from the textbook.",
+      "back": "The knowledge base approach hard-codes knowledge about the world in formal languages so a computer can reason using logical inference rules.\n- The most famous project was **Cyc**, which used a language called CycL\n- Cyc failed to understand a story about Fred shaving: it knew people lack electrical parts, but since Fred held an electric razor, it asked whether \"FredWhileShaving\" was still a person\n- The failure illustrates that people struggle to devise formal rules with enough complexity to accurately describe the world"
+    },
+    {
+      "id": "ch01-007",
+      "chapter": 1,
+      "section": "1.2.1",
+      "tags": [
+        "history",
+        "perceptron",
+        "XOR",
+        "Minsky"
+      ],
+      "front": "What was the **XOR problem**, and how did it contribute to the first major decline in neural network popularity?",
+      "back": "Linear models like the perceptron cannot learn the **XOR function**:\n- $f([0,1], \\mathbf{w}) = 1$ and $f([1,0], \\mathbf{w}) = 1$\n- $f([1,1], \\mathbf{w}) = 0$ and $f([0,0], \\mathbf{w}) = 0$\n- Minsky & Papert (1969) highlighted these limitations of linear models\n- Critics generalized the flaws to biologically inspired learning in general\n- This caused the first major dip in neural network popularity (end of the **cybernetics** wave)"
+    },
+    {
+      "id": "ch01-008",
+      "chapter": 1,
+      "section": "1.2.1",
+      "tags": [
+        "history",
+        "connectionism",
+        "distributed-representation"
+      ],
+      "front": "What is a **distributed representation**, and why is it more efficient than a one-hot/local representation?",
+      "back": "In a **distributed representation**, each input is represented by many features, and each feature participates in representing many inputs.\n- Example: a vision system recognizing 3 objects in 3 colors\n- **Local representation**: 1 neuron per combination = 9 neurons\n- **Distributed representation**: 3 neurons for color + 3 for object = 6 neurons\n- Generalizes to exponentially many combinations with linear resources"
+    },
+    {
+      "id": "ch01-009",
+      "chapter": 1,
+      "section": "1.2.1",
+      "tags": [
+        "history",
+        "neuroscience",
+        "ReLU",
+        "Neocognitron"
+      ],
+      "front": "Name two neural network architectures or components directly inspired by **neuroscience**.",
+      "back": "1. **Neocognitron** (Fukushima, 1980): inspired by the mammalian visual system; became the basis for modern convolutional networks\n2. **Rectified linear unit (ReLU)**: the Cognitron (1975) introduced a version highly inspired by brain function; the modern ReLU developed from multiple viewpoints\n- The textbook notes that while neuroscience has inspired *architectures*, we do not know enough about biological learning to guide *training algorithms*"
+    },
+    {
+      "id": "ch01-010",
+      "chapter": 1,
+      "section": "1.2.1",
+      "tags": [
+        "history",
+        "CIFAR",
+        "third-wave"
+      ],
+      "front": "What role did **CIFAR** play in keeping neural network research alive, and what breakthrough launched the third wave?",
+      "back": "- **CIFAR** funded the Neural Computation and Adaptive Perception program\n- United groups led by **Hinton** (Toronto), **Bengio** (Montreal), and **LeCun** (NYU)\n- The third wave began in **2006** when Hinton showed that a **deep belief network** could be efficiently trained using **greedy layer-wise pretraining**\n- Other CIFAR groups quickly showed the same strategy worked for other deep networks"
+    },
+    {
+      "id": "ch01-011",
+      "chapter": 1,
+      "section": "1.2.2",
+      "tags": [
+        "data",
+        "scaling",
+        "rule-of-thumb"
+      ],
+      "front": "According to the textbook's **rule of thumb**, how many labeled examples does a supervised deep learning algorithm need for (a) acceptable and (b) human-level performance?",
+      "back": "- **Acceptable performance**: ~5,000 labeled examples per category\n- **Match or exceed human performance**: at least **10 million** labeled examples\n- The learning algorithms are nearly identical to those from the 1980s; the main difference is sufficient data and compute"
+    },
+    {
+      "id": "ch01-012",
+      "chapter": 1,
+      "section": "1.2.3",
+      "tags": [
+        "model-size",
+        "scaling",
+        "neurons"
+      ],
+      "front": "How fast have artificial neural networks been **doubling in size**, and when would they match the human brain?",
+      "back": "- ANNs have doubled in size roughly every **2.4 years** since the introduction of hidden units\n- At this rate, they would not match the human brain's neuron count until at least the **2050s**\n- Biological neurons may compute more complicated functions than artificial neurons\n- Even networks considered large at the time of writing were smaller than the nervous system of a **frog**"
+    },
+    {
+      "id": "ch01-013",
+      "chapter": 1,
+      "section": "1.2.4",
+      "tags": [
+        "ImageNet",
+        "ILSVRC",
+        "history"
+      ],
+      "front": "Describe the significance of the **2012 ILSVRC** result.",
+      "back": "- In 2012, a **convolutional network** (Krizhevsky et al.) won ImageNet for the first time\n- Reduced top-5 error from **26.1%** to **15.3%**\n- Since then, deep convolutional nets have won every year\n- By the time of writing, top-5 error had dropped to **3.6%**"
+    },
+    {
+      "id": "ch01-014",
+      "chapter": 1,
+      "section": "1.1",
+      "tags": [
+        "depth",
+        "measurement",
+        "computational-graph"
+      ],
+      "front": "The textbook describes **two ways to measure the depth** of a model. What are they?",
+      "back": "1. **Depth of the computational graph**: length of the longest path from input to output\n2. **Depth of the probabilistic modeling graph**: depth of the graph describing how concepts relate\n- Logistic regression computes $\\sigma(\\mathbf{w}^\\top \\mathbf{x})$\n- If addition, multiplication, and sigmoid are separate steps: depth **3**\n- If logistic regression is a single element: depth **1**\n- There is no consensus on how much depth qualifies as \"deep\""
+    },
+    {
+      "id": "ch01-015",
+      "chapter": 1,
+      "section": "1.2.1",
+      "tags": [
+        "history",
+        "ADALINE",
+        "SGD",
+        "perceptron"
+      ],
+      "front": "What are the **McCulloch-Pitts neuron**, the **perceptron**, and **ADALINE**?",
+      "back": "- **McCulloch-Pitts neuron** (1943): earliest linear model of brain function; weights set by human operator\n- **Perceptron** (Rosenblatt, 1958): first model that could *learn* weights from examples\n- **ADALINE** (Widrow & Hoff, 1960): returned $f(\\mathbf{x})$ as a real number (regression)\n- ADALINE was trained with **stochastic gradient descent (SGD)**, which remains the dominant training algorithm today"
+    },
+    {
+      "id": "ch02-001",
+      "chapter": 2,
+      "section": "2.1",
+      "tags": [
+        "definition",
+        "linear-algebra"
+      ],
+      "front": "What is a **scalar**, **vector**, **matrix**, and **tensor**?",
+      "back": "- **Scalar**: single number, $x \\in \\mathbb{R}$ (italic lowercase)\n- **Vector**: array of numbers, $\\mathbf{x} \\in \\mathbb{R}^n$ (bold lowercase)\n- **Matrix**: 2-D array, $\\mathbf{A} \\in \\mathbb{R}^{m \\times n}$ (bold uppercase)\n- **Tensor**: array with more than 2 axes (bold sans-serif uppercase, $\\mathsf{A}$)\n\nThe **transpose** swaps rows and columns: $(\\mathbf{A}^\\top)_{i,j} = A_{j,i}$."
+    },
+    {
+      "id": "ch02-002",
+      "chapter": 2,
+      "section": "2.1",
+      "tags": [
+        "definition",
+        "linear-algebra"
+      ],
+      "front": "What is **broadcasting** in the context of matrix-vector addition?",
+      "back": "When adding a vector $\\mathbf{b}$ to a matrix $\\mathbf{A}$, the result is $\\mathbf{C} = \\mathbf{A} + \\mathbf{b}$ where $C_{i,j} = A_{i,j} + b_j$.\n\nThe vector $\\mathbf{b}$ is implicitly copied (\"broadcast\") to every row of the matrix before performing the element-wise addition. This is a notational convenience widely used in deep learning."
+    },
+    {
+      "id": "ch02-003",
+      "chapter": 2,
+      "section": "2.2",
+      "tags": [
+        "definition",
+        "linear-algebra",
+        "computation"
+      ],
+      "front": "How is the **matrix product** $\\mathbf{C} = \\mathbf{A}\\mathbf{B}$ defined, and how does it differ from the **Hadamard product**?",
+      "back": "**Matrix product**: $C_{i,j} = \\sum_k A_{i,k} B_{k,j}$\n- Requires $\\mathbf{A}$ cols = $\\mathbf{B}$ rows\n- Distributive: $\\mathbf{A}(\\mathbf{B}+\\mathbf{C}) = \\mathbf{AB}+\\mathbf{AC}$\n- Associative: $\\mathbf{A}(\\mathbf{BC}) = (\\mathbf{AB})\\mathbf{C}$\n- **Not** commutative: $\\mathbf{AB} \\neq \\mathbf{BA}$ in general\n\n**Hadamard (element-wise) product**: $\\mathbf{A} \\odot \\mathbf{B}$, where $(\\mathbf{A} \\odot \\mathbf{B})_{i,j} = A_{i,j} B_{i,j}$.\n\nTranspose of a product: $(\\mathbf{AB})^\\top = \\mathbf{B}^\\top \\mathbf{A}^\\top$."
+    },
+    {
+      "id": "ch02-004",
+      "chapter": 2,
+      "section": "2.3",
+      "tags": [
+        "definition",
+        "linear-algebra"
+      ],
+      "front": "What is the **identity matrix** and the **matrix inverse**? How do you solve $\\mathbf{Ax} = \\mathbf{b}$?",
+      "back": "**Identity matrix** $\\mathbf{I}_n \\in \\mathbb{R}^{n \\times n}$: all 1s on the diagonal, 0s elsewhere. $\\mathbf{I}_n \\mathbf{x} = \\mathbf{x}$ for all $\\mathbf{x}$.\n\n**Matrix inverse** $\\mathbf{A}^{-1}$: satisfies $\\mathbf{A}^{-1}\\mathbf{A} = \\mathbf{I}_n$.\n\nSolving $\\mathbf{Ax} = \\mathbf{b}$:\n$$\\mathbf{x} = \\mathbf{A}^{-1}\\mathbf{b}$$\n\n$\\mathbf{A}^{-1}$ exists only if $\\mathbf{A}$ is square with all linearly independent columns (non-singular). In practice, $\\mathbf{A}^{-1}$ has limited numerical precision; direct methods are preferred."
+    },
+    {
+      "id": "ch02-005",
+      "chapter": 2,
+      "section": "2.4",
+      "tags": [
+        "definition",
+        "linear-algebra"
+      ],
+      "front": "Define **linear combination**, **span**, **linear independence**, and **singular matrix**.",
+      "back": "- **Linear combination** of vectors $\\{\\mathbf{v}^{(1)}, \\ldots, \\mathbf{v}^{(n)}\\}$: $\\sum_i c_i \\mathbf{v}^{(i)}$\n- **Span**: the set of all points obtainable by linear combination of those vectors\n- **Linearly independent**: no vector in the set can be written as a linear combination of the others\n- **Singular matrix**: a square matrix whose columns are **not** all linearly independent (so $\\mathbf{A}^{-1}$ does not exist)\n\nFor $\\mathbf{Ax}=\\mathbf{b}$ to have a unique solution for every $\\mathbf{b}$, $\\mathbf{A}$ must be square ($m=n$) with all columns linearly independent."
+    },
+    {
+      "id": "ch02-006",
+      "chapter": 2,
+      "section": "2.5",
+      "tags": [
+        "definition",
+        "linear-algebra"
+      ],
+      "front": "What is the $L^p$ **norm**? Give the formulas for $L^1$, $L^2$, and $L^\\infty$ norms.",
+      "back": "$$||\\mathbf{x}||_p = \\left(\\sum_i |x_i|^p\\right)^{1/p}, \\quad p \\in \\mathbb{R},\\; p \\geq 1$$\n\n- $L^2$ (**Euclidean**): $||\\mathbf{x}||_2 = \\sqrt{\\sum_i x_i^2}$. Squared form $\\mathbf{x}^\\top\\mathbf{x}$ is often preferred (simpler derivatives).\n- $L^1$: $||\\mathbf{x}||_1 = \\sum_i |x_i|$. Used when distinguishing zero from nonzero matters (sparsity).\n- $L^\\infty$ (**max norm**): $||\\mathbf{x}||_\\infty = \\max_i |x_i|$.\n\nA norm must satisfy: (1) $f(\\mathbf{x})=0 \\Rightarrow \\mathbf{x}=\\mathbf{0}$, (2) triangle inequality, (3) $f(\\alpha\\mathbf{x})=|\\alpha|f(\\mathbf{x})$."
+    },
+    {
+      "id": "ch02-007",
+      "chapter": 2,
+      "section": "2.5",
+      "tags": [
+        "definition",
+        "linear-algebra"
+      ],
+      "front": "What is the **Frobenius norm** of a matrix, and how can the dot product be expressed using norms?",
+      "back": "**Frobenius norm**: analogous to the $L^2$ norm for matrices:\n$$||\\mathbf{A}||_F = \\sqrt{\\sum_{i,j} A_{i,j}^2} = \\sqrt{\\text{Tr}(\\mathbf{A}\\mathbf{A}^\\top)}$$\n\n**Dot product in terms of norms**:\n$$\\mathbf{x}^\\top\\mathbf{y} = ||\\mathbf{x}||_2 \\, ||\\mathbf{y}||_2 \\cos\\theta$$\nwhere $\\theta$ is the angle between $\\mathbf{x}$ and $\\mathbf{y}$."
+    },
+    {
+      "id": "ch02-008",
+      "chapter": 2,
+      "section": "2.6",
+      "tags": [
+        "definition",
+        "linear-algebra"
+      ],
+      "front": "Define **diagonal**, **symmetric**, **orthogonal** matrices and **unit/orthogonal vectors**.",
+      "back": "- **Diagonal**: $D_{i,j} = 0$ for $i \\neq j$. Written $\\text{diag}(\\mathbf{v})$. Efficient: $\\text{diag}(\\mathbf{v})\\mathbf{x} = \\mathbf{v} \\odot \\mathbf{x}$.\n- **Symmetric**: $\\mathbf{A} = \\mathbf{A}^\\top$.\n- **Unit vector**: $||\\mathbf{x}||_2 = 1$.\n- **Orthogonal vectors**: $\\mathbf{x}^\\top\\mathbf{y} = 0$ (90-degree angle). If also unit norm, they are **orthonormal**.\n- **Orthogonal matrix**: square matrix with orthonormal rows and columns. $\\mathbf{A}^\\top\\mathbf{A} = \\mathbf{A}\\mathbf{A}^\\top = \\mathbf{I}$, so $\\mathbf{A}^{-1} = \\mathbf{A}^\\top$ (very cheap to invert)."
+    },
+    {
+      "id": "ch02-009",
+      "chapter": 2,
+      "section": "2.7",
+      "tags": [
+        "decomposition",
+        "linear-algebra"
+      ],
+      "front": "What is **eigendecomposition**? How is it written for a general matrix vs. a real symmetric matrix?",
+      "back": "An **eigenvector** $\\mathbf{v}$ of $\\mathbf{A}$ satisfies $\\mathbf{A}\\mathbf{v} = \\lambda\\mathbf{v}$, where $\\lambda$ is the **eigenvalue**.\n\n**General** (if $n$ linearly independent eigenvectors exist):\n$$\\mathbf{A} = \\mathbf{V}\\text{diag}(\\boldsymbol{\\lambda})\\mathbf{V}^{-1}$$\n\n**Real symmetric matrix** (always decomposable):\n$$\\mathbf{A} = \\mathbf{Q}\\boldsymbol{\\Lambda}\\mathbf{Q}^\\top$$\nwhere $\\mathbf{Q}$ is orthogonal (eigenvectors), $\\boldsymbol{\\Lambda}$ is diagonal (eigenvalues). Eigenvalues are always real."
+    },
+    {
+      "id": "ch02-010",
+      "chapter": 2,
+      "section": "2.7",
+      "tags": [
+        "definition",
+        "linear-algebra"
+      ],
+      "front": "What do the terms **positive definite**, **positive semidefinite**, **negative definite**, and **negative semidefinite** mean?",
+      "back": "These describe a symmetric matrix $\\mathbf{A}$ based on its eigenvalues:\n\n- **Positive definite**: all eigenvalues $> 0$. Guarantees $\\mathbf{x}^\\top\\mathbf{A}\\mathbf{x} > 0$ for all $\\mathbf{x} \\neq \\mathbf{0}$.\n- **Positive semidefinite**: all eigenvalues $\\geq 0$. Guarantees $\\mathbf{x}^\\top\\mathbf{A}\\mathbf{x} \\geq 0$.\n- **Negative definite**: all eigenvalues $< 0$.\n- **Negative semidefinite**: all eigenvalues $\\leq 0$.\n\nThe matrix is **singular** iff any eigenvalue is zero."
+    },
+    {
+      "id": "ch02-011",
+      "chapter": 2,
+      "section": "2.8",
+      "tags": [
+        "decomposition",
+        "linear-algebra"
+      ],
+      "front": "What is the **Singular Value Decomposition** (SVD) and why is it more general than eigendecomposition?",
+      "back": "Every real matrix $\\mathbf{A} \\in \\mathbb{R}^{m \\times n}$ can be factored as:\n$$\\mathbf{A} = \\mathbf{U}\\mathbf{D}\\mathbf{V}^\\top$$\n- $\\mathbf{U} \\in \\mathbb{R}^{m \\times m}$: orthogonal, columns are **left-singular vectors** (eigenvectors of $\\mathbf{A}\\mathbf{A}^\\top$)\n- $\\mathbf{V} \\in \\mathbb{R}^{n \\times n}$: orthogonal, columns are **right-singular vectors** (eigenvectors of $\\mathbf{A}^\\top\\mathbf{A}$)\n- $\\mathbf{D} \\in \\mathbb{R}^{m \\times n}$: diagonal, entries are **singular values** ($= \\sqrt{\\text{eigenvalues of } \\mathbf{A}^\\top\\mathbf{A}}$)\n\nUnlike eigendecomposition, SVD works on **any** matrix (not just square ones)."
+    },
+    {
+      "id": "ch02-012",
+      "chapter": 2,
+      "section": "2.9",
+      "tags": [
+        "definition",
+        "linear-algebra",
+        "computation"
+      ],
+      "front": "What is the **Moore-Penrose pseudoinverse** $\\mathbf{A}^+$, and when is it useful?",
+      "back": "For non-square matrices where $\\mathbf{A}^{-1}$ is undefined:\n$$\\mathbf{A}^+ = \\lim_{\\alpha \\searrow 0} (\\mathbf{A}^\\top\\mathbf{A} + \\alpha\\mathbf{I})^{-1}\\mathbf{A}^\\top$$\n\nComputed via SVD: $\\mathbf{A}^+ = \\mathbf{V}\\mathbf{D}^+\\mathbf{U}^\\top$, where $\\mathbf{D}^+$ takes reciprocals of nonzero diagonal elements.\n\n- **More columns than rows** (underdetermined): $\\mathbf{x} = \\mathbf{A}^+\\mathbf{y}$ gives the solution with **minimum** $||\\mathbf{x}||_2$.\n- **More rows than columns** (overdetermined): gives the $\\mathbf{x}$ that **minimizes** $||\\mathbf{Ax} - \\mathbf{y}||_2$ (least squares)."
+    },
+    {
+      "id": "ch02-013",
+      "chapter": 2,
+      "section": "2.10",
+      "tags": [
+        "definition",
+        "linear-algebra",
+        "computation"
+      ],
+      "front": "What is the **trace** operator, and what key properties make it useful?",
+      "back": "$$\\text{Tr}(\\mathbf{A}) = \\sum_i A_{i,i}$$\n\nKey properties:\n- Frobenius norm: $||\\mathbf{A}||_F = \\sqrt{\\text{Tr}(\\mathbf{A}\\mathbf{A}^\\top)}$\n- Transpose invariance: $\\text{Tr}(\\mathbf{A}) = \\text{Tr}(\\mathbf{A}^\\top)$\n- **Cyclic permutation**: $\\text{Tr}(\\mathbf{ABC}) = \\text{Tr}(\\mathbf{CAB}) = \\text{Tr}(\\mathbf{BCA})$\n- Even works across different shapes: $\\text{Tr}(\\mathbf{AB}) = \\text{Tr}(\\mathbf{BA})$ even when $\\mathbf{AB}$ and $\\mathbf{BA}$ have different dimensions\n- A scalar is its own trace: $a = \\text{Tr}(a)$"
+    },
+    {
+      "id": "ch02-014",
+      "chapter": 2,
+      "section": "2.11",
+      "tags": [
+        "definition",
+        "linear-algebra"
+      ],
+      "front": "What is the **determinant** of a matrix, and what does its value tell you geometrically?",
+      "back": "$$\\det(\\mathbf{A}) = \\prod_i \\lambda_i$$\nwhere $\\lambda_i$ are the eigenvalues of $\\mathbf{A}$.\n\n- $|\\det(\\mathbf{A})|$ measures how much the matrix **scales volume** when applied as a linear transformation.\n- $\\det(\\mathbf{A}) = 0$: space is contracted to zero volume along at least one dimension (matrix is **singular**).\n- $\\det(\\mathbf{A}) = 1$: the transformation **preserves volume**."
+    },
+    {
+      "id": "ch02-015",
+      "chapter": 2,
+      "section": "2.12",
+      "tags": [
+        "intuition",
+        "linear-algebra",
+        "decomposition"
+      ],
+      "front": "How does **PCA** (Principal Components Analysis) use eigendecomposition to compress data?",
+      "back": "Given $m$ points in $\\mathbb{R}^n$, PCA finds an encoding matrix $\\mathbf{D}$ that projects them to $\\mathbb{R}^l$ ($l < n$) with minimal reconstruction error.\n\n- Encoder: $f(\\mathbf{x}) = \\mathbf{D}^\\top\\mathbf{x}$\n- Decoder: $g(\\mathbf{c}) = \\mathbf{D}\\mathbf{c}$\n- Reconstruction: $r(\\mathbf{x}) = \\mathbf{D}\\mathbf{D}^\\top\\mathbf{x}$\n\nThe optimal $\\mathbf{D}$ is found by maximizing $\\text{Tr}(\\mathbf{d}^\\top\\mathbf{X}^\\top\\mathbf{X}\\mathbf{d})$ subject to $\\mathbf{d}^\\top\\mathbf{d}=1$. Solution: the $l$ **eigenvectors** of $\\mathbf{X}^\\top\\mathbf{X}$ corresponding to the **largest eigenvalues**."
+    },
+    {
+      "id": "ch02-016",
+      "chapter": 2,
+      "section": "2.2",
+      "tags": [
+        "linear-algebra",
+        "matrix-product",
+        "properties"
+      ],
+      "front": "State whether matrix multiplication is **(a) distributive**, **(b) associative**, and **(c) commutative**.",
+      "back": "- **(a) Distributive**: $\\mathbf{A}(\\mathbf{B} + \\mathbf{C}) = \\mathbf{AB} + \\mathbf{AC}$ yes\n- **(b) Associative**: $\\mathbf{A}(\\mathbf{BC}) = (\\mathbf{AB})\\mathbf{C}$ yes\n- **(c) Commutative**: $\\mathbf{AB} = \\mathbf{BA}$ does **not** hold in general\n- However, the dot product **is** commutative: $\\mathbf{x}^\\top \\mathbf{y} = \\mathbf{y}^\\top \\mathbf{x}$\n- Transpose of a product: $(\\mathbf{AB})^\\top = \\mathbf{B}^\\top \\mathbf{A}^\\top$"
+    },
+    {
+      "id": "ch02-017",
+      "chapter": 2,
+      "section": "2.3",
+      "tags": [
+        "linear-algebra",
+        "inverse",
+        "existence"
+      ],
+      "front": "Under what conditions does $\\mathbf{A}^{-1}$ exist for $\\mathbf{Ax} = \\mathbf{b}$?",
+      "back": "- $\\mathbf{A}^{-1}$ exists iff $\\mathbf{A}$ is **square** and all columns are **linearly independent** (non-singular)\n- If singular or non-square: **zero** or **infinitely many** solutions\n- When $\\mathbf{A}^{-1}$ exists: unique solution $\\mathbf{x} = \\mathbf{A}^{-1}\\mathbf{b}$"
+    },
+    {
+      "id": "ch02-018",
+      "chapter": 2,
+      "section": "2.4",
+      "tags": [
+        "linear-algebra",
+        "systems-of-equations",
+        "solutions"
+      ],
+      "front": "For $\\mathbf{Ax} = \\mathbf{b}$ with $\\mathbf{A} \\in \\mathbb{R}^{m \\times n}$, when does a solution exist for **every** $\\mathbf{b}$?",
+      "back": "The column space of $\\mathbf{A}$ must be all of $\\mathbb{R}^m$.\n- Requires at least $m$ **linearly independent** columns ($n \\geq m$)\n- $n \\geq m$ is necessary but not sufficient\n- If $n > m$: infinitely many solutions (underdetermined)"
+    },
+    {
+      "id": "ch02-019",
+      "chapter": 2,
+      "section": "2.5",
+      "tags": [
+        "linear-algebra",
+        "norms",
+        "max-norm"
+      ],
+      "front": "What is the $L^\\infty$ norm (**max norm**)?",
+      "back": "$$\\|\\mathbf{x}\\|_\\infty = \\max_i |x_i|$$\n- The absolute value of the largest-magnitude element\n- It is $\\lim_{p \\to \\infty} \\|\\mathbf{x}\\|_p$"
+    },
+    {
+      "id": "ch02-020",
+      "chapter": 2,
+      "section": "2.6",
+      "tags": [
+        "linear-algebra",
+        "diagonal-matrix",
+        "computation"
+      ],
+      "front": "Why are **diagonal matrices** computationally attractive?",
+      "back": "- Multiplication: $\\mathrm{diag}(\\mathbf{v})\\mathbf{x} = \\mathbf{v} \\odot \\mathbf{x}$, $O(n)$ not $O(n^2)$\n- Inverse: $\\mathrm{diag}(\\mathbf{v})^{-1} = \\mathrm{diag}([1/v_1, \\ldots, 1/v_n]^\\top)$, exists iff all $v_i \\neq 0$\n- Non-square diagonal matrices pad with zeros or truncate"
+    },
+    {
+      "id": "ch02-021",
+      "chapter": 2,
+      "section": "2.7",
+      "tags": [
+        "linear-algebra",
+        "eigendecomposition",
+        "real-symmetric"
+      ],
+      "front": "Every **real symmetric matrix** has a special eigendecomposition. State the theorem.",
+      "back": "$$\\mathbf{A} = \\mathbf{Q} \\mathbf{\\Lambda} \\mathbf{Q}^\\top$$\n- $\\mathbf{Q}$: orthogonal matrix of eigenvectors\n- $\\mathbf{\\Lambda}$: diagonal matrix of real eigenvalues\n- All eigenvalues guaranteed **real**\n- Not every matrix has real eigenvalues, but symmetric matrices always do\n- Decomposition may not be unique if eigenvalues repeat"
+    },
+    {
+      "id": "ch02-022",
+      "chapter": 2,
+      "section": "2.8",
+      "tags": [
+        "linear-algebra",
+        "SVD",
+        "dimensions"
+      ],
+      "front": "State the **SVD** of $\\mathbf{A} \\in \\mathbb{R}^{m \\times n}$ and give the dimensions of each factor.",
+      "back": "$$\\mathbf{A} = \\mathbf{U} \\mathbf{D} \\mathbf{V}^\\top$$\n- $\\mathbf{U} \\in \\mathbb{R}^{m \\times m}$: orthogonal (**left singular vectors**, eigenvectors of $\\mathbf{AA}^\\top$)\n- $\\mathbf{D} \\in \\mathbb{R}^{m \\times n}$: diagonal of **singular values**\n- $\\mathbf{V} \\in \\mathbb{R}^{n \\times n}$: orthogonal (**right singular vectors**, eigenvectors of $\\mathbf{A}^\\top\\mathbf{A}$)\n- Works on **any** matrix, not just square"
+    },
+    {
+      "id": "ch02-023",
+      "chapter": 2,
+      "section": "2.9",
+      "tags": [
+        "linear-algebra",
+        "pseudoinverse",
+        "SVD"
+      ],
+      "front": "How is the **Moore-Penrose pseudoinverse** computed via SVD?",
+      "back": "Given $\\mathbf{A} = \\mathbf{U}\\mathbf{D}\\mathbf{V}^\\top$:\n$$\\mathbf{A}^+ = \\mathbf{V} \\mathbf{D}^+ \\mathbf{U}^\\top$$\nwhere $\\mathbf{D}^+$ takes reciprocals of each nonzero diagonal element, then transposes.\n- More columns than rows: minimum-norm solution\n- More rows than columns: least-squares solution"
+    },
+    {
+      "id": "ch02-024",
+      "chapter": 2,
+      "section": "2.10",
+      "tags": [
+        "linear-algebra",
+        "trace",
+        "properties"
+      ],
+      "front": "List four useful properties of the **trace operator**.",
+      "back": "1. $\\mathrm{Tr}(\\mathbf{A}) = \\mathrm{Tr}(\\mathbf{A}^\\top)$\n2. **Cyclic permutation**: $\\mathrm{Tr}(\\mathbf{ABC}) = \\mathrm{Tr}(\\mathbf{CAB}) = \\mathrm{Tr}(\\mathbf{BCA})$\n3. A scalar is its own trace: $a = \\mathrm{Tr}(a)$\n4. Frobenius norm: $\\|\\mathbf{A}\\|_F = \\sqrt{\\mathrm{Tr}(\\mathbf{AA}^\\top)}$"
+    },
+    {
+      "id": "ch02-025",
+      "chapter": 2,
+      "section": "2.12",
+      "tags": [
+        "linear-algebra",
+        "PCA",
+        "derivation"
+      ],
+      "front": "In PCA, what **optimization problem** is solved, and what is the solution?",
+      "back": "Find encoding $f(\\mathbf{x}) = \\mathbf{D}^\\top \\mathbf{x}$ minimizing reconstruction error subject to $\\mathbf{D}$ having orthonormal columns.\n- The optimal $\\mathbf{D}$ consists of the $l$ **eigenvectors** of $\\mathbf{X}^\\top\\mathbf{X}$ with the **largest eigenvalues**\n- Reconstruction: $r(\\mathbf{x}) = \\mathbf{D}\\mathbf{D}^\\top\\mathbf{x}$"
+    },
+    {
+      "id": "ch03-001",
+      "chapter": 3,
+      "section": "3.1",
+      "tags": [
+        "probability",
+        "uncertainty",
+        "frequentist",
+        "bayesian"
+      ],
+      "front": "What are the **three sources of uncertainty** that motivate the use of probability in ML?",
+      "back": "1. **Inherent stochasticity** in the system being modeled (e.g., quantum mechanics, shuffled cards)\n2. **Incomplete observability** -- deterministic systems can appear stochastic when we cannot observe all driving variables\n3. **Incomplete modeling** -- when a model discards some observed information, the discarded info creates uncertainty in predictions"
+    },
+    {
+      "id": "ch03-002",
+      "chapter": 3,
+      "section": "3.1",
+      "tags": [
+        "probability",
+        "frequentist",
+        "bayesian"
+      ],
+      "front": "What is the difference between **frequentist probability** and **Bayesian probability**?",
+      "back": "- **Frequentist probability**: related to rates at which events occur (repeatable experiments)\n- **Bayesian probability**: represents a qualitative **degree of belief**, with 1 = certainty of truth, 0 = certainty of falsehood\n- Both use the same mathematical formulas and axioms"
+    },
+    {
+      "id": "ch03-003",
+      "chapter": 3,
+      "section": "3.3",
+      "tags": [
+        "probability",
+        "PMF",
+        "discrete"
+      ],
+      "front": "What three properties must a **probability mass function (PMF)** $P$ satisfy?",
+      "back": "1. The domain of $P$ must be the set of all possible states of x\n2. $\\forall x,\\; 0 \\leq P(x) \\leq 1$\n3. $\\sum_{x} P(x) = 1$ (the **normalization** property)"
+    },
+    {
+      "id": "ch03-004",
+      "chapter": 3,
+      "section": "3.3",
+      "tags": [
+        "probability",
+        "PDF",
+        "continuous"
+      ],
+      "front": "What three properties must a **probability density function (PDF)** $p$ satisfy?",
+      "back": "1. The domain of $p$ must be the set of all possible states\n2. $\\forall x,\\; p(x) \\geq 0$ (note: $p(x)$ **can exceed 1**)\n3. $\\int p(x)\\,dx = 1$\n\nUnlike a PMF, a PDF does not give the probability of a specific state directly. The probability that $x \\in [a,b]$ is $\\int_a^b p(x)\\,dx$."
+    },
+    {
+      "id": "ch03-005",
+      "chapter": 3,
+      "section": "3.4",
+      "tags": [
+        "probability",
+        "marginal",
+        "sum-rule"
+      ],
+      "front": "What is the **marginal probability** distribution?",
+      "back": "The probability distribution over a subset of variables, obtained from a known joint distribution.\n- **Discrete** (sum rule): $P(x) = \\sum_y P(x, y)$\n- **Continuous**: $p(x) = \\int p(x, y)\\,dy$"
+    },
+    {
+      "id": "ch03-006",
+      "chapter": 3,
+      "section": "3.5",
+      "tags": [
+        "probability",
+        "conditional"
+      ],
+      "front": "Write the formula for **conditional probability** $P(y \\mid x)$.",
+      "back": "$$P(y \\mid x) = \\frac{P(y, x)}{P(x)}$$\n\nDefined only when $P(x) > 0$."
+    },
+    {
+      "id": "ch03-007",
+      "chapter": 3,
+      "section": "3.6",
+      "tags": [
+        "probability",
+        "chain-rule"
+      ],
+      "front": "State the **chain rule** (product rule) of probability for $n$ random variables.",
+      "back": "$$P(x^{(1)}, \\ldots, x^{(n)}) = P(x^{(1)}) \\prod_{i=2}^{n} P(x^{(i)} \\mid x^{(1)}, \\ldots, x^{(i-1)})$$\n\nExample: $P(a,b,c) = P(a \\mid b,c)P(b \\mid c)P(c)$"
+    },
+    {
+      "id": "ch03-008",
+      "chapter": 3,
+      "section": "3.7",
+      "tags": [
+        "probability",
+        "independence",
+        "conditional-independence"
+      ],
+      "front": "Define **independence** and **conditional independence**.",
+      "back": "**Independent** ($x \\perp y$): $p(x, y) = p(x)\\,p(y)$\n\n**Conditionally independent** given $z$ ($x \\perp y \\mid z$):\n$$p(x, y \\mid z) = p(x \\mid z)\\,p(y \\mid z)$$"
+    },
+    {
+      "id": "ch03-009",
+      "chapter": 3,
+      "section": "3.8",
+      "tags": [
+        "probability",
+        "expectation",
+        "linearity"
+      ],
+      "front": "Define **expectation** and state its **linearity** property.",
+      "back": "**Discrete**: $\\mathbb{E}[f(x)] = \\sum_x P(x)f(x)$\n**Continuous**: $\\mathbb{E}[f(x)] = \\int p(x)f(x)\\,dx$\n\n**Linearity**: $\\mathbb{E}[\\alpha f(x) + \\beta g(x)] = \\alpha\\,\\mathbb{E}[f(x)] + \\beta\\,\\mathbb{E}[g(x)]$"
+    },
+    {
+      "id": "ch03-010",
+      "chapter": 3,
+      "section": "3.8",
+      "tags": [
+        "probability",
+        "variance",
+        "covariance"
+      ],
+      "front": "Define **variance** and **covariance**. Does zero covariance imply independence?",
+      "back": "**Variance**: $\\text{Var}(f(x)) = \\mathbb{E}[(f(x) - \\mathbb{E}[f(x)])^2]$\n\n**Covariance**: $\\text{Cov}(f(x), g(y)) = \\mathbb{E}[(f(x) - \\mathbb{E}[f(x)])(g(y) - \\mathbb{E}[g(y)])]$\n\n- Independent variables have zero covariance\n- But zero covariance does **not** imply independence (only no *linear* dependence)"
+    },
+    {
+      "id": "ch03-011",
+      "chapter": 3,
+      "section": "3.8",
+      "tags": [
+        "probability",
+        "covariance-matrix"
+      ],
+      "front": "Define the **covariance matrix** of a random vector.",
+      "back": "$$\\text{Cov}(\\mathbf{x})_{i,j} = \\text{Cov}(x_i, x_j)$$\n\nDiagonal elements give the variance: $\\text{Cov}(x_i, x_i) = \\text{Var}(x_i)$"
+    },
+    {
+      "id": "ch03-012",
+      "chapter": 3,
+      "section": "3.9",
+      "tags": [
+        "probability",
+        "bernoulli"
+      ],
+      "front": "Give the PMF, mean, and variance of the **Bernoulli distribution**.",
+      "back": "$P(x) = \\phi^x (1-\\phi)^{1-x}$\n\n- $P(x=1) = \\phi$, $P(x=0) = 1 - \\phi$\n- $\\mathbb{E}[x] = \\phi$\n- $\\text{Var}(x) = \\phi(1-\\phi)$"
+    },
+    {
+      "id": "ch03-013",
+      "chapter": 3,
+      "section": "3.9",
+      "tags": [
+        "probability",
+        "gaussian",
+        "normal"
+      ],
+      "front": "Write the PDF of the **Gaussian distribution** in standard and precision parameterizations.",
+      "back": "**Standard**: $\\mathcal{N}(x;\\mu,\\sigma^2) = \\sqrt{\\frac{1}{2\\pi\\sigma^2}}\\exp\\left(-\\frac{(x-\\mu)^2}{2\\sigma^2}\\right)$\n\n**Precision** ($\\beta = 1/\\sigma^2$): $\\mathcal{N}(x;\\mu,\\beta^{-1}) = \\sqrt{\\frac{\\beta}{2\\pi}}\\exp\\left(-\\frac{\\beta(x-\\mu)^2}{2}\\right)$"
+    },
+    {
+      "id": "ch03-014",
+      "chapter": 3,
+      "section": "3.9",
+      "tags": [
+        "probability",
+        "gaussian",
+        "central-limit-theorem"
+      ],
+      "front": "Give **two reasons** why the normal distribution is a good default choice.",
+      "back": "1. **Central limit theorem**: the sum of many independent random variables is approximately normal\n2. **Maximum entropy**: among all distributions with a given variance, the normal encodes the **maximum amount of uncertainty**"
+    },
+    {
+      "id": "ch03-015",
+      "chapter": 3,
+      "section": "3.9",
+      "tags": [
+        "probability",
+        "multivariate-gaussian"
+      ],
+      "front": "Write the PDF of the **multivariate normal distribution**.",
+      "back": "$$\\mathcal{N}(\\boldsymbol{x}; \\boldsymbol{\\mu}, \\boldsymbol{\\Sigma}) = \\sqrt{\\frac{1}{(2\\pi)^n \\det(\\boldsymbol{\\Sigma})}} \\exp\\left(-\\frac{1}{2}(\\boldsymbol{x}-\\boldsymbol{\\mu})^\\top \\boldsymbol{\\Sigma}^{-1}(\\boldsymbol{x}-\\boldsymbol{\\mu})\\right)$$\n\n$\\boldsymbol{\\mu}$: mean vector, $\\boldsymbol{\\Sigma}$: positive definite covariance matrix"
+    },
+    {
+      "id": "ch03-016",
+      "chapter": 3,
+      "section": "3.9",
+      "tags": [
+        "probability",
+        "exponential",
+        "laplace"
+      ],
+      "front": "Write the PDFs of the **exponential** and **Laplace** distributions.",
+      "back": "**Exponential**: $p(x; \\lambda) = \\lambda \\mathbf{1}_{x \\geq 0} \\exp(-\\lambda x)$\n\n**Laplace**: $\\text{Laplace}(x; \\mu, \\gamma) = \\frac{1}{2\\gamma} \\exp\\left(-\\frac{|x - \\mu|}{\\gamma}\\right)$"
+    },
+    {
+      "id": "ch03-017",
+      "chapter": 3,
+      "section": "3.9",
+      "tags": [
+        "probability",
+        "dirac-delta",
+        "empirical-distribution"
+      ],
+      "front": "Define the **Dirac delta** and **empirical distribution**.",
+      "back": "**Dirac delta**: $p(x) = \\delta(x - \\mu)$, zero everywhere except $x=\\mu$, integrates to 1.\n\n**Empirical distribution**: $\\hat{p}(\\boldsymbol{x}) = \\frac{1}{m} \\sum_{i=1}^{m} \\delta(\\boldsymbol{x} - \\boldsymbol{x}^{(i)})$\n\nPuts equal mass $1/m$ on each training point. Maximizes likelihood of training data."
+    },
+    {
+      "id": "ch03-018",
+      "chapter": 3,
+      "section": "3.9",
+      "tags": [
+        "probability",
+        "mixture-model",
+        "latent-variable"
+      ],
+      "front": "What is a **mixture distribution** and its connection to **latent variables**?",
+      "back": "$$P(x) = \\sum_i P(c = i)\\, P(x \\mid c = i)$$\n\n- $c$ is a **latent variable** (not directly observed)\n- $P(c=i)$ are **prior probabilities**; $P(c \\mid x)$ is the **posterior**\n- A **Gaussian mixture model** uses Gaussian components with separate $\\boldsymbol{\\mu}^{(i)}$, $\\boldsymbol{\\Sigma}^{(i)}$\n- GMMs are **universal approximators** of smooth densities"
+    },
+    {
+      "id": "ch03-019",
+      "chapter": 3,
+      "section": "3.10",
+      "tags": [
+        "probability",
+        "sigmoid",
+        "softplus"
+      ],
+      "front": "Define the **logistic sigmoid** and **softplus** functions.",
+      "back": "**Sigmoid**: $\\sigma(x) = \\frac{1}{1 + \\exp(-x)}$, range $(0,1)$\n- $1 - \\sigma(x) = \\sigma(-x)$\n- $\\frac{d}{dx}\\sigma(x) = \\sigma(x)(1 - \\sigma(x))$\n\n**Softplus**: $\\zeta(x) = \\log(1 + \\exp(x))$, range $(0,\\infty)$\n- Smooth version of ReLU\n- $\\frac{d}{dx}\\zeta(x) = \\sigma(x)$"
+    },
+    {
+      "id": "ch03-020",
+      "chapter": 3,
+      "section": "3.11",
+      "tags": [
+        "probability",
+        "bayes-rule"
+      ],
+      "front": "State **Bayes' rule**.",
+      "back": "$$P(x \\mid y) = \\frac{P(x)\\, P(y \\mid x)}{P(y)}$$\n\n$P(y)$ can be computed via marginalization: $P(y) = \\sum_x P(y \\mid x)\\, P(x)$"
+    },
+    {
+      "id": "ch03-021",
+      "chapter": 3,
+      "section": "3.12",
+      "tags": [
+        "measure-theory",
+        "change-of-variable"
+      ],
+      "front": "When $y = g(x)$ is invertible, what is the correct formula for $p_y(y)$?",
+      "back": "$$p_y(y) = p_x(g^{-1}(y)) \\left|\\frac{\\partial x}{\\partial y}\\right|$$\n\nHigher dimensions use the **Jacobian determinant**:\n$$p_x(\\boldsymbol{x}) = p_y(g(\\boldsymbol{x})) \\left|\\det\\left(\\frac{\\partial g(\\boldsymbol{x})}{\\partial \\boldsymbol{x}}\\right)\\right|$$"
+    },
+    {
+      "id": "ch03-022",
+      "chapter": 3,
+      "section": "3.13",
+      "tags": [
+        "information-theory",
+        "self-information",
+        "entropy"
+      ],
+      "front": "Define **self-information** and **Shannon entropy**.",
+      "back": "**Self-information**: $I(x) = -\\log P(x)$ (nats with ln, bits with log2)\n\n**Shannon entropy**: $H(x) = -\\mathbb{E}[\\log P(x)]$\n\n- Low entropy: distribution close to deterministic\n- High entropy: distribution close to uniform"
+    },
+    {
+      "id": "ch03-023",
+      "chapter": 3,
+      "section": "3.13",
+      "tags": [
+        "information-theory",
+        "KL-divergence",
+        "cross-entropy"
+      ],
+      "front": "Define **KL divergence** and **cross-entropy**.",
+      "back": "**KL divergence**: $D_{\\text{KL}}(P \\| Q) = \\mathbb{E}_P[\\log P(x) - \\log Q(x)]$\n- Always $\\geq 0$; equals 0 iff $P = Q$\n- **Not symmetric**: $D_{\\text{KL}}(P\\|Q) \\neq D_{\\text{KL}}(Q\\|P)$\n\n**Cross-entropy**: $H(P, Q) = -\\mathbb{E}_P[\\log Q(x)] = H(P) + D_{\\text{KL}}(P \\| Q)$\n\nMinimizing cross-entropy w.r.t. $Q$ = minimizing KL divergence."
+    },
+    {
+      "id": "ch03-024",
+      "chapter": 3,
+      "section": "3.14",
+      "tags": [
+        "graphical-models",
+        "directed",
+        "undirected"
+      ],
+      "front": "What is a **structured probabilistic model**? Compare directed vs undirected.",
+      "back": "A graph where nodes = random variables and edges = direct interactions.\n\n**Directed** (Bayesian networks): $p(\\mathbf{x}) = \\prod_i p(x_i \\mid \\text{Parents}(x_i))$\n\n**Undirected** (Markov random fields): $p(\\mathbf{x}) = \\frac{1}{Z} \\prod_i \\phi^{(i)}(\\mathcal{C}^{(i)})$\nwhere $\\phi$ are factor functions and $Z$ normalizes."
+    },
+    {
+      "id": "ch03-025",
+      "chapter": 3,
+      "section": "3.12",
+      "tags": [
+        "measure-theory",
+        "measure-zero"
+      ],
+      "front": "What do **measure zero** and **almost everywhere** mean?",
+      "back": "**Measure zero**: a set occupying no volume (e.g., rational numbers on $\\mathbb{R}$).\n\n**Almost everywhere**: a property that holds except on a set of measure zero. Many probability results hold for all discrete values but only almost everywhere for continuous values."
+    },
+    {
+      "id": "ch03-026",
+      "chapter": 3,
+      "section": "3.9",
+      "tags": [
+        "probability",
+        "multinoulli",
+        "categorical"
+      ],
+      "front": "What is the **multinoulli** (categorical) distribution?",
+      "back": "A distribution over a single discrete variable with $k$ states.\n- Parameterized by $\\boldsymbol{p} \\in [0,1]^{k-1}$, with $k$-th probability = $1 - \\mathbf{1}^\\top \\boldsymbol{p}$\n- Bernoulli is the special case $k = 2$\n- Multinoulli is multinomial with $n=1$ trial"
+    },
+    {
+      "id": "ch03-027",
+      "chapter": 3,
+      "section": "3.13",
+      "tags": [
+        "information-theory",
+        "KL-divergence",
+        "asymmetry"
+      ],
+      "front": "Explain the practical consequences of the **asymmetry** of KL divergence.",
+      "back": "When approximating multi-modal $p$ with simpler $q$:\n\n- **Minimizing $D_{\\text{KL}}(p \\| q)$**: $q$ must have high probability wherever $p$ does. Result: $q$ **blurs** modes together.\n- **Minimizing $D_{\\text{KL}}(q \\| p)$**: $q$ avoids placing mass where $p$ has low probability. Result: $q$ **chooses a single mode**."
+    },
+    {
+      "id": "ch04-001",
+      "chapter": 4,
+      "section": "4.1",
+      "tags": [
+        "numerical",
+        "underflow",
+        "overflow"
+      ],
+      "front": "What is **underflow** and why is it dangerous in numerical computation?",
+      "back": "**Underflow** occurs when numbers near zero are rounded to zero.\n- Dangerous because many functions behave qualitatively differently at zero vs. a small positive number\n- Example: division by zero, or $\\log(0) = -\\infty$\n- Can cascade into NaN values"
+    },
+    {
+      "id": "ch04-002",
+      "chapter": 4,
+      "section": "4.1",
+      "tags": [
+        "numerical",
+        "overflow"
+      ],
+      "front": "What is **overflow** in numerical computation?",
+      "back": "**Overflow** occurs when numbers with large magnitude are approximated as $\\infty$ or $-\\infty$.\n- Further arithmetic with infinite values usually produces NaN\n- Example: $\\exp(c)$ for very large $c$ overflows"
+    },
+    {
+      "id": "ch04-003",
+      "chapter": 4,
+      "section": "4.1",
+      "tags": [
+        "numerical",
+        "softmax",
+        "stabilization"
+      ],
+      "front": "How is the **softmax** function stabilized against overflow and underflow?",
+      "back": "$$\\text{softmax}(\\mathbf{x})_i = \\frac{\\exp(x_i)}{\\sum_j \\exp(x_j)}$$\n**Trick:** Evaluate $\\text{softmax}(\\mathbf{z})$ where $\\mathbf{z} = \\mathbf{x} - \\max_i x_i$.\n- Largest argument to $\\exp$ is 0, preventing overflow\n- At least one term in denominator is 1, preventing division by zero"
+    },
+    {
+      "id": "ch04-004",
+      "chapter": 4,
+      "section": "4.1",
+      "tags": [
+        "numerical",
+        "softmax",
+        "log-softmax"
+      ],
+      "front": "Why must $\\log \\text{softmax}(\\mathbf{x})$ be implemented as a separate numerically stable function?",
+      "back": "Even after stabilizing softmax, underflow can cause $\\text{softmax}(\\mathbf{x})_i = 0$ for some $i$.\n- Passing this to $\\log$ gives $\\log(0) = -\\infty$\n- A dedicated $\\log\\text{softmax}$ function uses the same subtraction trick to remain numerically stable"
+    },
+    {
+      "id": "ch04-005",
+      "chapter": 4,
+      "section": "4.2",
+      "tags": [
+        "numerical",
+        "conditioning",
+        "linear-algebra"
+      ],
+      "front": "What is the **condition number** of a matrix?",
+      "back": "$$\\kappa = \\max_{i,j} \\left| \\frac{\\lambda_i}{\\lambda_j} \\right|$$\nRatio of largest to smallest eigenvalue magnitude.\n- When large, matrix inversion is sensitive to rounding errors\n- An intrinsic property of the matrix, not the algorithm"
+    },
+    {
+      "id": "ch04-006",
+      "chapter": 4,
+      "section": "4.3",
+      "tags": [
+        "optimization",
+        "terminology"
+      ],
+      "front": "Define: **objective function**, **cost function**, **loss function**.",
+      "back": "The **objective function** is what we minimize or maximize.\n- When minimizing: called **cost function**, **loss function**, or **error function**\n- Maximizing $f(\\mathbf{x})$ = minimizing $-f(\\mathbf{x})$\n- Minimizer: $\\mathbf{x}^* = \\arg\\min f(\\mathbf{x})$"
+    },
+    {
+      "id": "ch04-007",
+      "chapter": 4,
+      "section": "4.3",
+      "tags": [
+        "optimization",
+        "gradient-descent"
+      ],
+      "front": "State the **gradient descent** update rule.",
+      "back": "$$\\mathbf{x}' = \\mathbf{x} - \\epsilon \\nabla_{\\mathbf{x}} f(\\mathbf{x})$$\n- $\\epsilon$ is the **learning rate** (positive scalar)\n- Can be a small constant or found via **line search**\n- Converges when every element of the gradient is zero"
+    },
+    {
+      "id": "ch04-008",
+      "chapter": 4,
+      "section": "4.3",
+      "tags": [
+        "optimization",
+        "critical-points"
+      ],
+      "front": "Define **critical point**, **local minimum**, **saddle point**, and **global minimum**.",
+      "back": "- **Critical point**: where $\\nabla f = \\mathbf{0}$\n- **Local minimum**: lower than all neighboring points\n- **Local maximum**: higher than all neighboring points\n- **Saddle point**: neither maximum nor minimum\n- **Global minimum**: absolute lowest value over all $x$"
+    },
+    {
+      "id": "ch04-009",
+      "chapter": 4,
+      "section": "4.3",
+      "tags": [
+        "optimization",
+        "directional-derivative",
+        "gradient"
+      ],
+      "front": "What is the **directional derivative** and how does it show the negative gradient is steepest descent?",
+      "back": "Directional derivative in direction $\\mathbf{u}$:\n$$\\mathbf{u}^\\top \\nabla_{\\mathbf{x}} f(\\mathbf{x}) = \\|\\nabla f\\|_2 \\cos \\theta$$\n\nMinimized when $\\cos\\theta = -1$ (opposite to gradient).\n- The **negative gradient** points downhill"
+    },
+    {
+      "id": "ch04-010",
+      "chapter": 4,
+      "section": "4.3",
+      "tags": [
+        "optimization",
+        "jacobian",
+        "hessian"
+      ],
+      "front": "Define the **Jacobian** and **Hessian** matrices.",
+      "back": "**Jacobian** ($\\mathbf{f}: \\mathbb{R}^m \\to \\mathbb{R}^n$): $J_{i,j} = \\frac{\\partial f_i}{\\partial x_j}$\n\n**Hessian** ($f: \\mathbb{R}^n \\to \\mathbb{R}$): $H_{i,j} = \\frac{\\partial^2 f}{\\partial x_i \\partial x_j}$\n\n- The Hessian is the Jacobian of the gradient\n- Symmetric where second partials are continuous"
+    },
+    {
+      "id": "ch04-011",
+      "chapter": 4,
+      "section": "4.3",
+      "tags": [
+        "optimization",
+        "hessian",
+        "curvature"
+      ],
+      "front": "How does **curvature** (second derivative) affect gradient descent steps?",
+      "back": "After step $-\\epsilon \\mathbf{g}$:\n$$f(\\mathbf{x} - \\epsilon\\mathbf{g}) \\approx f(\\mathbf{x}) - \\epsilon \\mathbf{g}^\\top\\mathbf{g} + \\frac{1}{2}\\epsilon^2 \\mathbf{g}^\\top\\mathbf{H}\\mathbf{g}$$\n- **Zero curvature**: gradient perfectly predicts decrease\n- **Negative curvature**: cost decreases faster than predicted\n- **Positive curvature**: cost decreases less than predicted; too-large steps can increase $f$"
+    },
+    {
+      "id": "ch04-012",
+      "chapter": 4,
+      "section": "4.3",
+      "tags": [
+        "optimization",
+        "learning-rate",
+        "hessian"
+      ],
+      "front": "What is the **optimal learning rate** from the second-order Taylor approximation?",
+      "back": "When $\\mathbf{g}^\\top \\mathbf{H} \\mathbf{g} > 0$:\n$$\\epsilon^* = \\frac{\\mathbf{g}^\\top \\mathbf{g}}{\\mathbf{g}^\\top \\mathbf{H} \\mathbf{g}}$$\n- Worst case (gradient aligns with largest eigenvector): $\\epsilon^* = \\frac{1}{\\lambda_{\\max}}$"
+    },
+    {
+      "id": "ch04-013",
+      "chapter": 4,
+      "section": "4.3",
+      "tags": [
+        "optimization",
+        "second-derivative-test"
+      ],
+      "front": "State the **second derivative test** for classifying critical points.",
+      "back": "**1D**: $f''(x) > 0 \\Rightarrow$ local min; $f''(x) < 0 \\Rightarrow$ local max\n\n**Multi-D** (eigenvalues of $\\mathbf{H}$):\n- All $> 0$ (positive definite): local minimum\n- All $< 0$ (negative definite): local maximum\n- Mixed signs: saddle point\n- Any zero with others same sign: inconclusive"
+    },
+    {
+      "id": "ch04-014",
+      "chapter": 4,
+      "section": "4.3",
+      "tags": [
+        "optimization",
+        "condition-number",
+        "hessian"
+      ],
+      "front": "Why does gradient descent perform poorly when the **Hessian condition number** is large?",
+      "back": "- Step size must be small enough for the **strongest** curvature direction\n- This makes steps too small for the **weakest** curvature direction\n- Results in a zig-zag path rather than moving toward the minimum\n- The function resembles an elongated canyon"
+    },
+    {
+      "id": "ch04-015",
+      "chapter": 4,
+      "section": "4.3",
+      "tags": [
+        "optimization",
+        "newtons-method",
+        "second-order"
+      ],
+      "front": "Write **Newton's method** for optimization and its limitation.",
+      "back": "$$\\mathbf{x}^* = \\mathbf{x}^{(0)} - \\mathbf{H}^{-1} \\nabla f(\\mathbf{x}^{(0)})$$\n- Converges in **one step** for positive definite quadratic functions\n- For non-quadratic: iterate\n- **Limitation**: near saddle points, Newton's method is **attracted to them**"
+    },
+    {
+      "id": "ch04-016",
+      "chapter": 4,
+      "section": "4.3",
+      "tags": [
+        "optimization",
+        "first-order",
+        "lipschitz"
+      ],
+      "front": "What is a **Lipschitz continuous** function?",
+      "back": "$$\\forall \\mathbf{x}, \\mathbf{y}: |f(\\mathbf{x}) - f(\\mathbf{y})| \\leq \\mathcal{L} \\|\\mathbf{x} - \\mathbf{y}\\|_2$$\n- Rate of change bounded by Lipschitz constant $\\mathcal{L}$\n- Useful for bounding output change from small input changes during gradient descent"
+    },
+    {
+      "id": "ch04-017",
+      "chapter": 4,
+      "section": "4.3",
+      "tags": [
+        "optimization",
+        "convex"
+      ],
+      "front": "What is **convex optimization** and why is it less central to deep learning?",
+      "back": "Applies to functions whose Hessian is positive semidefinite everywhere.\n- No saddle points, all local minima are global\n- Strong theoretical guarantees\n- **Less central to DL** because most deep learning cost functions are **non-convex**"
+    },
+    {
+      "id": "ch04-018",
+      "chapter": 4,
+      "section": "4.4",
+      "tags": [
+        "optimization",
+        "constrained",
+        "lagrangian",
+        "KKT"
+      ],
+      "front": "Write the **generalized Lagrangian** for constrained optimization.",
+      "back": "$$L(\\mathbf{x}, \\boldsymbol{\\lambda}, \\boldsymbol{\\alpha}) = f(\\mathbf{x}) + \\sum_i \\lambda_i g^{(i)}(\\mathbf{x}) + \\sum_j \\alpha_j h^{(j)}(\\mathbf{x})$$\n- $\\lambda_i$: multipliers for equality constraints $g^{(i)} = 0$\n- $\\alpha_j \\geq 0$: multipliers for inequality constraints $h^{(j)} \\leq 0$"
+    },
+    {
+      "id": "ch04-019",
+      "chapter": 4,
+      "section": "4.4",
+      "tags": [
+        "optimization",
+        "KKT",
+        "conditions"
+      ],
+      "front": "List the **KKT conditions**.",
+      "back": "Necessary conditions for optimality:\n1. $\\nabla_{\\mathbf{x}} L = \\mathbf{0}$\n2. All constraints satisfied ($g^{(i)} = 0$, $h^{(j)} \\leq 0$, $\\alpha_j \\geq 0$)\n3. **Complementary slackness**: $\\alpha_j h^{(j)} = 0$ for all $j$\n\nEither $\\alpha_j = 0$ (inactive) or $h^{(j)} = 0$ (binding)."
+    },
+    {
+      "id": "ch04-020",
+      "chapter": 4,
+      "section": "4.5",
+      "tags": [
+        "optimization",
+        "linear-least-squares"
+      ],
+      "front": "For $f(\\mathbf{x}) = \\frac{1}{2}\\|\\mathbf{Ax} - \\mathbf{b}\\|_2^2$, derive the gradient and constrained solution.",
+      "back": "**Gradient**: $\\nabla f = \\mathbf{A}^\\top\\mathbf{A}\\mathbf{x} - \\mathbf{A}^\\top\\mathbf{b}$\n\n**Unconstrained**: $\\mathbf{x} = \\mathbf{A}^+\\mathbf{b}$\n\n**With** $\\mathbf{x}^\\top\\mathbf{x} \\leq 1$:\n$$\\mathbf{x} = (\\mathbf{A}^\\top\\mathbf{A} + 2\\lambda\\mathbf{I})^{-1}\\mathbf{A}^\\top\\mathbf{b}$$\nChoose $\\lambda \\geq 0$ to satisfy constraint."
+    },
+    {
+      "id": "ch04-021",
+      "chapter": 4,
+      "section": "4.3",
+      "tags": [
+        "optimization",
+        "gradient",
+        "partial-derivative"
+      ],
+      "front": "Define the **gradient** $\\nabla_{\\mathbf{x}} f$.",
+      "back": "Vector of all partial derivatives: element $i$ is $\\frac{\\partial f}{\\partial x_i}$.\n\nLinear approximation: $f(x + \\epsilon) \\approx f(x) + \\epsilon f'(x)$"
+    },
+    {
+      "id": "ch04-022",
+      "chapter": 4,
+      "section": "4.3",
+      "tags": [
+        "optimization",
+        "taylor",
+        "second-order"
+      ],
+      "front": "Write the **second-order Taylor approximation** of $f(\\mathbf{x})$ around $\\mathbf{x}^{(0)}$.",
+      "back": "$$f(\\mathbf{x}) \\approx f(\\mathbf{x}^{(0)}) + (\\mathbf{x} - \\mathbf{x}^{(0)})^\\top \\mathbf{g} + \\frac{1}{2}(\\mathbf{x} - \\mathbf{x}^{(0)})^\\top \\mathbf{H} (\\mathbf{x} - \\mathbf{x}^{(0)})$$\nwhere $\\mathbf{g}$ = gradient, $\\mathbf{H}$ = Hessian at $\\mathbf{x}^{(0)}$."
+    },
+    {
+      "id": "ch05-001",
+      "chapter": 5,
+      "section": "5.1",
+      "tags": [
+        "machine-learning",
+        "definition"
+      ],
+      "front": "What is the definition of a **learning algorithm** (Mitchell 1997)?",
+      "back": "A computer program **learns** from experience $E$ with respect to tasks $T$ and performance measure $P$, if its performance at $T$, measured by $P$, improves with $E$."
+    },
+    {
+      "id": "ch05-002",
+      "chapter": 5,
+      "section": "5.1.1",
+      "tags": [
+        "machine-learning",
+        "tasks",
+        "classification",
+        "regression"
+      ],
+      "front": "Distinguish **classification** from **regression**.",
+      "back": "- **Classification**: $f: \\mathbb{R}^n \\to \\{1,\\ldots,k\\}$ (discrete categories)\n- **Regression**: $f: \\mathbb{R}^n \\to \\mathbb{R}$ (continuous value)"
+    },
+    {
+      "id": "ch05-003",
+      "chapter": 5,
+      "section": "5.1.3",
+      "tags": [
+        "machine-learning",
+        "supervised",
+        "unsupervised"
+      ],
+      "front": "What distinguishes **supervised** from **unsupervised** learning?",
+      "back": "- **Unsupervised**: learns $p(\\mathbf{x})$ or useful properties from features alone\n- **Supervised**: each example has a **label** $\\mathbf{y}$; learns $p(\\mathbf{y} \\mid \\mathbf{x})$\n- The boundary is not rigid; chain rule converts unsupervised into $n$ supervised problems"
+    },
+    {
+      "id": "ch05-004",
+      "chapter": 5,
+      "section": "5.1.4",
+      "tags": [
+        "machine-learning",
+        "linear-regression",
+        "normal-equations"
+      ],
+      "front": "Write the **normal equations** for linear regression.",
+      "back": "Model: $\\hat{y} = \\mathbf{w}^\\top \\mathbf{x}$\n\nMSE: $\\frac{1}{m} \\|\\mathbf{Xw} - \\mathbf{y}\\|_2^2$\n\nSolution: $\\mathbf{w} = (\\mathbf{X}^\\top\\mathbf{X})^{-1}\\mathbf{X}^\\top\\mathbf{y}$"
+    },
+    {
+      "id": "ch05-005",
+      "chapter": 5,
+      "section": "5.2",
+      "tags": [
+        "machine-learning",
+        "generalization",
+        "overfitting",
+        "underfitting"
+      ],
+      "front": "Define **generalization**, **underfitting**, and **overfitting**.",
+      "back": "**Generalization**: ability to perform well on unseen inputs.\n\n- **Underfitting**: cannot achieve low training error\n- **Overfitting**: gap between training and test error is too large"
+    },
+    {
+      "id": "ch05-006",
+      "chapter": 5,
+      "section": "5.2",
+      "tags": [
+        "machine-learning",
+        "capacity",
+        "vc-dimension"
+      ],
+      "front": "What is model **capacity** and the **VC dimension**?",
+      "back": "**Capacity**: ability to fit a wide variety of functions.\n\n**VC dimension**: largest $m$ for which a binary classifier can label $m$ points arbitrarily. Measures classifier capacity.\n\nGeneralization gap grows with capacity but shrinks with more data."
+    },
+    {
+      "id": "ch05-007",
+      "chapter": 5,
+      "section": "5.2",
+      "tags": [
+        "machine-learning",
+        "i.i.d."
+      ],
+      "front": "What are the **i.i.d. assumptions**?",
+      "back": "- Examples are **independent** from each other\n- Train and test sets are **identically distributed** from the same $p_{\\text{data}}$\n- These assumptions let us relate training error to test error"
+    },
+    {
+      "id": "ch05-008",
+      "chapter": 5,
+      "section": "5.2.1",
+      "tags": [
+        "machine-learning",
+        "no-free-lunch"
+      ],
+      "front": "State the **No Free Lunch theorem**.",
+      "back": "Averaged over **all** possible data distributions, every classification algorithm has the same error rate on unseen points.\n\nImplication: the goal is not a universal best algorithm, but algorithms that work well on **real-world** distributions."
+    },
+    {
+      "id": "ch05-009",
+      "chapter": 5,
+      "section": "5.2.2",
+      "tags": [
+        "machine-learning",
+        "regularization",
+        "weight-decay"
+      ],
+      "front": "Define **regularization** and write the **weight decay** objective.",
+      "back": "**Regularization**: any modification to reduce generalization error (not training error).\n\n$$J(\\mathbf{w}) = \\text{MSE}_{\\text{train}} + \\lambda \\mathbf{w}^\\top \\mathbf{w}$$\n- $\\lambda$: strength of preference for smaller weights\n- $\\Omega(\\mathbf{w}) = \\mathbf{w}^\\top \\mathbf{w}$"
+    },
+    {
+      "id": "ch05-010",
+      "chapter": 5,
+      "section": "5.2",
+      "tags": [
+        "machine-learning",
+        "bayes-error",
+        "non-parametric"
+      ],
+      "front": "What is **Bayes error**? What is a **non-parametric** model?",
+      "back": "**Bayes error**: lowest possible error from an oracle knowing the true distribution.\n\n**Non-parametric model**: complexity grows with training set size (e.g., nearest neighbors). Parametric models have fixed-size parameters."
+    },
+    {
+      "id": "ch05-011",
+      "chapter": 5,
+      "section": "5.3",
+      "tags": [
+        "machine-learning",
+        "hyperparameters",
+        "validation-set"
+      ],
+      "front": "What are **hyperparameters** and why use a **validation set**?",
+      "back": "**Hyperparameters**: settings not adapted by the learning algorithm (e.g., $\\lambda$, polynomial degree).\n\nIf learned on training set, algorithm would always choose max capacity. Use:\n- **Training set** (~80%): learn parameters\n- **Validation set** (~20%): select hyperparameters\n- **Test set**: final evaluation only"
+    },
+    {
+      "id": "ch05-012",
+      "chapter": 5,
+      "section": "5.3.1",
+      "tags": [
+        "machine-learning",
+        "cross-validation"
+      ],
+      "front": "How does **$k$-fold cross-validation** work?",
+      "back": "1. Partition data into $k$ subsets\n2. For each fold $i$: train on all except subset $i$, test on subset $i$\n3. Average test errors across folds\n\nUsed when dataset is too small for a single train/test split."
+    },
+    {
+      "id": "ch05-013",
+      "chapter": 5,
+      "section": "5.4.1",
+      "tags": [
+        "statistics",
+        "point-estimation"
+      ],
+      "front": "What is a **point estimator**? When is it **unbiased**?",
+      "back": "A function of the data: $\\hat{\\boldsymbol{\\theta}}_m = g(\\mathbf{x}^{(1)}, \\ldots, \\mathbf{x}^{(m)})$\n\n**Unbiased**: $\\mathbb{E}[\\hat{\\boldsymbol{\\theta}}] = \\boldsymbol{\\theta}$\n**Asymptotically unbiased**: $\\lim_{m \\to \\infty} \\mathbb{E}[\\hat{\\boldsymbol{\\theta}}] = \\boldsymbol{\\theta}$"
+    },
+    {
+      "id": "ch05-014",
+      "chapter": 5,
+      "section": "5.4.2",
+      "tags": [
+        "statistics",
+        "bias",
+        "variance-estimator"
+      ],
+      "front": "Why is $\\hat{\\sigma}^2 = \\frac{1}{m}\\sum(x^{(i)} - \\hat{\\mu})^2$ biased?",
+      "back": "$\\mathbb{E}[\\hat{\\sigma}^2] = \\frac{m-1}{m}\\sigma^2$ (underestimates).\n\nUnbiased: $\\tilde{\\sigma}^2 = \\frac{1}{m-1}\\sum(x^{(i)} - \\hat{\\mu})^2$"
+    },
+    {
+      "id": "ch05-015",
+      "chapter": 5,
+      "section": "5.4.3",
+      "tags": [
+        "statistics",
+        "standard-error",
+        "confidence-interval"
+      ],
+      "front": "Give the **standard error** of the mean and the 95% CI.",
+      "back": "$$\\text{SE}(\\hat{\\mu}_m) = \\frac{\\sigma}{\\sqrt{m}}$$\n\n95% CI: $(\\hat{\\mu} - 1.96 \\cdot \\text{SE},\\; \\hat{\\mu} + 1.96 \\cdot \\text{SE})$"
+    },
+    {
+      "id": "ch05-016",
+      "chapter": 5,
+      "section": "5.4.4",
+      "tags": [
+        "statistics",
+        "bias-variance-tradeoff"
+      ],
+      "front": "Write the **bias-variance decomposition** of MSE.",
+      "back": "$$\\text{MSE} = \\text{Bias}^2 + \\text{Var}$$\n\n- Increasing capacity: decreases bias, increases variance\n- Underfitting: high bias dominates\n- Overfitting: high variance dominates\n- Optimal: minimizes total MSE (U-shaped curve)"
+    },
+    {
+      "id": "ch05-017",
+      "chapter": 5,
+      "section": "5.4.5",
+      "tags": [
+        "statistics",
+        "consistency"
+      ],
+      "front": "What does it mean for an estimator to be **consistent**?",
+      "back": "$\\text{plim}_{m \\to \\infty} \\hat{\\theta}_m = \\theta$\n\nUnbiasedness does **not** imply consistency. Example: using only $x^{(1)}$ to estimate the mean is unbiased but not consistent."
+    },
+    {
+      "id": "ch05-018",
+      "chapter": 5,
+      "section": "5.5",
+      "tags": [
+        "statistics",
+        "maximum-likelihood",
+        "KL-divergence"
+      ],
+      "front": "Write the **MLE** and explain its connection to **KL divergence**.",
+      "back": "$$\\boldsymbol{\\theta}_{\\text{ML}} = \\arg\\max \\sum_i \\log p_{\\text{model}}(\\mathbf{x}^{(i)}; \\boldsymbol{\\theta})$$\n\nEquivalent to minimizing $D_{\\text{KL}}(\\hat{p}_{\\text{data}} \\| p_{\\text{model}})$.\n\nSince $\\log \\hat{p}_{\\text{data}}$ is constant w.r.t. $\\boldsymbol{\\theta}$: minimizing KL = maximizing log-likelihood = minimizing cross-entropy."
+    },
+    {
+      "id": "ch05-019",
+      "chapter": 5,
+      "section": "5.5.1",
+      "tags": [
+        "statistics",
+        "maximum-likelihood",
+        "MSE"
+      ],
+      "front": "Show that MLE for linear regression with Gaussian noise equals **minimizing MSE**.",
+      "back": "With $p(y \\mid \\mathbf{x}) = \\mathcal{N}(y; \\hat{y}, \\sigma^2)$:\n\nLog-likelihood $\\propto -\\sum_i \\|\\hat{y}^{(i)} - y^{(i)}\\|^2$\n\nMaximizing this w.r.t. $\\mathbf{w}$ = minimizing MSE.\nThus MSE is justified as MLE under Gaussian assumptions."
+    },
+    {
+      "id": "ch05-020",
+      "chapter": 5,
+      "section": "5.5.2",
+      "tags": [
+        "statistics",
+        "maximum-likelihood",
+        "efficiency"
+      ],
+      "front": "What are the key **properties of MLE**?",
+      "back": "1. **Consistent**: $\\hat{\\boldsymbol{\\theta}} \\to \\boldsymbol{\\theta}$ as $m \\to \\infty$\n2. **Statistically efficient**: lowest MSE among consistent estimators\n\n**Cramer-Rao lower bound**: no consistent estimator has lower MSE than MLE for large $m$."
+    },
+    {
+      "id": "ch05-021",
+      "chapter": 5,
+      "section": "5.6",
+      "tags": [
+        "statistics",
+        "bayesian",
+        "prior",
+        "posterior"
+      ],
+      "front": "In **Bayesian statistics**, how does prediction differ from MLE?",
+      "back": "**Prior**: $p(\\boldsymbol{\\theta})$ before seeing data\n**Posterior**: $p(\\boldsymbol{\\theta} \\mid \\text{data}) \\propto p(\\text{data} \\mid \\boldsymbol{\\theta}) p(\\boldsymbol{\\theta})$\n\nBayesian prediction integrates over **all** $\\boldsymbol{\\theta}$:\n$$p(x_{m+1} \\mid \\text{data}) = \\int p(x_{m+1} \\mid \\boldsymbol{\\theta}) p(\\boldsymbol{\\theta} \\mid \\text{data}) d\\boldsymbol{\\theta}$$\n\nMLE uses a single point estimate instead."
+    },
+    {
+      "id": "ch05-022",
+      "chapter": 5,
+      "section": "5.6.1",
+      "tags": [
+        "statistics",
+        "MAP",
+        "weight-decay"
+      ],
+      "front": "What is **MAP estimation** and how does it relate to weight decay?",
+      "back": "$$\\boldsymbol{\\theta}_{\\text{MAP}} = \\arg\\max [\\log p(\\text{data} \\mid \\boldsymbol{\\theta}) + \\log p(\\boldsymbol{\\theta})]$$\n\nWith Gaussian prior $p(\\mathbf{w}) = \\mathcal{N}(\\mathbf{0}, \\frac{1}{\\lambda}\\mathbf{I})$:\n$\\log p(\\mathbf{w}) \\propto -\\lambda \\mathbf{w}^\\top\\mathbf{w}$\n\nThis is exactly **L2 regularization** (weight decay)."
+    },
+    {
+      "id": "ch05-023",
+      "chapter": 5,
+      "section": "5.7.1",
+      "tags": [
+        "machine-learning",
+        "logistic-regression"
+      ],
+      "front": "Define **logistic regression**.",
+      "back": "$$p(y=1 \\mid \\mathbf{x}) = \\sigma(\\boldsymbol{\\theta}^\\top \\mathbf{x})$$\n\nNo closed-form solution; trained by minimizing negative log-likelihood (cross-entropy) via gradient descent."
+    },
+    {
+      "id": "ch05-024",
+      "chapter": 5,
+      "section": "5.7.2",
+      "tags": [
+        "machine-learning",
+        "SVM",
+        "kernel-trick"
+      ],
+      "front": "What is the **kernel trick** for SVMs?",
+      "back": "Replace $\\mathbf{x}^\\top \\mathbf{x}^{(i)}$ with $k(\\mathbf{x}, \\mathbf{x}^{(i)}) = \\phi(\\mathbf{x}) \\cdot \\phi(\\mathbf{x}^{(i)})$.\n\nPrediction: $f(\\mathbf{x}) = b + \\sum_i \\alpha_i k(\\mathbf{x}, \\mathbf{x}^{(i)})$\n\n- Allows nonlinear models via convex optimization\n- $\\phi$ can be infinite-dimensional (e.g., Gaussian kernel)\n- Training examples with $\\alpha_i \\neq 0$ are **support vectors**"
+    },
+    {
+      "id": "ch05-025",
+      "chapter": 5,
+      "section": "5.8",
+      "tags": [
+        "machine-learning",
+        "unsupervised",
+        "representation-learning"
+      ],
+      "front": "What are three criteria for a **simpler representation** in unsupervised learning?",
+      "back": "1. **Low-dimensional**: compress into fewer dimensions (e.g., PCA)\n2. **Sparse**: mostly zeros; may need higher dimensionality\n3. **Independent**: disentangle sources of variation so dimensions are statistically independent"
+    },
+    {
+      "id": "ch05-026",
+      "chapter": 5,
+      "section": "5.8.1",
+      "tags": [
+        "machine-learning",
+        "PCA"
+      ],
+      "front": "How does **PCA** work as unsupervised representation learning?",
+      "back": "$\\mathbf{z} = \\mathbf{x}^\\top \\mathbf{W}$ where $\\mathbf{W}$ = right singular vectors of $\\mathbf{X}$.\n\n- Covariance of $\\mathbf{z}$ is **diagonal** (linearly decorrelated)\n- Keep top $k$ components (greatest variance)\n- Minimizes least-squares reconstruction error"
+    },
+    {
+      "id": "ch05-027",
+      "chapter": 5,
+      "section": "5.9",
+      "tags": [
+        "machine-learning",
+        "SGD"
+      ],
+      "front": "What is **SGD** and why is it preferred for large datasets?",
+      "back": "Approximate gradient using minibatch $\\mathbb{B}$:\n$$\\hat{\\mathbf{g}} = \\frac{1}{m'}\\sum_{i \\in \\mathbb{B}} \\nabla L_i$$\n\nUpdate: $\\boldsymbol{\\theta} \\leftarrow \\boldsymbol{\\theta} - \\epsilon \\hat{\\mathbf{g}}$\n\n- **Unbiased** estimate of true gradient\n- Standard error decreases as $O(1/\\sqrt{m'})$: diminishing returns from larger batches\n- Can make progress before seeing all data"
+    },
+    {
+      "id": "ch05-028",
+      "chapter": 5,
+      "section": "5.10",
+      "tags": [
+        "machine-learning",
+        "algorithm-recipe"
+      ],
+      "front": "What **components** make up a machine learning algorithm?",
+      "back": "1. A **dataset**\n2. A **cost function** (e.g., cross-entropy)\n3. A **model** (parametric function family)\n4. An **optimization procedure** (e.g., SGD)\n\nThe cost typically includes data-fitting + regularization terms."
+    },
+    {
+      "id": "ch05-029",
+      "chapter": 5,
+      "section": "5.11",
+      "tags": [
+        "machine-learning",
+        "curse-of-dimensionality"
+      ],
+      "front": "What is the **curse of dimensionality**?",
+      "back": "Many ML problems become exponentially harder as dimensions increase.\n- Possible configurations grow exponentially with $d$\n- In high-$d$, most points are roughly equidistant\n- Deep learning addresses this with **distributed representations** that generalize non-locally"
+    },
+    {
+      "id": "ch05-030",
+      "chapter": 5,
+      "section": "5.11",
+      "tags": [
+        "machine-learning",
+        "manifold-learning"
+      ],
+      "front": "What is the **manifold hypothesis**?",
+      "back": "Real-world data concentrates near a **low-dimensional manifold** in high-dimensional space.\n- Effective dimensionality is much lower than ambient space\n- Most of $\\mathbb{R}^n$ has negligible probability mass\n- Deep learning learns representations capturing manifold structure"
+    },
+    {
+      "id": "ch06-001",
+      "chapter": 6,
+      "section": "6.0",
+      "tags": [
+        "feedforward",
+        "definition",
+        "MLP"
+      ],
+      "front": "What is a **deep feedforward network** and what does it approximate?",
+      "back": "A mapping $\\mathbf{y} = f(\\mathbf{x}; \\boldsymbol{\\theta})$ with no feedback connections.\n- Information flows forward from $\\mathbf{x}$ through intermediate computations to $\\mathbf{y}$\n- Composed functions: $f(\\mathbf{x}) = f^{(3)}(f^{(2)}(f^{(1)}(\\mathbf{x})))$\n- Chain length = **depth**; final layer = **output layer**; intermediate = **hidden layers**"
+    },
+    {
+      "id": "ch06-002",
+      "chapter": 6,
+      "section": "6.0",
+      "tags": [
+        "feedforward",
+        "representation"
+      ],
+      "front": "What are the three strategies for choosing feature mapping $\\phi$, and which does deep learning use?",
+      "back": "1. **Generic $\\phi$** (e.g., RBF kernel): enough capacity but poor generalization\n2. **Manually engineered $\\phi$**: decades of domain-specific effort\n3. **Learn $\\phi$** (deep learning): $y = \\phi(\\mathbf{x}; \\boldsymbol{\\theta})^\\top \\mathbf{w}$\n- Only option 3 gives up convexity, but benefits outweigh cost"
+    },
+    {
+      "id": "ch06-003",
+      "chapter": 6,
+      "section": "6.1",
+      "tags": [
+        "XOR",
+        "linear-model"
+      ],
+      "front": "Why can a linear model not learn XOR, and how does a feedforward network solve this?",
+      "back": "Linear model yields $\\mathbf{w} = \\mathbf{0}$, outputting 0.5 everywhere.\n\nSolution: hidden layer $\\mathbf{h} = g(\\mathbf{W}^\\top\\mathbf{x} + \\mathbf{c})$ with ReLU.\n- Nonlinear features **collapse** points that should have same output\n- Makes the problem **linearly separable** in feature space"
+    },
+    {
+      "id": "ch06-004",
+      "chapter": 6,
+      "section": "6.1",
+      "tags": [
+        "XOR",
+        "ReLU",
+        "solution"
+      ],
+      "front": "Give the exact weights that solve XOR with a one-hidden-layer ReLU network.",
+      "back": "$\\mathbf{W} = \\begin{bmatrix} 1 & 1 \\\\\\\\ 1 & 1 \\end{bmatrix}$, $\\mathbf{c} = \\begin{bmatrix} 0 \\\\\\\\ -1 \\end{bmatrix}$, $\\mathbf{w} = \\begin{bmatrix} 1 \\\\\\\\ -2 \\end{bmatrix}$, $b = 0$\n\n- $[0,0] \\to \\mathbf{h}=[0,0] \\to 0$\n- $[0,1] \\to \\mathbf{h}=[1,0] \\to 1$\n- $[1,0] \\to \\mathbf{h}=[1,0] \\to 1$\n- $[1,1] \\to \\mathbf{h}=[2,1] \\to 0$"
+    },
+    {
+      "id": "ch06-005",
+      "chapter": 6,
+      "section": "6.2",
+      "tags": [
+        "gradient-descent",
+        "non-convexity"
+      ],
+      "front": "Why must neural networks use iterative gradient-based optimization?",
+      "back": "- Nonlinearity makes the loss **non-convex** (no closed-form solution)\n- SGD is sensitive to **initial parameter values**\n- Weights initialized to small random values\n- In practice, gradient descent drives cost to a very low value"
+    },
+    {
+      "id": "ch06-006",
+      "chapter": 6,
+      "section": "6.2.1",
+      "tags": [
+        "cost-function",
+        "cross-entropy"
+      ],
+      "front": "Why is **cross-entropy** preferred over MSE for training neural networks?",
+      "back": "$$J = -\\mathbb{E}[\\log p_{\\text{model}}(\\mathbf{y} \\mid \\mathbf{x})]$$\n- The $\\log$ **undoes the $\\exp$** in sigmoid/softmax, preventing saturation\n- MSE/MAE produce very small gradients when output units saturate\n- Cross-entropy ensures **strong gradient** whenever model has wrong answer"
+    },
+    {
+      "id": "ch06-007",
+      "chapter": 6,
+      "section": "6.2.1.2",
+      "tags": [
+        "cost-function",
+        "conditional-statistics"
+      ],
+      "front": "What does minimizing **MSE** learn vs minimizing **MAE**?",
+      "back": "- **MSE**: learns the **mean** of $\\mathbf{y}$ given $\\mathbf{x}$\n- **MAE**: learns the **median** of $\\mathbf{y}$ given $\\mathbf{x}$\n- Both often produce poor results with gradient-based optimization due to saturation"
+    },
+    {
+      "id": "ch06-008",
+      "chapter": 6,
+      "section": "6.2.2.1",
+      "tags": [
+        "output-units",
+        "linear",
+        "gaussian"
+      ],
+      "front": "When are **linear output units** used?",
+      "back": "$\\hat{\\mathbf{y}} = \\mathbf{W}^\\top\\mathbf{h} + \\mathbf{b}$ (no nonlinearity)\n- Parametrize mean of conditional Gaussian: $p(\\mathbf{y} \\mid \\mathbf{x}) = \\mathcal{N}(\\mathbf{y}; \\hat{\\mathbf{y}}, \\mathbf{I})$\n- Max log-likelihood = minimizing **MSE**\n- **Do not saturate**, so no difficulty for gradient methods"
+    },
+    {
+      "id": "ch06-009",
+      "chapter": 6,
+      "section": "6.2.2.2",
+      "tags": [
+        "output-units",
+        "sigmoid",
+        "bernoulli"
+      ],
+      "front": "How does a **sigmoid output unit** work for binary classification?",
+      "back": "$\\hat{y} = \\sigma(\\mathbf{w}^\\top\\mathbf{h} + b)$ where $z = \\mathbf{w}^\\top\\mathbf{h} + b$ is the **logit**.\n\nLoss: $J = \\zeta((1-2y)z)$ (softplus)\n- Saturates only when model is **already correct**\n- When wrong: gradient $\\approx \\text{sign}(z)$, never vanishes"
+    },
+    {
+      "id": "ch06-010",
+      "chapter": 6,
+      "section": "6.2.2.3",
+      "tags": [
+        "output-units",
+        "softmax",
+        "classification"
+      ],
+      "front": "Define the **softmax function** for multi-class classification.",
+      "back": "$$\\text{softmax}(\\mathbf{z})_i = \\frac{\\exp(z_i)}{\\sum_j \\exp(z_j)}$$\n\n- Log-likelihood: $\\log\\text{softmax}(\\mathbf{z})_i = z_i - \\log\\sum_j\\exp(z_j)$\n- $z_i$ **never saturates**; second term $\\approx \\max_j z_j$\n- Strongly penalizes most active incorrect class\n- Numerically stable: $\\text{softmax}(\\mathbf{z}) = \\text{softmax}(\\mathbf{z} - \\max z_i)$"
+    },
+    {
+      "id": "ch06-011",
+      "chapter": 6,
+      "section": "6.2.2.3",
+      "tags": [
+        "softmax",
+        "overparametrization"
+      ],
+      "front": "When does softmax **saturate**, and what is **overparametrization**?",
+      "back": "Saturates when one $z_i$ is much larger than all others.\n\n**Overparametrization**: $n$ outputs summing to 1 need only $n-1$ free parameters. Fixing $z_n = 0$ with 2 classes recovers sigmoid. In practice, the overparametrized version works fine."
+    },
+    {
+      "id": "ch06-012",
+      "chapter": 6,
+      "section": "6.2.2.4",
+      "tags": [
+        "output-units",
+        "mixture-density"
+      ],
+      "front": "What is a **mixture density network**?",
+      "back": "Neural net with Gaussian mixture output for **multimodal regression**:\n$$p(\\mathbf{y} \\mid \\mathbf{x}) = \\sum_{i=1}^{n} p(\\text{c} = i \\mid \\mathbf{x}) \\, \\mathcal{N}(\\mathbf{y}; \\boldsymbol{\\mu}^{(i)}(\\mathbf{x}), \\boldsymbol{\\Sigma}^{(i)}(\\mathbf{x}))$$\n\nOutputs:\n- **Mixing coefficients** via softmax\n- **Means** (unconstrained)\n- **Covariances** via softplus for positivity"
+    },
+    {
+      "id": "ch06-013",
+      "chapter": 6,
+      "section": "6.3.1",
+      "tags": [
+        "hidden-units",
+        "ReLU"
+      ],
+      "front": "Define **ReLU** and explain why it is the default hidden unit.",
+      "back": "$g(z) = \\max\\{0, z\\}$\n\n- **Nearly linear**, easy to optimize\n- Gradient is **large and consistent** when active (derivative = 1)\n- Second derivative is 0 almost everywhere, so gradient direction is highly useful\n- Initialize bias to small positive values (e.g., 0.1) so units start active\n- Drawback: **cannot learn when activation is zero**"
+    },
+    {
+      "id": "ch06-014",
+      "chapter": 6,
+      "section": "6.3.1",
+      "tags": [
+        "hidden-units",
+        "leaky-ReLU",
+        "maxout"
+      ],
+      "front": "Name three generalizations of ReLU with non-zero gradient everywhere.",
+      "back": "$h_i = \\max(0, z_i) + \\alpha_i \\min(0, z_i)$\n\n1. **Absolute value**: $\\alpha = -1$, $g(z) = |z|$\n2. **Leaky ReLU**: $\\alpha$ fixed small (0.01)\n3. **PReLU**: $\\alpha$ is learnable\n\n**Maxout**: $g(\\mathbf{z})_i = \\max_{j \\in \\text{group}} z_j$. Learns a piecewise linear function with up to $k$ pieces."
+    },
+    {
+      "id": "ch06-015",
+      "chapter": 6,
+      "section": "6.3.2",
+      "tags": [
+        "hidden-units",
+        "sigmoid",
+        "tanh"
+      ],
+      "front": "Why are **sigmoid** and **tanh** hidden units generally discouraged?",
+      "back": "Both **saturate** across most of their domain.\n- Widespread saturation causes **vanishing gradients**\n- When sigmoidal must be used, **tanh is preferred** because $\\tanh(0)=0$ resembles the identity near 0, while $\\sigma(0) = 0.5$\n- Relationship: $\\tanh(z) = 2\\sigma(2z) - 1$\n- More common in **recurrent networks** and **probabilistic models**"
+    },
+    {
+      "id": "ch06-016",
+      "chapter": 6,
+      "section": "6.3.3",
+      "tags": [
+        "hidden-units",
+        "softplus",
+        "RBF"
+      ],
+      "front": "Describe **softplus**, **RBF**, and **hard tanh** hidden units.",
+      "back": "- **Softplus**: $\\zeta(a) = \\log(1+e^a)$, smooth rectifier. Generally **discouraged** vs ReLU despite being differentiable everywhere.\n- **RBF**: $h_i = \\exp(-\\frac{1}{\\sigma_i^2}\\|\\mathbf{W}_{:,i} - \\mathbf{x}\\|^2)$. Saturates to 0 for most inputs, **hard to optimize**.\n- **Hard tanh**: $g(a) = \\max(-1, \\min(1, a))$. Bounded like tanh but piecewise linear."
+    },
+    {
+      "id": "ch06-017",
+      "chapter": 6,
+      "section": "6.4.1",
+      "tags": [
+        "architecture",
+        "universal-approximation"
+      ],
+      "front": "State the **universal approximation theorem** and its limitations.",
+      "back": "A feedforward net with one hidden layer and any \"squashing\" activation (sigmoid, ReLU, etc.) can approximate **any** Borel measurable function to any desired non-zero error, given enough hidden units.\n\nLimitations:\n- Does not say how many units are needed (may be **exponentially many**)\n- Does not guarantee the optimization algorithm **finds** the right parameters\n- Does not guarantee **generalization** to new data\n- The \"no free lunch\" theorem still applies"
+    },
+    {
+      "id": "ch06-018",
+      "chapter": 6,
+      "section": "6.4.1",
+      "tags": [
+        "architecture",
+        "depth",
+        "exponential-advantage"
+      ],
+      "front": "What is the **exponential advantage of depth** (Montufar et al., 2014)?",
+      "back": "A deep rectifier net with $d$ inputs, depth $l$, $n$ units per layer carves out:\n$$O\\left(\\binom{n}{d}^{d(l-1)} n^d\\right)$$\nlinear regions -- **exponential in depth** $l$.\n\nFor maxout networks with $k$ filters per unit:\n$$O\\left(k^{(l-1)+d}\\right)$$\n\nFunctions representable efficiently by deep nets may require exponentially many units in a shallow net."
+    },
+    {
+      "id": "ch06-019",
+      "chapter": 6,
+      "section": "6.4.2",
+      "tags": [
+        "architecture",
+        "skip-connections"
+      ],
+      "front": "What are **skip connections** and why are they used?",
+      "back": "Connections from layer $i$ to layer $i+2$ or higher, bypassing intermediate layers.\n- Make it easier for **gradients to flow** to earlier layers\n- Enable training of very deep networks that would otherwise suffer from vanishing gradients\n- Empirically, greater depth tends to result in better generalization when skip connections are used"
+    },
+    {
+      "id": "ch06-020",
+      "chapter": 6,
+      "section": "6.5",
+      "tags": [
+        "backprop",
+        "forward-propagation"
+      ],
+      "front": "Distinguish **forward propagation** from **back-propagation**.",
+      "back": "**Forward prop**: input flows through network to produce output and cost $J$.\n**Backprop**: cost info flows backwards to compute $\\nabla_{\\boldsymbol{\\theta}} J$.\n\n- Backprop is **only** the gradient computation method (via chain rule)\n- A separate algorithm (e.g., SGD) uses the gradient for learning\n- Backprop can compute derivatives of **any** function, not just neural networks"
+    },
+    {
+      "id": "ch06-021",
+      "chapter": 6,
+      "section": "6.5.1",
+      "tags": [
+        "backprop",
+        "computational-graph"
+      ],
+      "front": "What is a **computational graph**?",
+      "back": "- Each **node** = a variable (scalar, vector, matrix, tensor)\n- Each **operation** = a function of one or more variables\n- Directed edge from $x$ to $y$ if $y$ is computed from $x$\n- Complex functions built by **composing** simple operations\n- A single variable can be used by **multiple** operations (e.g., weights used for both prediction and regularization)"
+    },
+    {
+      "id": "ch06-022",
+      "chapter": 6,
+      "section": "6.5.2",
+      "tags": [
+        "backprop",
+        "chain-rule",
+        "Jacobian"
+      ],
+      "front": "State the **chain rule for vectors** used in backprop.",
+      "back": "If $\\mathbf{y} = g(\\mathbf{x})$ and $z = f(\\mathbf{y})$:\n$$\\nabla_{\\mathbf{x}} z = \\left(\\frac{\\partial \\mathbf{y}}{\\partial \\mathbf{x}}\\right)^\\top \\nabla_{\\mathbf{y}} z$$\n\nwhere $\\frac{\\partial \\mathbf{y}}{\\partial \\mathbf{x}}$ is the $n \\times m$ **Jacobian matrix** of $g$.\n\nBackprop computes a **Jacobian-gradient product** for each operation, working backwards through the graph."
+    },
+    {
+      "id": "ch06-023",
+      "chapter": 6,
+      "section": "6.5.3",
+      "tags": [
+        "backprop",
+        "algorithm"
+      ],
+      "front": "Describe the **back-propagation algorithm** step by step.",
+      "back": "1. **Forward pass**: compute all node values in topological order\n2. **Initialize**: $\\text{grad}[u^{(n)}] = 1$ (gradient of output w.r.t. itself)\n3. **Backward pass** for $j = n-1$ down to 1:\n$$\\text{grad}[u^{(j)}] = \\sum_{i: j \\in \\text{Pa}(u^{(i)})} \\text{grad}[u^{(i)}] \\frac{\\partial u^{(i)}}{\\partial u^{(j)}}$$\n- Cost proportional to number of **edges** in graph\n- Stores intermediate forward-pass values to avoid exponential recomputation"
+    },
+    {
+      "id": "ch06-024",
+      "chapter": 6,
+      "section": "6.5.3",
+      "tags": [
+        "backprop",
+        "complexity"
+      ],
+      "front": "What is the computational cost of backprop and the memory tradeoff?",
+      "back": "- Cost: $O(|\\text{edges}|)$ -- same order as forward propagation\n- Each edge visited exactly once\n- **Memory**: stores intermediate forward-pass values\n- Alternative: recompute subexpressions (trade runtime for memory)\n- Without storage, repeated subexpressions grow **exponentially** with depth"
+    },
+    {
+      "id": "ch06-025",
+      "chapter": 6,
+      "section": "6.5.2",
+      "tags": [
+        "backprop",
+        "chain-rule",
+        "tensor"
+      ],
+      "front": "How does the chain rule extend to **tensors**?",
+      "back": "For tensor $\\mathbf{X}$ with index tuple $i$: $(\\nabla_{\\mathbf{X}} z)_i = \\frac{\\partial z}{\\partial X_i}$\n\nIf $\\mathbf{Y} = g(\\mathbf{X})$ and $z = f(\\mathbf{Y})$:\n$$\\nabla_{\\mathbf{X}} z = \\sum_j (\\nabla_{\\mathbf{X}} Y_j) \\frac{\\partial z}{\\partial Y_j}$$\n\nConceptually identical to vector case -- flatten tensors, compute gradient, reshape. Backprop still multiplies Jacobians by gradients."
+    },
+    {
+      "id": "ch06-026",
+      "chapter": 6,
+      "section": "6.2.2.2",
+      "tags": [
+        "sigmoid",
+        "logit"
+      ],
+      "front": "How is the **sigmoid** derived from unnormalized log probabilities?",
+      "back": "Assume $\\log \\tilde{P}(y) = yz$. Exponentiate: $\\tilde{P}(y) = \\exp(yz)$.\n\nNormalize over $y \\in \\{0,1\\}$:\n$$P(y) = \\frac{\\exp(yz)}{\\sum_{y'=0}^{1} \\exp(y'z)} = \\sigma((2y-1)z)$$\n\n$z$ is the **logit** (log-odds). Loss: $J = \\zeta((1-2y)z)$ where $\\zeta$ is softplus. Saturates only when model is already correct."
+    },
+    {
+      "id": "ch06-027",
+      "chapter": 6,
+      "section": "6.3.1",
+      "tags": [
+        "maxout",
+        "activation-function"
+      ],
+      "front": "How do **maxout units** work, and what is **catastrophic forgetting**?",
+      "back": "Divide $\\mathbf{z}$ into groups of $k$ and output max of each group:\n$$g(\\mathbf{z})_i = \\max_{j \\in \\mathbb{G}^{(i)}} z_j$$\n\n- Learns piecewise linear convex function with up to $k$ pieces\n- With $k=2$: can learn ReLU, leaky ReLU, absolute value\n- Can be seen as **learning the activation function itself**\n- Redundancy from multiple filters helps resist **catastrophic forgetting**: when networks forget how to perform previously learned tasks"
+    },
+    {
+      "id": "ch06-028",
+      "chapter": 6,
+      "section": "6.3.1",
+      "tags": [
+        "hidden-units",
+        "non-differentiability"
+      ],
+      "front": "How do neural networks handle ReLU being **not differentiable** at $z=0$?",
+      "back": "- Training algorithms don't usually arrive at exact local minima; they merely **reduce cost significantly**\n- Software returns one of the one-sided derivatives (left = 0, right = 1)\n- Numerical error means the underlying value was likely some small $\\epsilon$ rounded to 0\n- In practice, gradient descent works well despite non-differentiability at a small number of points"
+    },
+    {
+      "id": "ch06-029",
+      "chapter": 6,
+      "section": "6.4.1",
+      "tags": [
+        "architecture",
+        "depth-vs-width"
+      ],
+      "front": "Why do **deeper** networks generalize better than wider shallow ones?",
+      "back": "- Deep models encode a **prior belief** that the target function is a hierarchical composition of simpler functions\n- Equivalent to believing the learning problem involves discovering **factors of variation** composed at multiple levels\n- Empirically, test accuracy increases with depth (not just parameter count)\n- Simply increasing width without depth leads to **overfitting** at a much lower parameter count"
+    },
+    {
+      "id": "ch06-030",
+      "chapter": 6,
+      "section": "6.5.3",
+      "tags": [
+        "backprop",
+        "reverse-mode"
+      ],
+      "front": "Why is **reverse-mode** (backprop) preferred over forward-mode differentiation for neural networks?",
+      "back": "- **Reverse mode**: one backward pass computes gradients w.r.t. **all** parameters simultaneously\n- **Forward mode**: requires a separate pass for **each** parameter\n- Neural nets have many parameters but one scalar cost $J$\n- Reverse mode: $O(|\\text{edges}|)$ total\n- Forward mode: $O(n_{\\text{params}} \\times |\\text{edges}|)$ total\n- Forward mode is better when there are more outputs than inputs (rare in training)"
+    },
+    {
+      "id": "ch07-001",
+      "chapter": 7,
+      "section": "7.1",
+      "tags": [
+        "regularization",
+        "concept"
+      ],
+      "front": "What is **regularization** in the context of deep learning, and what fundamental trade-off does it exploit?",
+      "back": "Regularization is any modification to a learning algorithm intended to reduce its **generalization error** but not its training error. It works by trading increased bias for reduced variance. An effective regularizer makes a profitable trade-off, reducing variance significantly while not overly increasing bias.\n\nIn practice, the true data generating process is almost always outside the model family, so we are always fitting a square peg into a round hole. The best fitting model (lowest generalization error) is almost always a large model that has been **regularized appropriately**."
+    },
+    {
+      "id": "ch07-002",
+      "chapter": 7,
+      "section": "7.1.1",
+      "tags": [
+        "regularization",
+        "L2",
+        "weight-decay",
+        "math"
+      ],
+      "front": "Write the $L^2$ regularized objective function and show how the gradient update rule becomes **weight decay**.",
+      "back": "Regularized objective:\n$$\\tilde{J}(\\mathbf{w}; \\mathbf{X}, \\mathbf{y}) = \\frac{\\alpha}{2}\\mathbf{w}^\\top\\mathbf{w} + J(\\mathbf{w}; \\mathbf{X}, \\mathbf{y})$$\n\nGradient: $\\nabla_{\\mathbf{w}}\\tilde{J} = \\alpha\\mathbf{w} + \\nabla_{\\mathbf{w}}J$\n\nUpdate rule:\n$$\\mathbf{w} \\leftarrow (1 - \\epsilon\\alpha)\\mathbf{w} - \\epsilon\\nabla_{\\mathbf{w}}J$$\n\nThe factor $(1 - \\epsilon\\alpha)$ multiplicatively shrinks weights each step before the gradient update -- hence **weight decay**. Also known as **ridge regression** or **Tikhonov regularization**."
+    },
+    {
+      "id": "ch07-003",
+      "chapter": 7,
+      "section": "7.1.1",
+      "tags": [
+        "regularization",
+        "L2",
+        "eigendecomposition",
+        "math"
+      ],
+      "front": "Using the eigendecomposition of the Hessian $\\mathbf{H} = \\mathbf{Q}\\mathbf{\\Lambda}\\mathbf{Q}^\\top$, how does $L^2$ regularization rescale the optimal weight $\\mathbf{w}^*$ along each eigenvector direction?",
+      "back": "The regularized minimum is:\n$$\\tilde{\\mathbf{w}} = \\mathbf{Q}(\\mathbf{\\Lambda} + \\alpha\\mathbf{I})^{-1}\\mathbf{\\Lambda}\\mathbf{Q}^\\top\\mathbf{w}^*$$\n\nThe component of $\\mathbf{w}^*$ along the $i$-th eigenvector is rescaled by $\\frac{\\lambda_i}{\\lambda_i + \\alpha}$.\n\n- When $\\lambda_i \\gg \\alpha$: minimal shrinkage (important direction preserved)\n- When $\\lambda_i \\ll \\alpha$: component shrunk toward zero (unimportant direction decayed)\n\nOnly directions along which parameters contribute significantly to reducing the objective are preserved relatively intact."
+    },
+    {
+      "id": "ch07-004",
+      "chapter": 7,
+      "section": "7.1.1",
+      "tags": [
+        "regularization",
+        "L2",
+        "linear-regression"
+      ],
+      "front": "In linear regression, how does $L^2$ regularization change the normal equation solution, and what does this mean geometrically about feature covariance?",
+      "back": "Unregularized: $\\mathbf{w} = (\\mathbf{X}^\\top\\mathbf{X})^{-1}\\mathbf{X}^\\top\\mathbf{y}$\n\nRegularized: $\\mathbf{w} = (\\mathbf{X}^\\top\\mathbf{X} + \\alpha\\mathbf{I})^{-1}\\mathbf{X}^\\top\\mathbf{y}$\n\n$L^2$ regularization adds $\\alpha$ to the diagonal of the covariance matrix $\\mathbf{X}^\\top\\mathbf{X}$, making the algorithm perceive the input as having **higher variance**. This shrinks weights on features whose covariance with the output is low relative to this added variance. The matrix $(\\mathbf{X}^\\top\\mathbf{X} + \\alpha\\mathbf{I})$ is guaranteed **positive definite** and thus always invertible."
+    },
+    {
+      "id": "ch07-005",
+      "chapter": 7,
+      "section": "7.1.2",
+      "tags": [
+        "regularization",
+        "L1",
+        "sparsity",
+        "math"
+      ],
+      "front": "Write the $L^1$ regularized gradient. Why does $L^1$ produce **sparse** solutions while $L^2$ does not?",
+      "back": "Gradient: $\\nabla_{\\mathbf{w}}\\tilde{J} = \\alpha\\,\\text{sign}(\\mathbf{w}) + \\nabla_{\\mathbf{w}}J$\n\nThe $L^1$ gradient contribution is a **constant** $\\alpha\\,\\text{sign}(w_i)$ regardless of $|w_i|$, so it pushes small weights all the way to zero.\n\nAnalytical solution (diagonal Hessian): $w_i = \\text{sign}(w_i^*)\\max\\left\\{|w_i^*| - \\frac{\\alpha}{H_{i,i}},\\, 0\\right\\}$\n\nWhen $|w_i^*| \\leq \\frac{\\alpha}{H_{i,i}}$, the weight is driven exactly to zero. $L^2$ only rescales by $\\frac{H_{i,i}}{H_{i,i}+\\alpha}$, which is never zero. This sparsity makes $L^1$ useful as a **feature selection** mechanism (LASSO)."
+    },
+    {
+      "id": "ch07-006",
+      "chapter": 7,
+      "section": "7.1.2",
+      "tags": [
+        "regularization",
+        "L1",
+        "Bayesian"
+      ],
+      "front": "What are the Bayesian interpretations of $L^2$ and $L^1$ regularization in terms of prior distributions on the weights?",
+      "back": "$L^2$ regularization is equivalent to MAP inference with a **Gaussian prior** on the weights: $p(\\mathbf{w}) \\propto \\exp(-\\frac{\\alpha}{2}\\mathbf{w}^\\top\\mathbf{w})$.\n\n$L^1$ regularization is equivalent to MAP inference with an **isotropic Laplace prior**:\n$$\\log p(\\mathbf{w}) = \\sum_i \\log\\text{Laplace}(w_i; 0, \\tfrac{1}{\\alpha}) = -\\alpha\\|\\mathbf{w}\\|_1 + n\\log\\alpha - n\\log 2$$\n\nThe Laplace prior has more mass near zero and heavier tails than the Gaussian, encouraging sparsity."
+    },
+    {
+      "id": "ch07-007",
+      "chapter": 7,
+      "section": "7.1",
+      "tags": [
+        "regularization",
+        "concept",
+        "bias"
+      ],
+      "front": "Why do we typically regularize only the **weights** and not the **biases** in neural networks?",
+      "back": "Each weight controls the interaction between two variables and requires observing both under varied conditions to fit well. Each bias controls only a single variable's output, so it requires less data to fit accurately.\n\nRegularizing biases can introduce significant **underfitting**. Not regularizing them does not induce too much variance because each bias controls only one variable. It is also common to use a separate $\\alpha$ coefficient per layer, though a single shared $\\alpha$ is often used for simplicity."
+    },
+    {
+      "id": "ch07-008",
+      "chapter": 7,
+      "section": "7.2",
+      "tags": [
+        "regularization",
+        "constrained-optimization",
+        "math"
+      ],
+      "front": "Explain how a norm penalty $\\alpha\\Omega(\\boldsymbol{\\theta})$ can be reinterpreted as a **constrained optimization** problem. Why might explicit constraints be preferred over penalties?",
+      "back": "The Lagrangian: $\\mathcal{L}(\\boldsymbol{\\theta}, \\alpha) = J(\\boldsymbol{\\theta}) + \\alpha(\\Omega(\\boldsymbol{\\theta}) - k)$\n\nSolving $\\min_\\theta \\max_{\\alpha \\geq 0} \\mathcal{L}$ yields an equivalent constrained problem where $\\Omega(\\boldsymbol{\\theta}) \\leq k$.\n\nExplicit constraints (via re-projection) are preferred when:\n1. Penalties can trap networks with **dead units** in bad local minima\n2. Re-projection prevents a positive feedback loop where large weights produce large gradients, causing numerical instability\n3. We know the appropriate value of $k$ but not the corresponding $\\alpha$\n\nHinton et al. recommend constraining the norm of each **column** of the weight matrix separately."
+    },
+    {
+      "id": "ch07-009",
+      "chapter": 7,
+      "section": "7.3",
+      "tags": [
+        "regularization",
+        "underdetermined"
+      ],
+      "front": "Why is regularization essential for **underdetermined** problems? Give an example with logistic regression.",
+      "back": "When $\\mathbf{X}^\\top\\mathbf{X}$ is singular (fewer examples than features), the normal equations have no unique solution. Regularization replaces $\\mathbf{X}^\\top\\mathbf{X}$ with $\\mathbf{X}^\\top\\mathbf{X} + \\alpha\\mathbf{I}$, which is guaranteed invertible.\n\nIn logistic regression on linearly separable data, if $\\mathbf{w}$ achieves perfect classification, then $2\\mathbf{w}$ achieves even higher likelihood. SGD will increase $\\|\\mathbf{w}\\|$ indefinitely, never converging. Weight decay forces convergence when the gradient of the likelihood equals the weight decay coefficient.\n\nThe Moore-Penrose pseudoinverse itself can be seen as regularization: $\\mathbf{X}^+ = \\lim_{\\alpha \\to 0}(\\mathbf{X}^\\top\\mathbf{X} + \\alpha\\mathbf{I})^{-1}\\mathbf{X}^\\top$."
+    },
+    {
+      "id": "ch07-010",
+      "chapter": 7,
+      "section": "7.4",
+      "tags": [
+        "regularization",
+        "dataset-augmentation"
+      ],
+      "front": "How does **dataset augmentation** act as regularization? What important caveat must be observed when applying transformations?",
+      "back": "Creating transformed copies of training data effectively increases dataset size, reducing overfitting. For classifiers, we generate new $(\\mathbf{x}, y)$ pairs by transforming inputs while preserving labels.\n\nCaveat: Transformations must not change the correct class. For OCR, horizontal flips or 180-degree rotations would turn 'b' into 'd' or '6' into '9'. The transformations must reflect **genuine invariances** of the task.\n\nInjecting noise to inputs is also a form of augmentation. Dropout can be seen as multiplying inputs by noise. When comparing ML benchmarks, you must control for augmentation schemes -- improved performance may come from augmentation, not the algorithm."
+    },
+    {
+      "id": "ch07-011",
+      "chapter": 7,
+      "section": "7.5",
+      "tags": [
+        "regularization",
+        "noise-robustness",
+        "math"
+      ],
+      "front": "Show that adding Gaussian noise to weights (with variance $\\eta\\mathbf{I}$) in a regression MLP is equivalent to adding what regularization term?",
+      "back": "For an MLP with least-squares loss $J = \\mathbb{E}_{p(\\mathbf{x},y)}[(\\hat{y}(\\mathbf{x}) - y)^2]$, adding weight noise $\\boldsymbol{\\epsilon}_W \\sim \\mathcal{N}(\\mathbf{0}, \\eta\\mathbf{I})$ is equivalent to minimizing $J$ plus:\n$$\\eta\\,\\mathbb{E}_{p(\\mathbf{x},y)}\\left[\\|\\nabla_{\\mathbf{W}}\\hat{y}(\\mathbf{x})\\|^2\\right]$$\n\nThis pushes the model toward regions of parameter space where small perturbations of the weights have a relatively small influence on the output -- finding **flat minima** surrounded by flat regions rather than sharp ones."
+    },
+    {
+      "id": "ch07-012",
+      "chapter": 7,
+      "section": "7.5.1",
+      "tags": [
+        "regularization",
+        "label-smoothing"
+      ],
+      "front": "What is **label smoothing** and why does it prevent a pathology of maximum likelihood with softmax classifiers?",
+      "back": "Label smoothing replaces hard targets (0 and 1) with soft targets: $\\frac{\\epsilon}{k-1}$ for incorrect classes and $1 - \\epsilon$ for the correct class.\n\nThe pathology: A softmax can never output exactly 0 or 1, so with hard targets, maximum likelihood drives weights toward infinity pursuing ever-more-extreme probabilities. Training never converges.\n\nLabel smoothing prevents this by making the optimal output **achievable** at finite weights, regularizing without discouraging correct classification."
+    },
+    {
+      "id": "ch07-013",
+      "chapter": 7,
+      "section": "7.6",
+      "tags": [
+        "regularization",
+        "semi-supervised"
+      ],
+      "front": "How does **semi-supervised learning** serve as regularization in deep learning?",
+      "back": "Semi-supervised learning uses both labeled and unlabeled data. The goal is to learn a representation $\\mathbf{h} = f(\\mathbf{x})$ so that examples from the same class map to similar representations.\n\nThe unsupervised component (modeling $P(\\mathbf{x})$) regularizes by providing additional constraints: inputs that cluster together in input space should have similar representations. This can be achieved by:\n1. Using PCA as preprocessing\n2. Building a generative model of $P(\\mathbf{x})$ that shares parameters with the discriminative model $P(\\mathbf{y}|\\mathbf{x})$\n3. Trading off supervised $-\\log P(\\mathbf{y}|\\mathbf{x})$ with unsupervised $-\\log P(\\mathbf{x})$ objectives"
+    },
+    {
+      "id": "ch07-014",
+      "chapter": 7,
+      "section": "7.7",
+      "tags": [
+        "regularization",
+        "multitask-learning"
+      ],
+      "front": "Explain how **multi-task learning** regularizes a model. What is the underlying prior belief, and how does the architecture typically reflect it?",
+      "back": "Multi-task learning pools training signals from multiple tasks, imposing soft constraints on shared parameters. The model has:\n1. **Task-specific parameters** (upper layers) -- benefit only from their task's data\n2. **Shared parameters** (lower layers) -- benefit from pooled data of all tasks\n\nThe shared representation $\\mathbf{h}^{\\text{shared}}$ captures a common pool of explanatory factors.\n\n**Prior belief:** Among the factors explaining data variations across different tasks, some are shared across two or more tasks. This increases the effective sample size for shared parameters, improving generalization bounds."
+    },
+    {
+      "id": "ch07-015",
+      "chapter": 7,
+      "section": "7.8",
+      "tags": [
+        "regularization",
+        "early-stopping",
+        "math"
+      ],
+      "front": "Prove that early stopping is equivalent to $L^2$ regularization for a quadratic cost function. What plays the role of the weight decay coefficient?",
+      "back": "After $\\tau$ gradient descent steps with learning rate $\\epsilon$ from $\\mathbf{w}^{(0)} = \\mathbf{0}$:\n$$\\mathbf{Q}^\\top\\mathbf{w}^{(\\tau)} = [\\mathbf{I} - (\\mathbf{I} - \\epsilon\\mathbf{\\Lambda})^\\tau]\\mathbf{Q}^\\top\\mathbf{w}^*$$\n\nCompare with $L^2$ solution: $\\mathbf{Q}^\\top\\tilde{\\mathbf{w}} = [\\mathbf{I} - (\\mathbf{\\Lambda} + \\alpha\\mathbf{I})^{-1}\\alpha]\\mathbf{Q}^\\top\\mathbf{w}^*$\n\nThese are equivalent when $(\\mathbf{I} - \\epsilon\\mathbf{\\Lambda})^\\tau = (\\mathbf{\\Lambda} + \\alpha\\mathbf{I})^{-1}\\alpha$, giving:\n$$\\alpha \\approx \\frac{1}{\\tau\\epsilon}$$\n\nThe **inverse of $\\tau\\epsilon$** (iterations times learning rate) plays the role of the weight decay coefficient. Parameters along high-curvature directions learn early; low-curvature directions are suppressed."
+    },
+    {
+      "id": "ch07-016",
+      "chapter": 7,
+      "section": "7.8",
+      "tags": [
+        "regularization",
+        "early-stopping",
+        "concept"
+      ],
+      "front": "What are the two strategies for reusing validation data after early stopping has determined the optimal number of steps $i^*$?",
+      "back": "**Strategy 1 (Algorithm 7.2):** Reinitialize the model with random parameters, retrain on ALL data (training + validation) for exactly $i^*$ steps. Problem: unclear whether to match number of parameter updates or number of passes through data, since the full dataset is larger.\n\n**Strategy 2 (Algorithm 7.3):** Keep the parameters from the first run and **continue** training on all data, monitoring the average loss on the validation set until it falls below the training objective value at the early stopping point. Problem: no guarantee of termination -- the objective on the validation set may never reach the target."
+    },
+    {
+      "id": "ch07-017",
+      "chapter": 7,
+      "section": "7.8",
+      "tags": [
+        "regularization",
+        "early-stopping",
+        "concept"
+      ],
+      "front": "Why is early stopping considered an **unobtrusive** form of regularization compared to weight decay?",
+      "back": "Early stopping requires **almost no change** to the training procedure, objective function, or allowable parameter values. It does not damage learning dynamics.\n\nWeight decay, by contrast, can be harmful if too strong -- it may trap the network in a bad local minimum with pathologically small weights.\n\nAdditionally, early stopping **automatically determines** the correct amount of regularization via validation monitoring, while weight decay requires expensive hyperparameter searches across many training runs. The only significant cost is periodically evaluating validation error, and the \"training time\" hyperparameter is unique in that a single run tries many values."
+    },
+    {
+      "id": "ch07-018",
+      "chapter": 7,
+      "section": "7.9",
+      "tags": [
+        "regularization",
+        "parameter-sharing",
+        "CNN"
+      ],
+      "front": "What is the difference between **parameter tying** and **parameter sharing**? Give the most prominent example of parameter sharing.",
+      "back": "**Parameter tying:** Regularizing parameters to be *close* to each other using a norm penalty, e.g., $\\Omega(\\mathbf{w}^{(A)}, \\mathbf{w}^{(B)}) = \\|\\mathbf{w}^{(A)} - \\mathbf{w}^{(B)}\\|_2^2$. Parameters remain distinct but coupled.\n\n**Parameter sharing:** Forcing sets of parameters to be *exactly equal*. Only one unique set is stored in memory.\n\nThe most prominent example is **convolutional neural networks (CNNs)**: the same feature detector (kernel weights) is applied at every spatial location in the input, encoding translation invariance. This dramatically reduces parameters and memory while allowing much larger networks without a corresponding increase in training data."
+    },
+    {
+      "id": "ch07-019",
+      "chapter": 7,
+      "section": "7.10",
+      "tags": [
+        "regularization",
+        "sparse-representations"
+      ],
+      "front": "Distinguish between **sparse parametrization** and **sparse representations**. How can representational sparsity be achieved?",
+      "back": "**Sparse parametrization** ($L^1$ on weights): Many model *parameters* are zero. The model itself is simplified.\n\n**Sparse representations** (penalty on activations): Many *hidden unit activations* $h_i$ are zero for a given input, while parameters can be dense. The *representation* of input is sparse.\n\nRepresentational sparsity is achieved by penalizing activations: $\\Omega(\\mathbf{h}) = \\|\\mathbf{h}\\|_1$, added as $\\alpha\\,\\Omega(\\mathbf{h})$ to the cost. This indirectly imposes a complicated penalty on parameters and encourages the network to learn features where each input activates only a few units."
+    },
+    {
+      "id": "ch07-020",
+      "chapter": 7,
+      "section": "7.11",
+      "tags": [
+        "regularization",
+        "bagging",
+        "ensemble"
+      ],
+      "front": "What is **bagging** (bootstrap aggregating), and why does it reduce generalization error? When is it most effective?",
+      "back": "Bagging trains $k$ models on $k$ different datasets created by **sampling with replacement** from the original training set, then averages their predictions.\n\nIf the models have errors $\\epsilon_i$ with variance $\\mathbb{E}[\\epsilon_i^2] = v$ and covariance $\\mathbb{E}[\\epsilon_i\\epsilon_j] = c$, the ensemble's mean squared error is:\n$$\\frac{1}{k}v + \\frac{k-1}{k}c$$\n\nAs $k \\to \\infty$, ensemble error approaches $c$. Bagging is most effective when models' errors are **uncorrelated** ($c \\approx 0$), which happens with high-variance, low-bias learners like neural networks or deep decision trees."
+    },
+    {
+      "id": "ch07-021",
+      "chapter": 7,
+      "section": "7.12",
+      "tags": [
+        "regularization",
+        "dropout",
+        "math"
+      ],
+      "front": "How does **dropout** work during training, and how is inference adjusted? What is the **weight scaling inference rule**?",
+      "back": "**Training:** For each minibatch, independently sample a binary mask $\\boldsymbol{\\mu}$ where each unit is kept with probability $p$ (typically 0.8 for inputs, 0.5 for hidden). The effective input to subsequent layers is $\\tilde{\\mathbf{h}} = \\boldsymbol{\\mu} \\odot \\mathbf{h}$.\n\n**Inference:** All units are active. To compensate for the fact that training saw only a fraction $p$ of units, use the **weight scaling rule**: multiply each outgoing weight by its unit's inclusion probability $p$.\n\nThis ensures the expected output at test time matches the expected output during training: $\\mathbb{E}[\\boldsymbol{\\mu} \\odot \\mathbf{h}] = p\\mathbf{h}$. Provably exact for softmax regression; an approximation for deep networks."
+    },
+    {
+      "id": "ch07-022",
+      "chapter": 7,
+      "section": "7.12",
+      "tags": [
+        "regularization",
+        "dropout",
+        "ensemble"
+      ],
+      "front": "Why can dropout be viewed as an **ensemble method**? How many effective sub-networks does it create for a network with $n$ units?",
+      "back": "With $n$ droppable units, there are $2^n$ possible binary masks, each defining a different **sub-network** (a subset of the original architecture). Dropout trains all $2^n$ sub-networks simultaneously with shared weights.\n\nAt test time, the weight scaling rule approximates the **geometric mean** of the predictions of all $2^n$ sub-networks.\n\nUnlike bagging, the sub-networks share parameters (massive parameter sharing), so each can be trained with only a single minibatch. The exponentially large ensemble is trained in $O(n)$ time and evaluated in $O(1)$ forward passes."
+    },
+    {
+      "id": "ch07-023",
+      "chapter": 7,
+      "section": "7.12",
+      "tags": [
+        "regularization",
+        "dropout",
+        "concept"
+      ],
+      "front": "Dropout forces learned hidden units to be robust. Explain this in terms of the analogy to **sexual reproduction** vs. asexual reproduction.",
+      "back": "Hinton's biological motivation: Sexual reproduction means a gene cannot rely on a specific set of partner genes -- it must be individually useful across random genetic backgrounds.\n\nSimilarly, dropout prevents **co-adaptation** of hidden units. A unit cannot rely on specific other units being present, so each unit must learn features that are individually useful in many different random subsets of the network.\n\nDropout uses **multiplicative** noise (not additive) because with additive noise, a ReLU unit could simply learn a very large activation that makes the noise insignificant. Multiplicative noise scales with the activation magnitude, preventing this workaround."
+    },
+    {
+      "id": "ch07-024",
+      "chapter": 7,
+      "section": "7.13",
+      "tags": [
+        "regularization",
+        "adversarial-training"
+      ],
+      "front": "What are **adversarial examples**, and how does **adversarial training** serve as regularization?",
+      "back": "Adversarial examples are inputs formed by applying small, intentional perturbations to a correctly-classified input that cause the network to misclassify with high confidence. Often the perturbation is imperceptible to humans.\n\nThe primary cause is excessive **linearity** in high dimensions. For linear models, the adversarial perturbation maximizes $\\mathbf{w}^\\top\\boldsymbol{\\epsilon}$ subject to $\\|\\boldsymbol{\\epsilon}\\|_\\infty \\leq \\delta$, giving the FGSM attack: $\\boldsymbol{\\epsilon} = \\delta\\,\\text{sign}(\\mathbf{w})$.\n\n**Adversarial training** augments training data with adversarial examples, regularizing the model to be locally stable around training points. This encourages the learned function to be locally constant in the neighborhood of training data."
+    },
+    {
+      "id": "ch07-025",
+      "chapter": 7,
+      "section": "7.14",
+      "tags": [
+        "regularization",
+        "tangent-methods",
+        "manifold"
+      ],
+      "front": "Explain the difference between the **tangent distance algorithm**, **tangent propagation**, and the **manifold tangent classifier**.",
+      "back": "All three assume inputs lie near a low-dimensional **manifold** and class labels should be invariant to local movements along it.\n\n**Tangent distance:** A non-parametric nearest-neighbor method that replaces Euclidean distance with distance between manifolds spanned by known transformations. Used at test time only.\n\n**Tangent propagation:** A training-time regularizer penalizing sensitivity along known invariance directions $\\mathbf{v}^{(i)}$:\n$$\\Omega(f) = \\sum_i \\left((\\nabla_{\\mathbf{x}}f(\\mathbf{x}))^\\top \\mathbf{v}^{(i)}\\right)^2$$\nDataset augmentation can be seen as a non-infinitesimal form of tangent prop.\n\n**Manifold tangent classifier:** Uses an **autoencoder** to automatically learn the tangent vectors instead of requiring hand-specified transformations, then applies tangent prop with the learned directions."
+    },
+    {
+      "id": "ch08-001",
+      "chapter": 8,
+      "section": "8.1",
+      "tags": [
+        "optimization",
+        "machine-learning",
+        "concept"
+      ],
+      "front": "How does optimization for **training deep models** differ from pure optimization?",
+      "back": "In pure optimization, minimizing $J$ is a goal in itself. In machine learning, we care about a **performance measure** $P$ defined on the test set, which is intractable. We reduce a different cost function $J(\\boldsymbol{\\theta})$ on the training set only **indirectly** hoping to improve $P$. Training also typically halts via early stopping rather than at a true minimum."
+    },
+    {
+      "id": "ch08-002",
+      "chapter": 8,
+      "section": "8.1.1",
+      "tags": [
+        "optimization",
+        "empirical-risk",
+        "concept"
+      ],
+      "front": "What is **empirical risk minimization**, and why is it rarely used directly in deep learning?",
+      "back": "The **risk** is the expected loss under the true data distribution $p_{\\text{data}}$:\n$$J^*(\\boldsymbol{\\theta}) = \\mathbb{E}_{(\\mathbf{x},y)\\sim p_{\\text{data}}} L(f(\\mathbf{x};\\boldsymbol{\\theta}), y)$$\nSince $p_{\\text{data}}$ is unknown, **empirical risk minimization** replaces it with the empirical distribution $\\hat{p}_{\\text{data}}$:\n$$\\frac{1}{m}\\sum_{i=1}^{m} L(f(\\mathbf{x}^{(i)};\\boldsymbol{\\theta}), y^{(i)})$$\nIt is rarely used directly because (1) it is prone to **overfitting** with high-capacity models, and (2) many useful loss functions (e.g., 0-1 loss) have no useful derivatives."
+    },
+    {
+      "id": "ch08-003",
+      "chapter": 8,
+      "section": "8.1.2",
+      "tags": [
+        "optimization",
+        "surrogate-loss",
+        "concept"
+      ],
+      "front": "Why do we use a **surrogate loss function** instead of the true loss we care about (e.g., 0-1 classification error)?",
+      "back": "The true 0-1 loss is intractable to optimize (even for a linear classifier). A **surrogate** like negative log-likelihood is smooth and differentiable, enabling gradient-based optimization. Surrogates can actually **learn more** than the true loss -- e.g., continuing to push classes apart even after 0-1 error reaches zero, yielding a more robust and confident classifier."
+    },
+    {
+      "id": "ch08-004",
+      "chapter": 8,
+      "section": "8.1.3",
+      "tags": [
+        "optimization",
+        "minibatch",
+        "SGD"
+      ],
+      "front": "Why do minibatch methods converge faster **in total computation** than full-batch gradient descent, even though each gradient estimate is noisier?",
+      "back": "The standard error of the mean gradient estimated from $n$ samples is $\\sigma / \\sqrt{n}$. Increasing the batch from 100 to 10,000 costs 100x more computation but only reduces the standard error by 10x. Minibatch methods exploit this **sublinear return**: many cheap, noisy updates make faster progress than fewer expensive, precise updates. Additionally, **redundancy** in the training set means many examples contribute similar gradients."
+    },
+    {
+      "id": "ch08-005",
+      "chapter": 8,
+      "section": "8.1.3",
+      "tags": [
+        "optimization",
+        "minibatch",
+        "generalization"
+      ],
+      "front": "In what sense does minibatch SGD follow the gradient of the **true generalization error** rather than just the training error?",
+      "back": "On the **first pass** through the training set (no examples repeated), each minibatch is a fair i.i.d. sample from $p_{\\text{data}}$, so the minibatch gradient\n$$\\hat{\\mathbf{g}} = \\frac{1}{m}\\nabla_{\\boldsymbol{\\theta}} \\sum_i L(f(\\mathbf{x}^{(i)};\\boldsymbol{\\theta}), y^{(i)})$$\nis an **unbiased estimator** of $\\nabla_{\\boldsymbol{\\theta}} J^*(\\boldsymbol{\\theta})$, the gradient of the true generalization error. On subsequent epochs this property no longer holds exactly, since examples are reused."
+    },
+    {
+      "id": "ch08-006",
+      "chapter": 8,
+      "section": "8.1.3",
+      "tags": [
+        "optimization",
+        "minibatch",
+        "batch-size"
+      ],
+      "front": "Why do **second-order methods** (e.g., Newton's method) require much larger minibatch sizes than first-order methods?",
+      "back": "Second-order methods compute updates like $\\mathbf{H}^{-1}\\mathbf{g}$. Even if $\\mathbf{H}$ is estimated perfectly, a **poorly conditioned** Hessian amplifies small estimation errors in $\\mathbf{g}$. The update $\\mathbf{H}^{-1}\\mathbf{g}$ is far more sensitive to noise in $\\mathbf{g}$ than $\\mathbf{g}$ alone, so much larger batches (e.g., 10,000) are needed to keep fluctuations in the update small. First-order methods using only $\\mathbf{g}$ are relatively robust with batch sizes around 100."
+    },
+    {
+      "id": "ch08-007",
+      "chapter": 8,
+      "section": "8.2.1",
+      "tags": [
+        "optimization",
+        "ill-conditioning",
+        "challenge"
+      ],
+      "front": "How does **ill-conditioning** of the Hessian $\\mathbf{H}$ cause gradient descent to get stuck, even with a strong gradient?",
+      "back": "A gradient descent step of $-\\epsilon \\mathbf{g}$ adds the following to the cost (via second-order Taylor expansion):\n$$\\frac{1}{2}\\epsilon^2 \\mathbf{g}^\\top \\mathbf{H} \\mathbf{g} - \\epsilon \\mathbf{g}^\\top \\mathbf{g}$$\nIll-conditioning means the term $\\frac{1}{2}\\epsilon^2 \\mathbf{g}^\\top \\mathbf{H} \\mathbf{g}$ can exceed $\\epsilon \\mathbf{g}^\\top \\mathbf{g}$, so **even very small steps increase the cost**. The gradient norm $\\|\\mathbf{g}\\|$ may remain large while progress stalls because the learning rate must be shrunk to compensate for strong curvature."
+    },
+    {
+      "id": "ch08-008",
+      "chapter": 8,
+      "section": "8.2.2",
+      "tags": [
+        "optimization",
+        "local-minima",
+        "challenge"
+      ],
+      "front": "Why are the many **local minima** of neural network cost functions often **not a serious problem** in practice?",
+      "back": "Most local minima arise from **model identifiability** issues (weight space symmetry, scale invariance in ReLU/maxout nets) and are equivalent in cost. For sufficiently large networks, experts believe most local minima have low cost -- it is not important to find the true global minimum, just a point with **sufficiently low cost**. The practical test: if the gradient norm does not shrink to zero during training, local minima are not the issue."
+    },
+    {
+      "id": "ch08-009",
+      "chapter": 8,
+      "section": "8.2.3",
+      "tags": [
+        "optimization",
+        "saddle-points",
+        "challenge"
+      ],
+      "front": "Why are **saddle points** more common than local minima in high-dimensional optimization, and what is their impact on first- vs. second-order methods?",
+      "back": "At a critical point, the Hessian has a mix of positive and negative eigenvalues (saddle) or all positive (minimum). In $n$ dimensions, requiring all $n$ eigenvalues positive is exponentially unlikely -- like flipping $n$ heads. So the ratio of saddle points to local minima grows **exponentially** with $n$.\n\n**First-order** methods (SGD) empirically escape saddle points. **Newton's method** is designed to find where the gradient is zero, so it can actively **jump to** saddle points. This is a key reason second-order methods struggle in deep learning."
+    },
+    {
+      "id": "ch08-010",
+      "chapter": 8,
+      "section": "8.2.4",
+      "tags": [
+        "optimization",
+        "gradient-clipping",
+        "challenge"
+      ],
+      "front": "What causes **cliffs** in neural network cost functions, and how does **gradient clipping** address them?",
+      "back": "Cliffs arise from the multiplication of several large weights (especially in RNNs with long sequences), creating extremely steep regions with very high derivatives. An unclipped gradient step can **catapult** parameters far away, undoing all previous optimization.\n\n**Gradient clipping** recalls that the gradient specifies the optimal direction only in an infinitesimal region. When the proposed step is too large, clipping reduces its magnitude while preserving direction, keeping the update within the region where the gradient is a good local approximation."
+    },
+    {
+      "id": "ch08-011",
+      "chapter": 8,
+      "section": "8.2.5",
+      "tags": [
+        "optimization",
+        "vanishing-gradients",
+        "challenge"
+      ],
+      "front": "Explain mathematically why **vanishing and exploding gradients** occur when backpropagating through $t$ time steps of a recurrent network.",
+      "back": "If the computation involves repeated multiplication by weight matrix $\\mathbf{W}$ with eigendecomposition $\\mathbf{W} = \\mathbf{V}\\text{diag}(\\boldsymbol{\\lambda})\\mathbf{V}^{-1}$, then:\n$$\\mathbf{W}^t = \\mathbf{V}\\text{diag}(\\boldsymbol{\\lambda})^t \\mathbf{V}^{-1}$$\nEigenvalues $|\\lambda_i| > 1$ cause their components to **explode**, while $|\\lambda_i| < 1$ cause them to **vanish**. This is analogous to the **power method** -- $\\mathbf{W}^t$ amplifies the principal eigenvector and suppresses all others, destroying gradient information about long-range dependencies."
+    },
+    {
+      "id": "ch08-012",
+      "chapter": 8,
+      "section": "8.3.1",
+      "tags": [
+        "optimization",
+        "SGD",
+        "algorithm"
+      ],
+      "front": "Write the **SGD update rule** and state the two conditions that a learning rate schedule $\\epsilon_k$ must satisfy to guarantee convergence.",
+      "back": "**Update rule:**\n$$\\boldsymbol{\\theta} \\leftarrow \\boldsymbol{\\theta} - \\epsilon_k \\hat{\\mathbf{g}}$$\nwhere $\\hat{\\mathbf{g}} = \\frac{1}{m}\\nabla_{\\boldsymbol{\\theta}} \\sum_i L(f(\\mathbf{x}^{(i)};\\boldsymbol{\\theta}), y^{(i)})$.\n\n**Convergence conditions:**\n$$\\sum_{k=1}^{\\infty} \\epsilon_k = \\infty \\quad \\text{and} \\quad \\sum_{k=1}^{\\infty} \\epsilon_k^2 < \\infty$$\nThe first ensures the steps can reach any point; the second ensures the noise shrinks enough to converge. The learning rate must decay because SGD's gradient noise does not vanish at a minimum (unlike batch gradient descent)."
+    },
+    {
+      "id": "ch08-013",
+      "chapter": 8,
+      "section": "8.3.1",
+      "tags": [
+        "optimization",
+        "SGD",
+        "convergence"
+      ],
+      "front": "What is the **excess error** convergence rate of SGD for convex and strongly convex problems? Why does the Cramer-Rao bound suggest faster convergence is **not useful** for machine learning?",
+      "back": "**Convex:** excess error $J(\\boldsymbol{\\theta}) - \\min J(\\boldsymbol{\\theta})$ is $O(1/\\sqrt{k})$ after $k$ iterations.\n**Strongly convex:** $O(1/k)$.\n\nBatch gradient descent has better convergence rates in theory, but the **Cramer-Rao bound** states that generalization error cannot decrease faster than $O(1/k)$ where $k$ is the number of examples. Pursuing optimization convergence faster than $O(1/k)$ presumably leads to **overfitting**, not better generalization."
+    },
+    {
+      "id": "ch08-014",
+      "chapter": 8,
+      "section": "8.3.2",
+      "tags": [
+        "optimization",
+        "momentum",
+        "algorithm"
+      ],
+      "front": "Write the **momentum** update equations and explain what the **terminal velocity** $\\frac{\\epsilon \\|\\mathbf{g}\\|}{1-\\alpha}$ means intuitively.",
+      "back": "**Update equations:**\n$$\\mathbf{v} \\leftarrow \\alpha \\mathbf{v} - \\epsilon \\nabla_{\\boldsymbol{\\theta}} \\left(\\frac{1}{m}\\sum_{i=1}^m L(f(\\mathbf{x}^{(i)};\\boldsymbol{\\theta}), \\mathbf{y}^{(i)})\\right)$$\n$$\\boldsymbol{\\theta} \\leftarrow \\boldsymbol{\\theta} + \\mathbf{v}$$\n\nWhen the gradient $\\mathbf{g}$ is constant across steps, $\\mathbf{v}$ converges to a **terminal velocity** of $\\frac{\\epsilon \\|\\mathbf{g}\\|}{1-\\alpha}$. With $\\alpha=0.9$, this is $10\\times$ the vanilla GD step size. Momentum thus accelerates progress along **consistent gradient directions** (e.g., the long axis of a narrow valley) while damping oscillations across inconsistent directions."
+    },
+    {
+      "id": "ch08-015",
+      "chapter": 8,
+      "section": "8.3.3",
+      "tags": [
+        "optimization",
+        "nesterov",
+        "algorithm"
+      ],
+      "front": "How does **Nesterov momentum** differ from standard momentum, and what convergence improvement does it provide?",
+      "back": "**Standard momentum:** compute gradient at current position $\\boldsymbol{\\theta}$, then update velocity.\n**Nesterov momentum:** first apply velocity to get an interim point $\\tilde{\\boldsymbol{\\theta}} = \\boldsymbol{\\theta} + \\alpha \\mathbf{v}$, then compute the gradient **at that interim point**:\n$$\\mathbf{v} \\leftarrow \\alpha \\mathbf{v} - \\epsilon \\nabla_{\\boldsymbol{\\theta}} \\left[\\frac{1}{m}\\sum_i L\\left(f(\\mathbf{x}^{(i)};\\boldsymbol{\\theta}+\\alpha \\mathbf{v}), \\mathbf{y}^{(i)}\\right)\\right]$$\nThis acts as a **correction factor** -- \"look ahead\" before committing. In the convex batch case, Nesterov improves convergence from $O(1/k)$ to $O(1/k^2)$, though this improvement does **not** carry over to the stochastic setting."
+    },
+    {
+      "id": "ch08-016",
+      "chapter": 8,
+      "section": "8.4",
+      "tags": [
+        "optimization",
+        "initialization",
+        "concept"
+      ],
+      "front": "Why must initial parameters **break symmetry** between hidden units, and what is the Glorot & Bengio **normalized initialization** scheme?",
+      "back": "If two hidden units with the same activation receive the same inputs and start with identical weights, a deterministic algorithm will update them identically forever -- they can never learn different features.\n\n**Glorot & Bengio normalized initialization** for a layer with $m$ inputs and $n$ outputs:\n$$W_{i,j} \\sim U\\left(-\\sqrt{\\frac{6}{m+n}},\\; \\sqrt{\\frac{6}{m+n}}\\right)$$\nThis compromises between preserving **activation variance** (forward pass) and **gradient variance** (backward pass) across layers, derived under the assumption of a linear chain of matrix multiplications."
+    },
+    {
+      "id": "ch08-017",
+      "chapter": 8,
+      "section": "8.5.1",
+      "tags": [
+        "optimization",
+        "AdaGrad",
+        "adaptive-lr"
+      ],
+      "front": "How does **AdaGrad** adapt learning rates per-parameter, and what is its key weakness for deep learning?",
+      "back": "AdaGrad accumulates the sum of all historical squared gradients per parameter in $\\mathbf{r}$:\n$$\\mathbf{r} \\leftarrow \\mathbf{r} + \\mathbf{g} \\odot \\mathbf{g}$$\n$$\\Delta\\boldsymbol{\\theta} = -\\frac{\\epsilon}{\\delta + \\sqrt{\\mathbf{r}}} \\odot \\mathbf{g}$$\nParameters with large gradients get rapidly shrinking learning rates; those with small gradients get relatively larger rates, making progress in **gently sloped directions**.\n\n**Weakness:** The accumulation grows monotonically from the **beginning of training**, causing the effective learning rate to shrink prematurely and excessively for deep non-convex problems."
+    },
+    {
+      "id": "ch08-018",
+      "chapter": 8,
+      "section": "8.5.2",
+      "tags": [
+        "optimization",
+        "RMSProp",
+        "adaptive-lr"
+      ],
+      "front": "How does **RMSProp** fix AdaGrad's premature learning rate decay?",
+      "back": "RMSProp replaces AdaGrad's sum of all squared gradients with an **exponentially decaying moving average**:\n$$\\mathbf{r} \\leftarrow \\rho \\mathbf{r} + (1-\\rho)\\mathbf{g} \\odot \\mathbf{g}$$\n$$\\Delta\\boldsymbol{\\theta} = -\\frac{\\epsilon}{\\sqrt{\\delta + \\mathbf{r}}} \\odot \\mathbf{g}$$\nThe decay rate $\\rho$ controls how much history is retained. This allows RMSProp to **discard ancient gradient history** and converge rapidly after arriving at a locally convex bowl, as if AdaGrad had been initialized fresh within that bowl. This makes it far more effective for non-convex deep learning."
+    },
+    {
+      "id": "ch08-019",
+      "chapter": 8,
+      "section": "8.5.3",
+      "tags": [
+        "optimization",
+        "Adam",
+        "adaptive-lr"
+      ],
+      "front": "What two key features distinguish **Adam** from RMSProp, and why does Adam include **bias correction**?",
+      "back": "**Two distinctions:**\n1. Adam maintains an exponentially weighted estimate of the **first moment** (mean) of the gradient $\\mathbf{s}$ (momentum-like), not just the second moment $\\mathbf{r}$.\n2. Adam applies **bias correction** to both moment estimates.\n\n**Why bias correction:** Both $\\mathbf{s}$ and $\\mathbf{r}$ are initialized to $\\mathbf{0}$. Early in training, they are biased toward zero. Adam corrects this:\n$$\\hat{\\mathbf{s}} = \\frac{\\mathbf{s}}{1 - \\rho_1^t}, \\quad \\hat{\\mathbf{r}} = \\frac{\\mathbf{r}}{1 - \\rho_2^t}$$\nRMSProp also tracks the second moment but **lacks** this correction, so its second-moment estimate has high bias early in training."
+    },
+    {
+      "id": "ch08-020",
+      "chapter": 8,
+      "section": "8.5.4",
+      "tags": [
+        "optimization",
+        "algorithm-choice",
+        "concept"
+      ],
+      "front": "Is there a consensus on which optimization algorithm (SGD, momentum, Adam, RMSProp) is **best** for deep learning?",
+      "back": "**No.** There is currently no consensus. The choice depends largely on the practitioner's **familiarity with tuning** a particular algorithm's hyperparameters. Adaptive learning rate methods (RMSProp, Adam) perform fairly robustly across tasks, but no single algorithm has emerged as universally best. The most popular algorithms in active use are SGD, SGD with momentum, RMSProp, and Adam."
+    },
+    {
+      "id": "ch08-021",
+      "chapter": 8,
+      "section": "8.7.1",
+      "tags": [
+        "optimization",
+        "batch-normalization",
+        "technique"
+      ],
+      "front": "What problem does **batch normalization** solve, and how does it reparametrize each layer's activations?",
+      "back": "Batch normalization addresses the difficulty of coordinating updates across many layers, where changing one layer's parameters shifts the input distribution of all subsequent layers.\n\nFor a minibatch $\\mathbf{H}$ of activations, BN replaces each unit's activation with:\n$$\\hat{H}_i = \\frac{H_i - \\mu_i}{\\sigma_i}$$\nwhere $\\mu_i$ and $\\sigma_i$ are the minibatch mean and standard deviation. Learnable parameters $\\gamma$ (scale) and $\\beta$ (shift) are added: $\\gamma \\hat{H}_i + \\beta$. This ensures the gradient through normalization **accounts for** the effect of parameters on the batch statistics, preventing the gradient from ever increasing the mean or variance of a layer's activations indefinitely."
+    },
+    {
+      "id": "ch08-022",
+      "chapter": 8,
+      "section": "8.7.2",
+      "tags": [
+        "optimization",
+        "coordinate-descent",
+        "technique"
+      ],
+      "front": "What is **coordinate descent**, and when can it be effective for optimization?",
+      "back": "Coordinate descent minimizes $f(\\mathbf{x})$ with respect to one variable (or block of variables) at a time while holding the others fixed, cycling through all variables.\n\nIt is effective when:\n- Variables can be cleanly separated into **groups** such that each sub-problem has an efficient closed-form or cheap solution\n- The variables are **weakly coupled**\n\nIt is **not** a good strategy when the value of one variable strongly influences the optimal value of another, as the sequential one-at-a-time updates make slow progress. For tightly coupled problems, joint optimization is far superior."
+    },
+    {
+      "id": "ch08-023",
+      "chapter": 8,
+      "section": "8.7.3",
+      "tags": [
+        "optimization",
+        "polyak-averaging",
+        "technique"
+      ],
+      "front": "What is **Polyak averaging** (exponential moving average of parameters), and why is it motivated?",
+      "back": "Polyak averaging maintains a running average of the parameters visited during SGD:\n$$\\hat{\\boldsymbol{\\theta}}^{(t)} = \\alpha \\hat{\\boldsymbol{\\theta}}^{(t-1)} + (1-\\alpha)\\boldsymbol{\\theta}^{(t)}$$\nThe motivation is that SGD's trajectory oscillates around but does not settle at the optimum. **Averaging** the trajectory can yield a better estimate of the optimum than the final iterate alone. For convex problems this is provably beneficial. For non-convex deep learning the guarantees are weaker, but empirically it often helps at test time (use the averaged parameters for inference while training with the raw parameters)."
+    },
+    {
+      "id": "ch08-024",
+      "chapter": 8,
+      "section": "8.7.4",
+      "tags": [
+        "optimization",
+        "supervised-pretraining",
+        "technique"
+      ],
+      "front": "What is **supervised pretraining**, and why might training on an easier, related task first help optimization of a harder target task?",
+      "back": "Supervised pretraining trains a model (or its initial layers) on a **simpler supervised task** before fine-tuning on the target task. For example, one can train a shallow network first, then use its weights to initialize the first layer of a deeper network, progressively adding depth.\n\nThis helps because it places parameters in a **region of space** from which gradient-based optimization can make effective progress -- a kind of **curriculum** for the model architecture itself. It can yield faster convergence and better generalization than random initialization, even when the pretraining task is only loosely related."
+    },
+    {
+      "id": "ch08-025",
+      "chapter": 8,
+      "section": "8.7.6",
+      "tags": [
+        "optimization",
+        "curriculum-learning",
+        "technique"
+      ],
+      "front": "What is **curriculum learning**, and how does it relate to the strategy humans use when learning new subjects?",
+      "back": "Curriculum learning (Bengio et al., 2009) presents training examples in a **meaningful order** -- starting with simpler or cleaner examples and gradually introducing harder or noisier ones, rather than training on all data uniformly from the start.\n\nThis mirrors how humans learn (basic concepts before advanced ones). It can **speed up convergence** and sometimes lead to better generalization by guiding the optimization trajectory through a more favorable region of parameter space early on. It is a form of **continuation method** -- solving a sequence of progressively harder optimization problems, each initialized from the solution of the previous one."
+    },
+    {
+      "id": "ch09-001",
+      "chapter": 9,
+      "section": "9.1",
+      "tags": [
+        "CNN",
+        "convolution",
+        "definition"
+      ],
+      "front": "Write the **continuous** and **discrete** convolution formulas. What are the two arguments called in CNN terminology?",
+      "back": "Continuous: $s(t) = (x * w)(t) = \\int x(a)\\,w(t - a)\\,da$\n\nDiscrete: $s(t) = (x * w)(t) = \\sum_{a=-\\infty}^{\\infty} x(a)\\,w(t-a)$\n\nThe first argument $x$ is the **input**, the second $w$ is the **kernel**, and the output is the **feature map**."
+    },
+    {
+      "id": "ch09-002",
+      "chapter": 9,
+      "section": "9.1",
+      "tags": [
+        "CNN",
+        "convolution",
+        "cross-correlation"
+      ],
+      "front": "What is the difference between **convolution** and **cross-correlation**, and why do most deep learning libraries implement cross-correlation but call it convolution?",
+      "back": "Convolution **flips** the kernel: $S(i,j) = \\sum_m \\sum_n I(i-m, j-n)\\,K(m,n)$\n\nCross-correlation does **not** flip it: $S(i,j) = \\sum_m \\sum_n I(i+m, j+n)\\,K(m,n)$\n\nFlipping is only needed for the commutative property. Since the kernel is learned, flipping vs. not flipping just produces a flipped-version of the same learned kernel. The combination of convolution with other functions (nonlinearities, pooling) is not commutative regardless, so the distinction is irrelevant in practice."
+    },
+    {
+      "id": "ch09-003",
+      "chapter": 9,
+      "section": "9.1",
+      "tags": [
+        "CNN",
+        "convolution",
+        "matrix"
+      ],
+      "front": "Discrete convolution can be viewed as multiplication by a matrix with special structure. What is this matrix called in 1D? In 2D?",
+      "back": "In 1D, convolution corresponds to multiplication by a **Toeplitz matrix** (each row is the row above shifted by one element).\n\nIn 2D, it corresponds to a **doubly block circulant matrix**.\n\nThe matrix is also very **sparse** because the kernel is much smaller than the input."
+    },
+    {
+      "id": "ch09-004",
+      "chapter": 9,
+      "section": "9.2",
+      "tags": [
+        "CNN",
+        "motivation",
+        "sparse-interactions"
+      ],
+      "front": "Explain **sparse interactions** (sparse connectivity) in CNNs. How does it reduce computational cost from $O(m \\times n)$ to $O(k \\times n)$?",
+      "back": "Traditional layers use full matrix multiplication: every output depends on every input, requiring $m \\times n$ parameters and $O(m \\times n)$ operations.\n\nConvolutional layers make the kernel **smaller than the input** ($k \\ll m$). Each output unit depends on only $k$ inputs. This gives $k \\times n$ parameters and $O(k \\times n)$ runtime.\n\nDespite sparse *direct* connections, units in deeper layers can **indirectly** interact with a larger portion of the input, allowing the network to describe complex interactions from simple, sparse building blocks."
+    },
+    {
+      "id": "ch09-005",
+      "chapter": 9,
+      "section": "9.2",
+      "tags": [
+        "CNN",
+        "motivation",
+        "parameter-sharing"
+      ],
+      "front": "What is **parameter sharing** (tied weights) in a CNN, and how does it affect storage vs. runtime compared to a fully connected layer?",
+      "back": "Parameter sharing means the **same kernel weights** are used at every spatial position of the input, rather than learning a separate weight for each location.\n\n- **Storage**: Reduces from $O(m \\times n)$ (fully connected) to $O(k)$ parameters -- a dramatic reduction since $k \\ll m$ and $m \\approx n$.\n- **Runtime**: Remains $O(k \\times n)$ -- sharing does not reduce computation, but the massive reduction in parameters improves **memory efficiency** and **statistical efficiency** (better generalization from fewer parameters)."
+    },
+    {
+      "id": "ch09-006",
+      "chapter": 9,
+      "section": "9.2",
+      "tags": [
+        "CNN",
+        "motivation",
+        "equivariance"
+      ],
+      "front": "Define **equivariance** to translation. Why does parameter sharing give convolution this property, and what transformations is convolution **not** naturally equivariant to?",
+      "back": "A function $f$ is equivariant to a transformation $g$ if $f(g(x)) = g(f(x))$.\n\nBecause convolution applies the **same kernel everywhere**, shifting the input shifts the output by the same amount. If an edge moves 3 pixels right in the input, its detection in the feature map also moves 3 pixels right.\n\nConvolution is **not** naturally equivariant to **scale** or **rotation**. Other mechanisms (e.g., data augmentation, specialized architectures) are needed for those."
+    },
+    {
+      "id": "ch09-007",
+      "chapter": 9,
+      "section": "9.3",
+      "tags": [
+        "CNN",
+        "pooling",
+        "stages"
+      ],
+      "front": "A typical convolutional layer has **three stages**. Name them in order and describe the role of each.",
+      "back": "1. **Convolution stage**: Performs several parallel convolutions (affine transforms) to produce a set of linear activations.\n\n2. **Detector stage**: Applies a nonlinear activation function (e.g., ReLU) to each linear activation.\n\n3. **Pooling stage**: Replaces the output at a location with a summary statistic of nearby outputs (e.g., max pooling, average pooling, $L^2$ norm), making the representation approximately **invariant** to small translations."
+    },
+    {
+      "id": "ch09-008",
+      "chapter": 9,
+      "section": "9.3",
+      "tags": [
+        "CNN",
+        "pooling",
+        "invariance"
+      ],
+      "front": "Explain the distinction between **equivariance** and **invariance** to translation. Which does convolution provide? Which does pooling provide? Why does the difference matter?",
+      "back": "**Equivariance**: Shifting input shifts output by the same amount. Convolution provides this -- it tells you *where* features are.\n\n**Invariance**: Output does not change when input is shifted. Pooling provides *approximate* invariance -- it tells you *whether* a feature is present, not exactly where.\n\nInvariance is useful when we care about **presence** of a feature (e.g., \"is there a face?\") but not exact position. When exact position matters (e.g., finding corners), too much pooling is harmful and can increase training error."
+    },
+    {
+      "id": "ch09-009",
+      "chapter": 9,
+      "section": "9.3",
+      "tags": [
+        "CNN",
+        "pooling",
+        "learned-invariance"
+      ],
+      "front": "How can max pooling over **separately parametrized convolutions** learn invariance to transformations other than translation (e.g., rotation)?",
+      "back": "If multiple filters each learn to detect the **same feature at slightly different orientations** (e.g., a \"5\" tilted at different angles), then a max pooling unit over those filter outputs will fire strongly regardless of which orientation appears.\n\nThe max pooling unit is activated by whichever detector unit matches, making it **invariant to the learned transformation**. This principle is leveraged by maxout networks. Standard spatial max pooling is naturally translation-invariant; this multi-channel approach extends invariance to **arbitrary learned transformations**."
+    },
+    {
+      "id": "ch09-010",
+      "chapter": 9,
+      "section": "9.3",
+      "tags": [
+        "CNN",
+        "pooling",
+        "downsampling"
+      ],
+      "front": "How does pooling with **downsampling** (stride between pools) improve computational efficiency? What is the tradeoff?",
+      "back": "By reporting summary statistics for pooling regions spaced $k$ pixels apart (rather than 1 apart), pooling reduces the representation size by a factor of roughly $k$. This means the next layer has $k$ times fewer inputs, reducing:\n- Computation for the next layer\n- Number of parameters (if followed by a fully connected layer)\n- Memory requirements\n\nThe tradeoff is **loss of spatial resolution** -- fine-grained positional information is discarded. For tasks requiring precise localization (e.g., semantic segmentation), aggressive downsampling can be harmful."
+    },
+    {
+      "id": "ch09-011",
+      "chapter": 9,
+      "section": "9.4",
+      "tags": [
+        "CNN",
+        "prior",
+        "theory"
+      ],
+      "front": "How can a convolutional network be interpreted as a fully connected network with an **infinitely strong prior**? What two constraints does this prior impose?",
+      "back": "A convolutional net is equivalent to a fully connected net where the prior places **zero probability** on certain weight configurations:\n\n1. **Locality prior**: Weights must be zero except for a small, spatially contiguous receptive field (sparse connectivity).\n2. **Weight-sharing prior**: Weights for one hidden unit must be **identical** to the weights of its neighbor, shifted in space (parameter sharing).\n\nPooling adds a third infinitely strong prior: each unit should be **invariant to small translations**.\n\nLike any prior, these assumptions can cause **underfitting** if incorrect for the task."
+    },
+    {
+      "id": "ch09-012",
+      "chapter": 9,
+      "section": "9.4",
+      "tags": [
+        "CNN",
+        "prior",
+        "underfitting"
+      ],
+      "front": "When can the convolutional prior cause **underfitting**? Give a concrete example.",
+      "back": "The convolutional prior assumes features are **local** and **translation-invariant**. It can cause underfitting when:\n\n1. The task requires integrating information from **very distant locations** in the input (violates locality).\n2. The task requires **position-dependent** features (violates translation equivariance). For example, in centered face images, the network needs to look for eyes at the top and mouth at the bottom -- different features at different locations.\n3. Pooling on all channels increases error when **precise spatial information** is important.\n\nSome architectures (e.g., GoogLeNet) selectively apply pooling only on some channels to balance invariant and position-sensitive features."
+    },
+    {
+      "id": "ch09-013",
+      "chapter": 9,
+      "section": "9.5",
+      "tags": [
+        "CNN",
+        "convolution-variant",
+        "multi-channel"
+      ],
+      "front": "Write the formula for multi-channel convolution (cross-correlation) with a 4-D kernel tensor $\\mathsf{K}$ applied to input $\\mathsf{V}$. What do the indices represent?",
+      "back": "$$Z_{i,j,k} = \\sum_{l,m,n} V_{l,\\, j+m-1,\\, k+n-1}\\; K_{i,l,m,n}$$\n\nwhere:\n- $i$ = output channel\n- $j, k$ = spatial row and column of output\n- $l$ = input channel\n- $m, n$ = row and column offset within the kernel\n\n$K_{i,l,m,n}$ gives the connection strength between a unit in output channel $i$ and a unit in input channel $l$, at spatial offset $(m, n)$."
+    },
+    {
+      "id": "ch09-014",
+      "chapter": 9,
+      "section": "9.5",
+      "tags": [
+        "CNN",
+        "convolution-variant",
+        "stride"
+      ],
+      "front": "What is **strided convolution**? Write the formula for downsampled convolution with stride $s$, and explain why it is preferred over convolution followed by separate downsampling.",
+      "back": "Strided convolution samples the output only every $s$ pixels:\n\n$$Z_{i,j,k} = c(\\mathsf{K}, \\mathsf{V}, s)_{i,j,k} = \\sum_{l,m,n} V_{l,\\,(j-1) \\times s + m,\\,(k-1) \\times s + n}\\; K_{i,l,m,n}$$\n\nThis is mathematically equivalent to unit-stride convolution followed by downsampling, but **more efficient** because the two-step approach wastes computation by computing values at all positions and then discarding most of them."
+    },
+    {
+      "id": "ch09-015",
+      "chapter": 9,
+      "section": "9.5",
+      "tags": [
+        "CNN",
+        "zero-padding",
+        "valid-same-full"
+      ],
+      "front": "Describe the three special cases of **zero-padding**: **valid**, **same**, and **full** convolution. For input width $m$ and kernel width $k$, what is the output width in each case?",
+      "back": "**Valid** (no padding): Output width = $m - k + 1$. Output shrinks each layer; limits network depth.\n\n**Same** (enough padding to preserve size): Output width = $m$. Allows arbitrarily deep networks. However, border pixels influence fewer outputs than center pixels.\n\n**Full** (enough padding for every pixel to be visited $k$ times): Output width = $m + k - 1$. Border outputs depend on fewer input pixels, making it hard to learn a single kernel that works well everywhere.\n\nOptimal padding usually lies between **valid** and **same**."
+    },
+    {
+      "id": "ch09-016",
+      "chapter": 9,
+      "section": "9.5",
+      "tags": [
+        "CNN",
+        "convolution-variant",
+        "unshared"
+      ],
+      "front": "What is a **locally connected layer** (unshared convolution)? How does it differ from standard convolution, and when is it useful?",
+      "back": "A locally connected layer has the **same sparse connectivity** as convolution (each output depends only on a local patch), but **does not share parameters** across locations. Each spatial position has its own set of weights, specified by a 6-D tensor $\\mathsf{W}$.\n\n$$Z_{i,j,k} = \\sum_{l,m,n} V_{l,\\,j+m-1,\\,k+n-1}\\; w_{i,j,k,l,m,n}$$\n\nUseful when features are **position-dependent** -- e.g., centered face images where the top of the image should detect eyes and the bottom should detect mouths. The cost is much higher memory ($O(n \\cdot k)$ vs. $O(k)$ parameters per output channel)."
+    },
+    {
+      "id": "ch09-017",
+      "chapter": 9,
+      "section": "9.5",
+      "tags": [
+        "CNN",
+        "convolution-variant",
+        "tiled"
+      ],
+      "front": "What is **tiled convolution** and how does it interpolate between standard convolution and locally connected layers?",
+      "back": "Tiled convolution uses a set of $t$ different kernels that **cycle** through spatial locations:\n\n$$Z_{i,j,k} = \\sum_{l,m,n} V_{l,\\,j+m-1,\\,k+n-1}\\; K_{i,l,m,n,\\, j\\%t+1,\\, k\\%t+1}$$\n\nWith $t = 1$: equivalent to **standard convolution** (one kernel everywhere).\nWith $t$ equal to output width: equivalent to a **locally connected layer** (unique kernel at each position).\n\nTiled convolution allows neighboring locations to have **different filters** while keeping memory cost proportional to $t$ (not the full output size). Combined with max pooling, tiled convolution can learn invariance to **arbitrary transformations**, not just translation."
+    },
+    {
+      "id": "ch09-018",
+      "chapter": 9,
+      "section": "9.5",
+      "tags": [
+        "CNN",
+        "backprop",
+        "transpose-convolution"
+      ],
+      "front": "What three operations are sufficient to compute all gradients needed to train any feedforward CNN? What is **transpose convolution** used for?",
+      "back": "The three operations are:\n1. **Convolution** itself (forward pass)\n2. **Backprop from output to weights** (gradient w.r.t. kernel $\\mathsf{K}$): $g(\\mathsf{G}, \\mathsf{V}, s)_{i,j,k,l} = \\sum_{m,n} G_{i,m,n}\\, V_{j,(m-1) \\times s+k,(n-1) \\times s+l}$\n3. **Backprop from output to inputs** (gradient w.r.t. $\\mathsf{V}$): multiplication by the **transpose** of the convolution matrix\n\nTranspose convolution is needed to propagate error derivatives backward through convolutional layers, and is also used in **autoencoders**, **RBMs**, and **sparse coding** models to reconstruct visible units from hidden units."
+    },
+    {
+      "id": "ch09-019",
+      "chapter": 9,
+      "section": "9.6",
+      "tags": [
+        "CNN",
+        "structured-output",
+        "segmentation"
+      ],
+      "front": "How can CNNs produce **structured outputs** like pixel-wise label maps? What challenge arises from pooling, and what strategies address it?",
+      "back": "The final convolutional layer emits a tensor $\\mathsf{S}$ where $S_{i,j,k}$ is the probability that pixel $(j,k)$ belongs to class $i$, labeling **every pixel** in the image.\n\nThe challenge: pooling with large stride makes the output **smaller than the input**.\n\nStrategies:\n1. **Avoid pooling** altogether\n2. Emit a **lower-resolution** grid of labels\n3. Use a pooling operator with **unit stride**\n4. Use a **recurrent convolutional network** that iteratively refines pixel labels using shared convolution kernels at each step, treating successive refinements as a recurrent network with weight sharing across time steps."
+    },
+    {
+      "id": "ch09-020",
+      "chapter": 9,
+      "section": "9.7",
+      "tags": [
+        "CNN",
+        "data-types",
+        "variable-size"
+      ],
+      "front": "Why does convolution naturally handle **variable-size inputs**, while fully connected layers cannot? Give examples of data types CNNs can process.",
+      "back": "Convolution is defined by a **local kernel** applied at every position, so adding more positions just produces more outputs -- the kernel size and parameters are independent of input size. Fully connected layers require a **fixed-size weight matrix**.\n\nCNNs can process:\n- **1D**: Time series, audio waveforms, sentences\n- **2D**: Images, audio spectrograms\n- **3D**: Volumetric data (CT scans), video (2D spatial + time)\n\nFor classification of variable-size inputs, a **pooling layer** with variable pool size can produce a fixed-size output regardless of input dimensions."
+    },
+    {
+      "id": "ch09-021",
+      "chapter": 9,
+      "section": "9.8",
+      "tags": [
+        "CNN",
+        "efficiency",
+        "FFT"
+      ],
+      "front": "How can convolution be computed efficiently using the **Fourier transform**? When is this advantageous, and what is an alternative approach?",
+      "back": "By the **convolution theorem**, convolution in the spatial domain equals pointwise multiplication in the Fourier domain:\n\n1. Compute FFT of input and kernel\n2. Multiply pointwise\n3. Inverse FFT\n\nThis is $O(n \\log n)$ vs. $O(n \\cdot k)$ for direct computation, advantageous when the kernel $k$ is large.\n\nAn alternative: choose kernels that are **separable** (outer product of vectors). A $d$-dimensional kernel that is the outer product of $d$ vectors reduces cost from $O(k^d)$ to $O(k \\times d)$ per output, since the convolution can be performed as $d$ sequential 1D convolutions."
+    },
+    {
+      "id": "ch09-022",
+      "chapter": 9,
+      "section": "9.9",
+      "tags": [
+        "CNN",
+        "random-features",
+        "unsupervised"
+      ],
+      "front": "Why can CNNs with **random or unsupervised** filters sometimes perform well? Describe three approaches to obtaining features without supervised backprop through the convolutional layers.",
+      "back": "Convolutional layers are relatively cheap to evaluate (forward pass), and even random filters can produce useful representations due to the strong **architectural prior** (locality, weight sharing).\n\nThree approaches:\n1. **Random filters**: Simply initialize kernels randomly and never train them. Surprisingly effective as a baseline.\n2. **Unsupervised criteria**: Learn kernels using k-means, sparse coding, or other unsupervised methods applied to small patches.\n3. **Hand-designed filters**: Use manually engineered kernels (e.g., edge detectors, Gabor filters).\n\nThe intermediate layer features are then fed to a supervised classifier (e.g., SVM or softmax). This avoids expensive supervised backprop through all layers."
+    },
+    {
+      "id": "ch09-023",
+      "chapter": 9,
+      "section": "9.10",
+      "tags": [
+        "CNN",
+        "neuroscience",
+        "simple-complex-cells"
+      ],
+      "front": "How do **simple cells** and **complex cells** in the mammalian visual cortex (V1) relate to the detector and pooling stages of a CNN?",
+      "back": "**Simple cells** in V1 respond to oriented edges at specific locations with roughly linear responses -- analogous to the **detector stage** (convolution + activation). They can be modeled by a linear function of the image followed by a nonlinearity.\n\n**Complex cells** are invariant to small shifts in the position of the feature -- analogous to **max pooling**. They respond when the feature is present in a neighborhood, regardless of exact position.\n\nThis mapping (simple cell = detector, complex cell = pooling) was a major inspiration for CNN architectures, going back to the **neocognitron** (Fukushima, 1980) and later **LeNet** (LeCun, 1989)."
+    },
+    {
+      "id": "ch09-024",
+      "chapter": 9,
+      "section": "9.2",
+      "tags": [
+        "CNN",
+        "receptive-field",
+        "depth"
+      ],
+      "front": "What is a **receptive field**, and how does it grow with network depth? Why does this matter for the expressive power of deep CNNs?",
+      "back": "The **receptive field** of a unit is the set of input pixels that can affect its value. For a single convolutional layer with kernel width $k$, the receptive field is $k$ pixels.\n\nWith each additional layer, the receptive field grows. With strided convolution or pooling, it grows even faster. After $L$ layers with kernel width $k$, the receptive field can be as large as $O(L \\cdot k)$ or larger with strides.\n\nThis means deeper units can **indirectly** interact with the entire input, even though each individual layer has only sparse connections. The network describes complex, long-range interactions by composing **simple, local** building blocks -- a key advantage over shallow sparse models."
+    },
+    {
+      "id": "ch09-025",
+      "chapter": 9,
+      "section": "9.5",
+      "tags": [
+        "CNN",
+        "bias",
+        "channel-connectivity"
+      ],
+      "front": "How are **biases** typically shared in convolutional layers? How can restricting **channel connectivity** (making each output channel depend on only a subset of input channels) improve efficiency?",
+      "back": "**Bias sharing**: For convolutional layers, it is typical to have **one bias per output channel**, shared across all spatial locations. For locally connected layers, each unit gets its own bias. For tiled convolution, biases follow the same tiling pattern as the kernels.\n\n**Restricted channel connectivity**: Instead of connecting every output channel to every input channel, the first $m$ output channels connect to only the first $n$ input channels, the second $m$ to the second $n$, etc.\n\nBenefits:\n- Fewer parameters (reduces memory and computation)\n- Improved statistical efficiency\n- Reduced forward/backward computation\n\nThis accomplishes these goals **without reducing the number of hidden units**, only reducing the richness of inter-channel interactions."
+    },
+    {
+      "id": "ch10-001",
+      "chapter": 10,
+      "section": "10.1",
+      "tags": [
+        "RNN",
+        "unfolding",
+        "computational graph"
+      ],
+      "front": "What does it mean to **unfold** a recurrent computational graph, and what two major advantages does unfolding provide?",
+      "back": "Unfolding converts a circuit with cycles (e.g. $\\mathbf{s}^{(t)} = f(\\mathbf{s}^{(t-1)}; \\boldsymbol{\\theta})$) into an acyclic graph by replicating the computation for each time step.\n\n**Two advantages:**\n1. The model always has the **same input size** regardless of sequence length, because it is defined in terms of state-to-state transitions rather than variable-length histories.\n2. The **same transition function** $f$ with the same parameters $\\boldsymbol{\\theta}$ can be used at every time step, enabling generalization to unseen sequence lengths."
+    },
+    {
+      "id": "ch10-002",
+      "chapter": 10,
+      "section": "10.1",
+      "tags": [
+        "RNN",
+        "hidden state",
+        "concept"
+      ],
+      "front": "Why is the hidden state $\\mathbf{h}^{(t)}$ of an RNN described as a **lossy summary** of the past sequence?",
+      "back": "The hidden state $\\mathbf{h}^{(t)}$ maps an arbitrary-length input history $(\\mathbf{x}^{(t)}, \\mathbf{x}^{(t-1)}, \\dots, \\mathbf{x}^{(1)})$ to a **fixed-length vector**. Because the dimensionality of $\\mathbf{h}^{(t)}$ does not grow with $t$, information must be discarded. The training criterion determines which aspects of the past are preserved with more precision -- for example, a language model need not store every past word verbatim, only enough to predict the rest of the sentence."
+    },
+    {
+      "id": "ch10-003",
+      "chapter": 10,
+      "section": "10.2",
+      "tags": [
+        "RNN",
+        "forward propagation",
+        "equations"
+      ],
+      "front": "Write the **forward propagation equations** for the standard RNN of Figure 10.3 (hidden-to-hidden recurrence, input-to-hidden, hidden-to-output).",
+      "back": "$$\\mathbf{a}^{(t)} = \\mathbf{b} + \\mathbf{W}\\mathbf{h}^{(t-1)} + \\mathbf{U}\\mathbf{x}^{(t)}$$\n$$\\mathbf{h}^{(t)} = \\tanh(\\mathbf{a}^{(t)})$$\n$$\\mathbf{o}^{(t)} = \\mathbf{c} + \\mathbf{V}\\mathbf{h}^{(t)}$$\n$$\\hat{\\mathbf{y}}^{(t)} = \\text{softmax}(\\mathbf{o}^{(t)})$$\n\nHere $\\mathbf{U}$ is input-to-hidden, $\\mathbf{W}$ is hidden-to-hidden, and $\\mathbf{V}$ is hidden-to-output. $\\mathbf{b}$ and $\\mathbf{c}$ are bias vectors."
+    },
+    {
+      "id": "ch10-004",
+      "chapter": 10,
+      "section": "10.2",
+      "tags": [
+        "RNN",
+        "design patterns"
+      ],
+      "front": "Compare the three main RNN **design patterns** described in the textbook. Which is most powerful and why?",
+      "back": "1. **Hidden-to-hidden recurrence** (Fig 10.3): Recurrent connections between hidden units; produces output at each step. **Most powerful** -- can simulate a universal Turing machine.\n2. **Output-to-hidden recurrence** (Fig 10.4): Only the output feeds back to hidden units at the next step. **Less powerful** because the output $\\mathbf{o}$ must capture all information the network wants to send to the future, and $\\mathbf{o}$ is trained to match targets, not to be a rich state representation.\n3. **Hidden recurrence, single output** (Fig 10.5): Reads the entire sequence, produces one output at the end. Used for sequence summarization tasks like sentiment classification."
+    },
+    {
+      "id": "ch10-005",
+      "chapter": 10,
+      "section": "10.2.1",
+      "tags": [
+        "teacher forcing",
+        "training"
+      ],
+      "front": "What is **teacher forcing**, and what problem does it create at test time?",
+      "back": "Teacher forcing is a training technique for RNNs with output-to-hidden connections: during training, the **ground truth** $y^{(t)}$ is fed as input at time $t+1$ instead of the model's own prediction.\n\n**Problem:** At test time the true outputs are unknown, so the model must feed its own predictions back. The inputs it sees at test time can be very different from training inputs (its own errors compound). This is called the **train-test mismatch** or exposure bias.\n\n**Mitigations:** (1) Train with a mix of teacher-forced and free-running inputs. (2) Curriculum learning -- gradually replace ground truth with model outputs during training (Bengio et al., 2015b)."
+    },
+    {
+      "id": "ch10-006",
+      "chapter": 10,
+      "section": "10.2.2",
+      "tags": [
+        "BPTT",
+        "gradients",
+        "training"
+      ],
+      "front": "What is **BPTT** and what are its time and memory costs for a sequence of length $\\tau$?",
+      "back": "**Back-Propagation Through Time (BPTT)** is the application of the standard back-propagation algorithm to the **unrolled** computational graph of an RNN.\n\n- **Time cost:** $O(\\tau)$ -- the forward pass is inherently sequential (each $\\mathbf{h}^{(t)}$ depends on $\\mathbf{h}^{(t-1)}$), and the backward pass similarly iterates from $t = \\tau$ down to $t = 1$. Cannot be reduced by parallelization.\n- **Memory cost:** $O(\\tau)$ -- all intermediate states computed in the forward pass must be stored for use in the backward pass."
+    },
+    {
+      "id": "ch10-007",
+      "chapter": 10,
+      "section": "10.2.2",
+      "tags": [
+        "BPTT",
+        "gradients",
+        "equations"
+      ],
+      "front": "In BPTT, the gradient at hidden state $\\mathbf{h}^{(t)}$ (for $t < \\tau$) has **two contributions**. Write the recurrence and explain each term.",
+      "back": "$$\\nabla_{\\mathbf{h}^{(t)}} L = \\left(\\frac{\\partial \\mathbf{h}^{(t+1)}}{\\partial \\mathbf{h}^{(t)}}\\right)^\\top (\\nabla_{\\mathbf{h}^{(t+1)}} L) + \\left(\\frac{\\partial \\mathbf{o}^{(t)}}{\\partial \\mathbf{h}^{(t)}}\\right)^\\top (\\nabla_{\\mathbf{o}^{(t)}} L)$$\n\n- **First term:** gradient flowing back from the **future hidden state** $\\mathbf{h}^{(t+1)}$ through the recurrent connection (involves $\\mathbf{W}^\\top$ and the Jacobian of tanh).\n- **Second term:** gradient from the **current output** $\\mathbf{o}^{(t)}$ through $\\mathbf{V}^\\top$.\n\nAt the final step $\\tau$, only the second term exists since there is no $\\mathbf{h}^{(\\tau+1)}$."
+    },
+    {
+      "id": "ch10-008",
+      "chapter": 10,
+      "section": "10.2.3",
+      "tags": [
+        "RNN",
+        "graphical model",
+        "parameter sharing"
+      ],
+      "front": "Why does an RNN have $O(1)$ parameters with respect to sequence length, while a tabular model of the same joint distribution requires $O(k^\\tau)$?",
+      "back": "A tabular representation of the joint distribution over $\\tau$ variables, each taking $k$ values, requires a separate entry for every possible assignment -- that is $O(k^\\tau)$ parameters.\n\nAn RNN uses **parameter sharing**: the same transition function $f$ with the same $\\boldsymbol{\\theta}$ is applied at every time step. The hidden state $\\mathbf{h}^{(t)}$ decouples past from future in the graphical model, and each conditional $P(y^{(t)} \\mid \\mathbf{h}^{(t)})$ uses the same parameters. So the total parameter count is **independent of $\\tau$** -- it is $O(1)$ with respect to sequence length."
+    },
+    {
+      "id": "ch10-009",
+      "chapter": 10,
+      "section": "10.2.4",
+      "tags": [
+        "RNN",
+        "conditional generation",
+        "context"
+      ],
+      "front": "Name three ways to provide a fixed-size context vector $\\mathbf{x}$ to an RNN that generates a sequence $\\mathbf{y}$. Which is most common?",
+      "back": "1. **As an extra input at each time step** -- add $\\mathbf{x}^\\top \\mathbf{R}$ to the hidden unit pre-activation at every $t$. (**Most common approach**, Figure 10.9.)\n2. **As the initial state** $\\mathbf{h}^{(0)}$.\n3. **Both** -- use $\\mathbf{x}$ to initialize the hidden state and also provide it at every step.\n\nApproach 1 effectively turns $\\mathbf{x}^\\top \\mathbf{R}$ into a learned bias for every hidden unit, where the bias parameters are now a function of the input rather than fixed."
+    },
+    {
+      "id": "ch10-010",
+      "chapter": 10,
+      "section": "10.3",
+      "tags": [
+        "bidirectional RNN",
+        "architecture"
+      ],
+      "front": "How does a **bidirectional RNN** work, and when is it preferable to a unidirectional RNN?",
+      "back": "A bidirectional RNN combines:\n- A **forward** sub-RNN with state $\\mathbf{h}^{(t)}$ that processes the sequence left-to-right (past to future)\n- A **backward** sub-RNN with state $\\mathbf{g}^{(t)}$ that processes right-to-left (future to past)\n\nThe output $\\mathbf{o}^{(t)}$ depends on both $\\mathbf{h}^{(t)}$ and $\\mathbf{g}^{(t)}$, giving it access to the **entire input sequence** context.\n\n**Preferable when** the entire input is available before predictions are needed (e.g., speech recognition, handwriting recognition, machine translation) -- unlike online/causal tasks where future inputs are unavailable."
+    },
+    {
+      "id": "ch10-011",
+      "chapter": 10,
+      "section": "10.4",
+      "tags": [
+        "encoder-decoder",
+        "seq2seq",
+        "architecture"
+      ],
+      "front": "Describe the **encoder-decoder** (sequence-to-sequence) architecture. What is its key innovation over earlier RNN architectures?",
+      "back": "The architecture has two components:\n1. An **encoder** RNN reads input $(\\mathbf{x}^{(1)}, \\dots, \\mathbf{x}^{(n_x)})$ and produces a context $C$ (typically from its final hidden state $\\mathbf{h}_{n_x}$).\n2. A **decoder** RNN is conditioned on $C$ and generates output $(\\mathbf{y}^{(1)}, \\dots, \\mathbf{y}^{(n_y)})$.\n\n**Key innovation:** The input length $n_x$ and output length $n_y$ can **differ**. Earlier architectures (Figs 10.3, 10.4) required $n_x = n_y = \\tau$. This enabled applications like machine translation where source and target sentences have different lengths.\n\nProposed independently by Cho et al. (2014) and Sutskever et al. (2014)."
+    },
+    {
+      "id": "ch10-012",
+      "chapter": 10,
+      "section": "10.4",
+      "tags": [
+        "attention",
+        "encoder-decoder",
+        "mechanism"
+      ],
+      "front": "What problem does the **attention mechanism** solve in encoder-decoder architectures, and how does it work at a high level?",
+      "back": "**Problem:** When context $C$ is a single fixed-size vector, it becomes a bottleneck -- it may be too small to properly summarize a long input sequence. Bahdanau et al. (2015) observed degraded performance on long sentences in machine translation.\n\n**Solution:** Make $C$ a **variable-length sequence** rather than a single vector. The attention mechanism learns to **associate elements** of the encoder's hidden state sequence with elements of the output sequence. At each decoder step, it computes a weighted combination of all encoder hidden states, where the weights (attention scores) reflect how relevant each input position is to the current output position.\n\nThis allows the decoder to \"look back\" at different parts of the input for each output token."
+    },
+    {
+      "id": "ch10-013",
+      "chapter": 10,
+      "section": "10.5",
+      "tags": [
+        "deep RNN",
+        "architecture"
+      ],
+      "front": "What are the **three blocks of computation** in an RNN, and what is the tradeoff of adding depth (e.g., an MLP) within each block?",
+      "back": "The three blocks are:\n1. **Input to hidden state** (parametrized by $\\mathbf{U}$)\n2. **Previous hidden state to next hidden state** (parametrized by $\\mathbf{W}$)\n3. **Hidden state to output** (parametrized by $\\mathbf{V}$)\n\n**Benefit of adding depth:** Experimental evidence (Graves et al., 2013; Pascanu et al., 2014a) shows deeper transformations improve performance by providing enough capacity for the required mappings.\n\n**Tradeoff:** Adding an MLP to the state-to-state transition **lengthens the shortest path** between variables at different time steps. For example, a single hidden-layer MLP doubles the path length. This can make optimization harder, though **skip connections** (Fig 10.13c) can mitigate this."
+    },
+    {
+      "id": "ch10-014",
+      "chapter": 10,
+      "section": "10.7",
+      "tags": [
+        "vanishing gradient",
+        "exploding gradient",
+        "challenge"
+      ],
+      "front": "Explain the **vanishing and exploding gradient** problem in RNNs using the Jacobian product perspective. Why does this make long-range learning difficult?",
+      "back": "In BPTT, gradients at time $t$ involve products of Jacobians:\n$$\\frac{\\partial \\mathbf{h}^{(t)}}{\\partial \\mathbf{h}^{(1)}} = \\prod_{i=2}^{t} \\frac{\\partial \\mathbf{h}^{(i)}}{\\partial \\mathbf{h}^{(i-1)}}$$\n\nEach factor involves $\\mathbf{W}^\\top \\cdot \\text{diag}(1 - (\\mathbf{h}^{(i)})^2)$. If the eigenvalues of $\\mathbf{W}$ are:\n- **< 1:** the product shrinks exponentially $\\rightarrow$ **vanishing gradients** (long-range dependencies are invisible to learning)\n- **> 1:** the product grows exponentially $\\rightarrow$ **exploding gradients** (unstable updates, NaN values)\n\nThis means RNNs struggle to learn dependencies spanning many time steps, even though they can theoretically represent them."
+    },
+    {
+      "id": "ch10-015",
+      "chapter": 10,
+      "section": "10.7",
+      "tags": [
+        "exploding gradient",
+        "gradient clipping",
+        "training"
+      ],
+      "front": "How does **gradient clipping** address exploding gradients? Describe the element-wise and norm-based approaches.",
+      "back": "**Gradient clipping** intervenes when gradients become dangerously large:\n\n**Norm-based clipping** (more common): If $\\|\\mathbf{g}\\| > v$ (threshold), rescale:\n$$\\mathbf{g} \\leftarrow \\frac{v}{\\|\\mathbf{g}\\|} \\mathbf{g}$$\nThis preserves the **direction** of the gradient but bounds its magnitude. Geometrically, it projects the gradient onto a ball of radius $v$.\n\n**Element-wise clipping:** Clip each component independently to $[-v, v]$. This can change the gradient direction, which may sometimes be beneficial since the true gradient direction on a highly curved loss surface can itself be misleading.\n\nClipping handles the exploding gradient problem but does **not** solve vanishing gradients."
+    },
+    {
+      "id": "ch10-016",
+      "chapter": 10,
+      "section": "10.10",
+      "tags": [
+        "LSTM",
+        "gated RNN",
+        "architecture"
+      ],
+      "front": "Draw/describe the **LSTM cell** and explain the role of each gate. Why does the cell state $\\mathbf{C}^{(t)}$ help with vanishing gradients?",
+      "back": "The LSTM introduces a **cell state** $\\mathbf{C}^{(t)}$ with three gates:\n\n**Forget gate:** $\\mathbf{f}^{(t)} = \\sigma(\\mathbf{W}_f [\\mathbf{h}^{(t-1)}, \\mathbf{x}^{(t)}] + \\mathbf{b}_f)$\nControls how much of the old cell state to **retain**.\n\n**Input gate:** $\\mathbf{i}^{(t)} = \\sigma(\\mathbf{W}_i [\\mathbf{h}^{(t-1)}, \\mathbf{x}^{(t)}] + \\mathbf{b}_i)$\nControls how much of the **new candidate** $\\tilde{\\mathbf{C}}^{(t)}$ to write.\n\n**Output gate:** $\\mathbf{o}^{(t)} = \\sigma(\\mathbf{W}_o [\\mathbf{h}^{(t-1)}, \\mathbf{x}^{(t)}] + \\mathbf{b}_o)$\nControls what part of the cell state to **expose** as $\\mathbf{h}^{(t)}$.\n\n**Cell update:** $\\mathbf{C}^{(t)} = \\mathbf{f}^{(t)} \\odot \\mathbf{C}^{(t-1)} + \\mathbf{i}^{(t)} \\odot \\tilde{\\mathbf{C}}^{(t)}$\n\nThe cell state creates a **linear self-loop** whose weight ($\\mathbf{f}^{(t)}$) is dynamic. When $\\mathbf{f} \\approx 1$ and $\\mathbf{i} \\approx 0$, the gradient flows through time **without decay**, mitigating vanishing gradients."
+    },
+    {
+      "id": "ch10-017",
+      "chapter": 10,
+      "section": "10.10",
+      "tags": [
+        "GRU",
+        "gated RNN",
+        "architecture"
+      ],
+      "front": "How does the **GRU** differ from the LSTM? Write its update equations and explain the key simplification.",
+      "back": "The GRU (Cho et al., 2014) merges the cell and hidden state into a single $\\mathbf{h}^{(t)}$ and uses **two gates** instead of three:\n\n**Update gate:** $\\mathbf{z}^{(t)} = \\sigma(\\mathbf{W}_z [\\mathbf{h}^{(t-1)}, \\mathbf{x}^{(t)}])$\n**Reset gate:** $\\mathbf{r}^{(t)} = \\sigma(\\mathbf{W}_r [\\mathbf{h}^{(t-1)}, \\mathbf{x}^{(t)}])$\n**Candidate:** $\\tilde{\\mathbf{h}}^{(t)} = \\tanh(\\mathbf{W}[\\mathbf{r}^{(t)} \\odot \\mathbf{h}^{(t-1)}, \\mathbf{x}^{(t)}])$\n**State update:** $\\mathbf{h}^{(t)} = (1 - \\mathbf{z}^{(t)}) \\odot \\mathbf{h}^{(t-1)} + \\mathbf{z}^{(t)} \\odot \\tilde{\\mathbf{h}}^{(t)}$\n\n**Key simplification:** No separate cell state or output gate. The update gate $\\mathbf{z}$ simultaneously controls forgetting and input (they are coupled as $\\mathbf{z}$ and $1-\\mathbf{z}$). Fewer parameters than LSTM, often comparable performance."
+    },
+    {
+      "id": "ch10-018",
+      "chapter": 10,
+      "section": "10.9",
+      "tags": [
+        "leaky units",
+        "skip connections",
+        "vanishing gradient"
+      ],
+      "front": "What are **leaky units** and how do they provide a simpler alternative to gating for addressing vanishing gradients?",
+      "back": "Leaky units use a **linear self-connection** with a fixed or hand-tuned weight $\\alpha$ close to 1:\n$$\\mu^{(t)} = \\alpha \\mu^{(t-1)} + (1-\\alpha) v^{(t)}$$\n\nWhen $\\alpha \\approx 1$, the running average $\\mu^{(t)}$ changes slowly, creating paths where gradients neither vanish nor explode.\n\n**Compared to gating (LSTM/GRU):**\n- Leaky units use a **fixed** $\\alpha$; gated units **learn** the time constant dynamically.\n- Simpler, fewer parameters, but less flexible.\n- **Skip connections through time** (e.g., connecting $\\mathbf{h}^{(t)}$ to $\\mathbf{h}^{(t+d)}$) are a related strategy that introduces edges operating on longer time scales $d > 1$, providing shortcuts for gradient flow."
+    },
+    {
+      "id": "ch10-019",
+      "chapter": 10,
+      "section": "10.8",
+      "tags": [
+        "echo state network",
+        "reservoir computing"
+      ],
+      "front": "What is an **echo state network** (ESN), and what principle governs the setting of its recurrent weights?",
+      "back": "An echo state network is a type of **reservoir computing** approach where:\n- The input-to-hidden weights $\\mathbf{U}$ and hidden-to-hidden weights $\\mathbf{W}$ are **randomly set and fixed** (not learned)\n- Only the **output weights** $\\mathbf{V}$ are trained (often by simple linear regression)\n\nThe key principle is the **echo state property**: the hidden state $\\mathbf{h}^{(t)}$ should be a function of the input history, with the effect of initial conditions fading over time. This is ensured by setting $\\mathbf{W}$ so its **spectral radius** (largest eigenvalue magnitude) is close to but slightly less than 1. This balances information retention against stability.\n\nESNs demonstrate that even random recurrent dynamics can capture useful temporal features when the reservoir is properly scaled."
+    },
+    {
+      "id": "ch10-020",
+      "chapter": 10,
+      "section": "10.6",
+      "tags": [
+        "recursive network",
+        "architecture"
+      ],
+      "front": "How does a **recursive neural network** differ from a recurrent neural network? What is its main advantage and limitation?",
+      "back": "A **recursive** network applies the same set of weights over a **tree structure** rather than a chain. At each node of the tree, inputs from child nodes are combined using a shared function. A recurrent network is a special case where the tree degenerates into a chain.\n\n**Advantage:** For a sequence of length $\\tau$, a balanced tree has depth $O(\\log \\tau)$ versus $O(\\tau)$ for a chain. This dramatically shortens the longest path between distant inputs and reduces vanishing gradient issues.\n\n**Limitation:** The tree structure must be determined (either provided externally, e.g., a parse tree, or learned), which is an additional challenge. Not all sequence tasks have a natural tree structure."
+    },
+    {
+      "id": "ch10-021",
+      "chapter": 10,
+      "section": "10.2",
+      "tags": [
+        "RNN",
+        "universal computation",
+        "theory"
+      ],
+      "front": "In what sense is the RNN with hidden-to-hidden recurrence a **universal** model of computation?",
+      "back": "The RNN of Figure 10.3 (Eq. 10.8) is **Turing complete**: any function computable by a Turing machine can be computed by a finite-size recurrent network (Siegelmann and Sontag, 1991, 1995). Specifically:\n\n- The RNN takes a binary sequence as input and produces a binary output\n- A single network of fixed size (as few as 886 units) can simulate any Turing machine\n- The \"input\" includes a specification of which Turing machine to simulate\n- The theoretical construction requires unbounded precision in activations and weights (to simulate an unbounded stack)\n\nNote: The RNN with **only output-to-hidden** recurrence (Fig 10.4) does **not** have this property, since it cannot maintain a rich hidden state."
+    },
+    {
+      "id": "ch10-022",
+      "chapter": 10,
+      "section": "10.2.1",
+      "tags": [
+        "teacher forcing",
+        "output recurrence",
+        "training"
+      ],
+      "front": "Why does eliminating hidden-to-hidden recurrence (using only output-to-hidden, Fig 10.4) allow **training parallelization** across time steps?",
+      "back": "In the output-to-hidden architecture, the loss at time $t$ depends only on comparing the prediction at $t$ to the training target $y^{(t)}$. During training with teacher forcing, the **true** $y^{(t)}$ (not the model's prediction) is fed as input at $t+1$.\n\nSince all true targets are known in advance, the inputs to each time step are fully determined and **do not depend on the model's computations at other time steps**. Each step can therefore be computed in isolation:\n- $\\mathbf{h}^{(t)} = f(\\mathbf{y}^{(t-1)}, \\mathbf{x}^{(t)})$ -- no dependence on $\\mathbf{h}^{(t-1)}$\n\nThis decoupling allows all time steps to be **parallelized**, unlike hidden-to-hidden RNNs where $\\mathbf{h}^{(t)}$ depends on $\\mathbf{h}^{(t-1)}$."
+    },
+    {
+      "id": "ch10-023",
+      "chapter": 10,
+      "section": "10.2.3",
+      "tags": [
+        "RNN",
+        "graphical model",
+        "sequence modeling"
+      ],
+      "front": "How does an RNN parametrize the joint distribution $P(\\mathbf{y}^{(1)}, \\dots, \\mathbf{y}^{(\\tau)})$ via the **chain rule**, and what role does the hidden state play in this factorization?",
+      "back": "Using the chain rule:\n$$P(\\mathbf{y}^{(1)}, \\dots, \\mathbf{y}^{(\\tau)}) = \\prod_{t=1}^{\\tau} P(\\mathbf{y}^{(t)} \\mid \\mathbf{y}^{(t-1)}, \\dots, \\mathbf{y}^{(1)})$$\n\nDirectly parametrizing each conditional would require an ever-growing number of inputs. The hidden state $\\mathbf{h}^{(t)}$ acts as a **sufficient statistic** that summarizes the past:\n$$P(\\mathbf{y}^{(t)} \\mid \\mathbf{y}^{(t-1)}, \\dots, \\mathbf{y}^{(1)}) = P(\\mathbf{y}^{(t)} \\mid \\mathbf{h}^{(t)})$$\n\nThe loss per step is: $L^{(t)} = -\\log P(y^{(t)} = y^{(t)} \\mid y^{(t-1)}, \\dots, y^{(1)})$\n\nThis gives an $O(1)$-parameter model (w.r.t. sequence length) that nonetheless captures the full joint via the same conditionals reused at each step."
+    },
+    {
+      "id": "ch10-024",
+      "chapter": 10,
+      "section": "10.7",
+      "tags": [
+        "vanishing gradient",
+        "gated RNN",
+        "long-term dependencies"
+      ],
+      "front": "Why do gated architectures (LSTM/GRU) help with **long-term dependencies** while vanilla RNNs fail? Explain in terms of the gradient path.",
+      "back": "In a vanilla RNN, the gradient of $\\mathbf{h}^{(t)}$ w.r.t. $\\mathbf{h}^{(t-k)}$ involves $k$ multiplications by $\\mathbf{W}^\\top \\cdot \\text{diag}(1-(\\mathbf{h})^2)$. Since $\\tanh'(x) \\in (0,1]$, this product tends to shrink exponentially.\n\nGated units create a **linear self-loop** for the cell/state:\n$$\\mathbf{C}^{(t)} = \\mathbf{f}^{(t)} \\odot \\mathbf{C}^{(t-1)} + \\dots$$\n\nThe gradient through this path is:\n$$\\frac{\\partial \\mathbf{C}^{(t)}}{\\partial \\mathbf{C}^{(t-k)}} = \\prod_{i=1}^{k} \\mathbf{f}^{(t-i+1)}$$\n\nWhen forget gates $\\mathbf{f} \\approx 1$, gradients flow through time with **near-unity magnitude** -- no squashing nonlinearity in the path. The gates are **learned** to open/close adaptively, allowing the network to decide what to remember and for how long."
+    },
+    {
+      "id": "ch10-025",
+      "chapter": 10,
+      "section": "10.2.2",
+      "tags": [
+        "BPTT",
+        "gradients",
+        "parameter sharing"
+      ],
+      "front": "In BPTT, the weight matrix $\\mathbf{W}$ is shared across all time steps. How does the gradient $\\nabla_{\\mathbf{W}} L$ account for this? Write the expression.",
+      "back": "Because $\\mathbf{W}$ is shared, its gradient is the **sum of contributions from every time step**. We introduce dummy variables $\\mathbf{W}^{(t)}$ (copies of $\\mathbf{W}$ used at time $t$) to isolate each contribution:\n\n$$\\nabla_{\\mathbf{W}} L = \\sum_t \\nabla_{\\mathbf{W}^{(t)}} L$$\n\nExpanded:\n$$\\nabla_{\\mathbf{W}} L = \\sum_t \\text{diag}\\left(1 - (\\mathbf{h}^{(t)})^2\\right) (\\nabla_{\\mathbf{h}^{(t)}} L)\\, \\mathbf{h}^{(t-1)\\top}$$\n\nSimilarly for $\\mathbf{U}$:\n$$\\nabla_{\\mathbf{U}} L = \\sum_t \\text{diag}\\left(1 - (\\mathbf{h}^{(t)})^2\\right) (\\nabla_{\\mathbf{h}^{(t)}} L)\\, \\mathbf{x}^{(t)\\top}$$\n\nThis summation is necessary because in calculus, $\\nabla_{\\mathbf{W}} f$ accounts for the effect of $\\mathbf{W}$ through **all** edges in the computational graph."
+    }
+  ]
+}
