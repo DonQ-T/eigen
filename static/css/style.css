@@ -1011,7 +1011,26 @@ footer {
     margin-left: -0.75rem;
     margin-right: -0.75rem;
   }
-  .project-article { padding: 2rem 1.25rem 3rem; }
+  .project-article {
+    padding: 2rem 1.25rem 3rem;
+    overflow-x: hidden;
+  }
+  .fc-btn-row, .mcq-btn-row {
+    flex-wrap: wrap;
+  }
+  .fc-btn, .mcq-btn {
+    font-size: 0.75rem;
+    padding: 0.45rem 1rem;
+  }
+  #fc-chapter-filters, #mcq-chapter-filters {
+    gap: 0.4rem 0.75rem;
+  }
+  .sl-explore-stats {
+    flex-wrap: wrap;
+  }
+  .sl-explore-stat {
+    flex: 0 0 33.33%;
+  }
   #lt-chart { height: 280px; }
   .lt-obla-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
   .lt-other-results { grid-template-columns: 1fr; }
@@ -1026,6 +1045,11 @@ footer {
 /* ---- Container ---- */
 #fc-app {
   margin-top: 2rem;
+  overflow: hidden;
+}
+
+#sl-app {
+  overflow: hidden;
 }
 
 /* ---- Utility ---- */
@@ -1944,6 +1968,40 @@ footer {
 .sl-streak-icon {
   font-size: 0.875rem;
   color: var(--text-secondary);
+}
+
+/* ---- Filter Pills (shared by Review + Quiz) ---- */
+#fc-chapter-filters,
+#mcq-chapter-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.sl-filter-pill {
+  font-family: var(--font-code);
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+  letter-spacing: 0.02em;
+}
+
+.sl-filter-pill:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: var(--text-secondary);
+}
+
+.sl-filter-pill.sl-filter-pill-active {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.35);
+  color: var(--text);
 }
 
 /* ---- Tab Navigation ---- */

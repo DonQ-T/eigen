@@ -405,38 +405,53 @@
     container.innerHTML = '';
 
     var chapters = fcGetChapters();
-    var sortedKeys = Object.keys(chapters).sort();
+    var sortedKeys = Object.keys(chapters).sort(function(a, b) { return Number(a) - Number(b); });
+
+    // "All" pill
+    var allBtn = document.createElement('button');
+    allBtn.className = 'sl-filter-pill' + (fcSelectedChapters.size === 0 ? ' sl-filter-pill-active' : '');
+    allBtn.textContent = 'All';
+    allBtn.addEventListener('click', function() {
+      fcSelectedChapters.clear();
+      fcUpdateFilterPills(container, chapters, sortedKeys);
+      fcUpdateDashboard();
+    });
+    container.appendChild(allBtn);
 
     for (var i = 0; i < sortedKeys.length; i++) {
       var ch = sortedKeys[i];
-      var label = document.createElement('label');
-      label.className = 'fc-chapter-filter';
+      var btn = document.createElement('button');
+      btn.className = 'sl-filter-pill' + (fcSelectedChapters.has(ch) ? ' sl-filter-pill-active' : '');
+      btn.textContent = ch;
+      btn.setAttribute('data-chapter', ch);
 
-      var checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.value = ch;
-      checkbox.checked = fcSelectedChapters.size === 0 || fcSelectedChapters.has(ch);
-
-      checkbox.addEventListener('change', (function (chapter) {
-        return function (e) {
-          if (e.target.checked) {
-            fcSelectedChapters.add(chapter);
-          } else {
+      btn.addEventListener('click', (function(chapter) {
+        return function() {
+          if (fcSelectedChapters.has(chapter)) {
             fcSelectedChapters.delete(chapter);
+          } else {
+            fcSelectedChapters.add(chapter);
           }
-          // If all are checked or none are checked, treat as "all"
-          var allChecked = container.querySelectorAll('input[type="checkbox"]');
-          var checkedCount = container.querySelectorAll('input[type="checkbox"]:checked').length;
-          if (checkedCount === allChecked.length || checkedCount === 0) {
+          // If all selected, treat as "all"
+          if (fcSelectedChapters.size === sortedKeys.length) {
             fcSelectedChapters.clear();
           }
+          fcUpdateFilterPills(container, chapters, sortedKeys);
           fcUpdateDashboard();
         };
       })(ch));
 
-      label.appendChild(checkbox);
-      label.appendChild(document.createTextNode(' ' + ch + ' (' + chapters[ch] + ')'));
-      container.appendChild(label);
+      container.appendChild(btn);
+    }
+  }
+
+  function fcUpdateFilterPills(container, chapters, sortedKeys) {
+    var pills = container.querySelectorAll('.sl-filter-pill');
+    // First pill is "All"
+    pills[0].classList.toggle('sl-filter-pill-active', fcSelectedChapters.size === 0);
+    for (var i = 0; i < sortedKeys.length; i++) {
+      pills[i + 1].classList.toggle('sl-filter-pill-active',
+        fcSelectedChapters.size === 0 || fcSelectedChapters.has(sortedKeys[i]));
     }
   }
 
@@ -825,37 +840,50 @@
       return Number(a) - Number(b);
     });
 
+    // "All" pill
+    var allBtn = document.createElement('button');
+    allBtn.className = 'sl-filter-pill' + (mcqSelectedChapters.size === 0 ? ' sl-filter-pill-active' : '');
+    allBtn.textContent = 'All';
+    allBtn.addEventListener('click', function() {
+      mcqSelectedChapters.clear();
+      mcqUpdateFilterPills(container, chapters, sortedKeys);
+      mcqUpdateDashboard();
+    });
+    container.appendChild(allBtn);
+
     for (var i = 0; i < sortedKeys.length; i++) {
       var ch = sortedKeys[i];
-      var label = document.createElement('label');
-      label.className = 'mcq-chapter-filter';
+      var numCh = Number(ch);
+      var btn = document.createElement('button');
+      btn.className = 'sl-filter-pill' + (mcqSelectedChapters.has(numCh) ? ' sl-filter-pill-active' : '');
+      btn.textContent = ch;
+      btn.setAttribute('data-chapter', ch);
 
-      var checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.value = ch;
-      checkbox.checked = mcqSelectedChapters.size === 0 || mcqSelectedChapters.has(ch);
-
-      checkbox.addEventListener('change', (function (chapter) {
-        return function (e) {
-          var numCh = Number(chapter);
-          if (e.target.checked) {
-            mcqSelectedChapters.add(numCh);
+      btn.addEventListener('click', (function(chapter) {
+        return function() {
+          if (mcqSelectedChapters.has(chapter)) {
+            mcqSelectedChapters.delete(chapter);
           } else {
-            mcqSelectedChapters.delete(numCh);
+            mcqSelectedChapters.add(chapter);
           }
-          // If all are checked or none are checked, treat as "all"
-          var allChecked = container.querySelectorAll('input[type="checkbox"]');
-          var checkedCount = container.querySelectorAll('input[type="checkbox"]:checked').length;
-          if (checkedCount === allChecked.length || checkedCount === 0) {
+          if (mcqSelectedChapters.size === sortedKeys.length) {
             mcqSelectedChapters.clear();
           }
+          mcqUpdateFilterPills(container, chapters, sortedKeys);
           mcqUpdateDashboard();
         };
-      })(ch));
+      })(numCh));
 
-      label.appendChild(checkbox);
-      label.appendChild(document.createTextNode(' ' + ch + ' (' + chapters[ch] + ')'));
-      container.appendChild(label);
+      container.appendChild(btn);
+    }
+  }
+
+  function mcqUpdateFilterPills(container, chapters, sortedKeys) {
+    var pills = container.querySelectorAll('.sl-filter-pill');
+    pills[0].classList.toggle('sl-filter-pill-active', mcqSelectedChapters.size === 0);
+    for (var i = 0; i < sortedKeys.length; i++) {
+      pills[i + 1].classList.toggle('sl-filter-pill-active',
+        mcqSelectedChapters.size === 0 || mcqSelectedChapters.has(Number(sortedKeys[i])));
     }
   }
 
