@@ -941,8 +941,17 @@ footer {
   article { padding: 2rem 1.25rem 3rem; }
   .post-title { font-size: 1.75rem; }
   .page-title { font-size: 2rem; }
-  .nav-links { gap: 1.25rem; }
-  .nav-links a { font-size: 0.8125rem; }
+  .nav-links {
+    gap: 0.875rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .nav-links::-webkit-scrollbar { display: none; }
+  .nav-links a {
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
   footer { padding: 1.25rem; }
   .footer-content a { font-size: 0.75rem; }
   .footer-content .sep { margin: 0 0.5rem; }
