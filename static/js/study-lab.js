@@ -142,7 +142,13 @@
 
   function updateStreakDisplay(m) {
     var el = document.getElementById('sl-streak-value');
-    if (el) el.textContent = m.streak.current;
+    if (!el) return;
+    var n = m.streak.current;
+    if (n === 0) {
+      el.textContent = 'Start a streak today';
+    } else {
+      el.textContent = n + ' day streak';
+    }
   }
 
   // ============================================
