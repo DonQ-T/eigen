@@ -1046,10 +1046,27 @@
       }
     }
 
-    // Show explanation
+    // Show explanation — remap original letter references to shuffled display letters
     var explanationEl = document.getElementById('mcq-explanation');
     if (explanationEl && q.explanation) {
-      explanationEl.innerHTML = '<strong>Explanation:</strong> ' + renderText(q.explanation);
+      var letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+      // Build reverse map: original index -> display letter
+      var origToDisplay = {};
+      for (var mi = 0; mi < mcqShuffledChoiceMap.length; mi++) {
+        origToDisplay[mcqShuffledChoiceMap[mi]] = letters[mi];
+      }
+      // Replace letter references like "A is correct", "B)", "option C" etc.
+      var expText = q.explanation;
+      for (var oi = 0; oi < q.choices.length; oi++) {
+        var origLetter = letters[oi];
+        var displayLetter = origToDisplay[oi] || origLetter;
+        if (origLetter !== displayLetter) {
+          // Replace standalone letter references (e.g. "B is", "B)", "B,", "B.")
+          var re = new RegExp('\\b' + origLetter + '(?=\\s+is|\\)|\\.|,|\\s+correct|\\s+because|\\s+represents|:)', 'g');
+          expText = expText.replace(re, displayLetter);
+        }
+      }
+      explanationEl.innerHTML = '<strong>Explanation:</strong> ' + renderText(expText);
       explanationEl.classList.remove('mcq-hidden');
       renderMath(explanationEl);
     }
