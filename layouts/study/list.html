@@ -1,0 +1,24 @@
+{{ define "main" }}
+<section class="page-header">
+  <h1 class="page-title">Study</h1>
+  <p class="page-desc">Interactive study tools for deep learning and mathematics.</p>
+</section>
+
+<div class="card-grid" style="max-width: var(--max-width); margin: 0 auto; padding: 0 2rem 4rem;">
+  {{ range .Pages.ByDate.Reverse }}
+  <a href="{{ .Permalink }}" class="card">
+    <div class="card-inner">
+      <span class="card-date">{{ .Date.Format "Jan 2, 2006" }}</span>
+      <h3 class="card-title">{{ .Title }}</h3>
+      <p class="card-desc">{{ .Description }}</p>
+      <div class="card-tags">
+        {{ range .Params.tags }}
+        <span class="tag">{{ . }}</span>
+        {{ end }}
+      </div>
+    </div>
+    <span class="card-arrow">&rarr;</span>
+  </a>
+  {{ end }}
+</div>
+{{ end }}

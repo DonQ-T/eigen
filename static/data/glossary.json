@@ -1,0 +1,3722 @@
+{
+  "meta": {
+    "title": "Deep Learning Glossary (Goodfellow et al.)",
+    "version": 1
+  },
+  "entries": [
+    {
+      "id": "gl-001",
+      "term": "deep learning",
+      "definition": "Deep learning is a subset of representation learning, which is itself a subset of machine learning, which is a subset of AI.",
+      "chapter": 1,
+      "section": "1.0",
+      "tags": [
+        "introduction",
+        "definition"
+      ],
+      "equations": [],
+      "relatedCards": [
+        "ch01-001"
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "gl-002",
+      "term": "two ways to measure the depth",
+      "definition": "1. Depth of the computational graph: length of the longest path from input to output 2.",
+      "chapter": 1,
+      "section": "1.1",
+      "tags": [
+        "depth",
+        "measurement",
+        "computational-graph"
+      ],
+      "equations": [
+        "$\\sigma(\\mathbf{w}^\\top \\mathbf{x})$"
+      ],
+      "relatedCards": [
+        "ch01-014"
+      ],
+      "relatedQuestions": [
+        "ch01-q001",
+        "ch01-q008"
+      ]
+    },
+    {
+      "id": "gl-003",
+      "term": "representation learning",
+      "definition": "Representation learning uses ML to discover not just the mapping from representation to output, but the representation itself.",
+      "chapter": 1,
+      "section": "1.2",
+      "tags": [
+        "introduction",
+        "definition"
+      ],
+      "equations": [
+        "$g(f(\\mathbf{x})) \\approx \\mathbf{x}$"
+      ],
+      "relatedCards": [
+        "ch01-004"
+      ],
+      "relatedQuestions": [
+        "ch01-q002",
+        "ch01-q006"
+      ]
+    },
+    {
+      "id": "gl-004",
+      "term": "XOR problem",
+      "definition": "Linear models like the perceptron cannot learn the XOR function:; $f([0,1], \\mathbf{w}) = 1$ and $f([1,0], \\mathbf{w}) = 1$; $f([1,1], \\mathbf{w}) = 0$ and $f([0,0], \\mathbf{w}) = 0$; Minsky & Papert (1969) highlighted these limitations of linear models; Critics generalized the flaws to biologically inspired learning in general; This caused the first major dip in neural network popularity (end of the cybernetics wave)",
+      "chapter": 1,
+      "section": "1.2.1",
+      "tags": [
+        "history",
+        "perceptron",
+        "XOR",
+        "Minsky"
+      ],
+      "equations": [
+        "$f([0,1], \\mathbf{w}) = 1$",
+        "$f([1,0], \\mathbf{w}) = 1$",
+        "$f([1,1], \\mathbf{w}) = 0$",
+        "$f([0,0], \\mathbf{w}) = 0$"
+      ],
+      "relatedCards": [
+        "ch01-007"
+      ],
+      "relatedQuestions": [
+        "ch01-q003",
+        "ch01-q004",
+        "ch01-q005",
+        "ch01-q010"
+      ]
+    },
+    {
+      "id": "gl-005",
+      "term": "McCulloch-Pitts neuron",
+      "definition": "- McCulloch-Pitts neuron (1943): earliest linear model of brain function; weights set by human operator; Perceptron (Rosenblatt, 1958): first model that could learn weights from examples; ADALINE (Widrow & Hoff, 1960): returned $f(\\mathbf{x})$ as a real number (regression); ADALINE was trained with stochastic gradient descent (SGD), which remains the dominant training algorithm today",
+      "chapter": 1,
+      "section": "1.2.1",
+      "tags": [
+        "history",
+        "ADALINE",
+        "SGD",
+        "perceptron"
+      ],
+      "equations": [
+        "$f(\\mathbf{x})$"
+      ],
+      "relatedCards": [
+        "ch01-015"
+      ],
+      "relatedQuestions": [
+        "ch01-q003",
+        "ch01-q004",
+        "ch01-q005",
+        "ch01-q010"
+      ]
+    },
+    {
+      "id": "gl-006",
+      "term": "knowledge base",
+      "definition": "The knowledge base approach hard-codes knowledge about the world in formal languages so a computer can reason using logical inference rules. - The most famous project was Cyc, which used a language called CycL; Cyc failed to understand a story about Fred shaving: it knew people lack electrical parts, but since Fred held an electric razor, it asked whether \"FredWhileShaving\" was still a person; The failure illustrates that people struggle to devise formal rules with enough complexity to accurately describe the world",
+      "chapter": 1,
+      "section": "1.2.1",
+      "tags": [
+        "history",
+        "knowledge-base",
+        "Cyc"
+      ],
+      "equations": [],
+      "relatedCards": [
+        "ch01-006"
+      ],
+      "relatedQuestions": [
+        "ch01-q003",
+        "ch01-q004",
+        "ch01-q005",
+        "ch01-q010"
+      ]
+    },
+    {
+      "id": "gl-007",
+      "term": "distributed representation",
+      "definition": "In a distributed representation, each input is represented by many features, and each feature participates in representing many inputs. - Example: a vision system recognizing 3 objects in 3 colors; Local representation: 1 neuron per combination = 9 neurons; Distributed representation: 3 neurons for color + 3 for object = 6 neurons; Generalizes to exponentially many combinations with linear resources",
+      "chapter": 1,
+      "section": "1.2.1",
+      "tags": [
+        "history",
+        "connectionism",
+        "distributed-representation"
+      ],
+      "equations": [],
+      "relatedCards": [
+        "ch01-008"
+      ],
+      "relatedQuestions": [
+        "ch01-q003",
+        "ch01-q004",
+        "ch01-q005",
+        "ch01-q010"
+      ]
+    },
+    {
+      "id": "gl-008",
+      "term": "neuroscience",
+      "definition": "1. Neocognitron (Fukushima, 1980): inspired by the mammalian visual system; became the basis for modern convolutional networks 2.",
+      "chapter": 1,
+      "section": "1.2.1",
+      "tags": [
+        "history",
+        "neuroscience",
+        "ReLU",
+        "Neocognitron"
+      ],
+      "equations": [],
+      "relatedCards": [
+        "ch01-009"
+      ],
+      "relatedQuestions": [
+        "ch01-q003",
+        "ch01-q004",
+        "ch01-q005",
+        "ch01-q010"
+      ]
+    },
+    {
+      "id": "gl-009",
+      "term": "CIFAR",
+      "definition": "- CIFAR funded the Neural Computation and Adaptive Perception program; United groups led by Hinton (Toronto), Bengio (Montreal), and LeCun (NYU); The third wave began in 2006 when Hinton showed that a deep belief network could be efficiently trained using greedy layer-wise pretraining; Other CIFAR groups quickly showed the same strategy worked for other deep networks",
+      "chapter": 1,
+      "section": "1.2.1",
+      "tags": [
+        "history",
+        "CIFAR",
+        "third-wave"
+      ],
+      "equations": [],
+      "relatedCards": [
+        "ch01-010"
+      ],
+      "relatedQuestions": [
+        "ch01-q003",
+        "ch01-q004",
+        "ch01-q005",
+        "ch01-q010"
+      ]
+    },
+    {
+      "id": "gl-010",
+      "term": "scalar",
+      "definition": "- Scalar: single number, $x \\in \\mathbb{R}$ (italic lowercase); Vector: array of numbers, $\\mathbf{x} \\in \\mathbb{R}^n$ (bold lowercase); Matrix: 2-D array, $\\mathbf{A} \\in \\mathbb{R}^{m \\times n}$ (bold uppercase); Tensor: array with more than 2 axes (bold sans-serif uppercase, $\\mathsf{A}$)",
+      "chapter": 2,
+      "section": "2.1",
+      "tags": [
+        "definition",
+        "linear-algebra"
+      ],
+      "equations": [
+        "$x \\in \\mathbb{R}$",
+        "$\\mathbf{x} \\in \\mathbb{R}^n$",
+        "$\\mathbf{A} \\in \\mathbb{R}^{m \\times n}$",
+        "$\\mathsf{A}$",
+        "$(\\mathbf{A}^\\top)_{i,j} = A_{j,i}$"
+      ],
+      "relatedCards": [
+        "ch02-001"
+      ],
+      "relatedQuestions": [
+        "ch02-q001"
+      ]
+    },
+    {
+      "id": "gl-011",
+      "term": "broadcasting",
+      "definition": "When adding a vector $\\mathbf{b}$ to a matrix $\\mathbf{A}$, the result is $\\mathbf{C} = \\mathbf{A} + \\mathbf{b}$ where $C_{i,j} = A_{i,j} + b_j$.",
+      "chapter": 2,
+      "section": "2.1",
+      "tags": [
+        "definition",
+        "linear-algebra"
+      ],
+      "equations": [
+        "$\\mathbf{b}$",
+        "$\\mathbf{A}$",
+        "$\\mathbf{C} = \\mathbf{A} + \\mathbf{b}$",
+        "$C_{i,j} = A_{i,j} + b_j$",
+        "$\\mathbf{b}$"
+      ],
+      "relatedCards": [
+        "ch02-002"
+      ],
+      "relatedQuestions": [
+        "ch02-q001"
+      ]
+    },
+    {
+      "id": "gl-012",
+      "term": "matrix product",
+      "definition": "Matrix product: $C_{i,j} = \\sum_k A_{i,k} B_{k,j}$; Requires $\\mathbf{A}$ cols = $\\mathbf{B}$ rows; Distributive: $\\mathbf{A}(\\mathbf{B}+\\mathbf{C}) = \\mathbf{AB}+\\mathbf{AC}$; Associative: $\\mathbf{A}(\\mathbf{BC}) = (\\mathbf{AB})\\mathbf{C}$; Not commutative: $\\mathbf{AB} \\neq \\mathbf{BA}$ in general",
+      "chapter": 2,
+      "section": "2.2",
+      "tags": [
+        "definition",
+        "linear-algebra",
+        "computation"
+      ],
+      "equations": [
+        "$C_{i,j} = \\sum_k A_{i,k} B_{k,j}$",
+        "$\\mathbf{A}$",
+        "$\\mathbf{B}$",
+        "$\\mathbf{A}(\\mathbf{B}+\\mathbf{C}) = \\mathbf{AB}+\\mathbf{AC}$",
+        "$\\mathbf{A}(\\mathbf{BC}) = (\\mathbf{AB})\\mathbf{C}$",
+        "$\\mathbf{AB} \\neq \\mathbf{BA}$",
+        "$\\mathbf{A} \\odot \\mathbf{B}$",
+        "$(\\mathbf{A} \\odot \\mathbf{B})_{i,j} = A_{i,j} B_{i,j}$",
+        "$(\\mathbf{AB})^\\top = \\mathbf{B}^\\top \\mathbf{A}^\\top$"
+      ],
+      "relatedCards": [
+        "ch02-003"
+      ],
+      "relatedQuestions": [
+        "ch02-q002",
+        "ch02-q003"
+      ]
+    },
+    {
+      "id": "gl-013",
+      "term": "(a) distributive",
+      "definition": "- (a) Distributive: $\\mathbf{A}(\\mathbf{B} + \\mathbf{C}) = \\mathbf{AB} + \\mathbf{AC}$ yes; (b) Associative: $\\mathbf{A}(\\mathbf{BC}) = (\\mathbf{AB})\\mathbf{C}$ yes; (c) Commutative: $\\mathbf{AB} = \\mathbf{BA}$ does not hold in general; However, the dot product is commutative: $\\mathbf{x}^\\top \\mathbf{y} = \\mathbf{y}^\\top \\mathbf{x}$; Transpose of a product: $(\\mathbf{AB})^\\top = \\mathbf{B}^\\top \\mathbf{A}^\\top$",
+      "chapter": 2,
+      "section": "2.2",
+      "tags": [
+        "linear-algebra",
+        "matrix-product",
+        "properties"
+      ],
+      "equations": [
+        "$\\mathbf{A}(\\mathbf{B} + \\mathbf{C}) = \\mathbf{AB} + \\mathbf{AC}$",
+        "$\\mathbf{A}(\\mathbf{BC}) = (\\mathbf{AB})\\mathbf{C}$",
+        "$\\mathbf{AB} = \\mathbf{BA}$",
+        "$\\mathbf{x}^\\top \\mathbf{y} = \\mathbf{y}^\\top \\mathbf{x}$",
+        "$(\\mathbf{AB})^\\top = \\mathbf{B}^\\top \\mathbf{A}^\\top$"
+      ],
+      "relatedCards": [
+        "ch02-016"
+      ],
+      "relatedQuestions": [
+        "ch02-q002",
+        "ch02-q003"
+      ]
+    },
+    {
+      "id": "gl-014",
+      "term": "identity matrix",
+      "definition": "Identity matrix $\\mathbf{I}_n \\in \\mathbb{R}^{n \\times n}$: all 1s on the diagonal, 0s elsewhere. $\\mathbf{I}_n \\mathbf{x} = \\mathbf{x}$ for all $\\mathbf{x}$.",
+      "chapter": 2,
+      "section": "2.3",
+      "tags": [
+        "definition",
+        "linear-algebra"
+      ],
+      "equations": [
+        "$$\\mathbf{x} = \\mathbf{A}^{-1}\\mathbf{b}$$",
+        "$\\mathbf{I}_n \\in \\mathbb{R}^{n \\times n}$",
+        "$\\mathbf{I}_n \\mathbf{x} = \\mathbf{x}$",
+        "$\\mathbf{x}$",
+        "$\\mathbf{A}^{-1}$",
+        "$\\mathbf{A}^{-1}\\mathbf{A} = \\mathbf{I}_n$",
+        "$\\mathbf{Ax} = \\mathbf{b}$",
+        "$\\mathbf{A}^{-1}$",
+        "$\\mathbf{A}$",
+        "$\\mathbf{A}^{-1}$"
+      ],
+      "relatedCards": [
+        "ch02-004"
+      ],
+      "relatedQuestions": [
+        "ch02-q004"
+      ]
+    },
+    {
+      "id": "gl-015",
+      "term": "linear combination",
+      "definition": "- Linear combination of vectors $\\{\\mathbf{v}^{(1)}, \\ldots, \\mathbf{v}^{(n)}\\}$: $\\sum_i c_i \\mathbf{v}^{(i)}$; Span: the set of all points obtainable by linear combination of those vectors; Linearly independent: no vector in the set can be written as a linear combination of the others; Singular matrix: a square matrix whose columns are not all linearly independent (so $\\mathbf{A}^{-1}$ does not exist)",
+      "chapter": 2,
+      "section": "2.4",
+      "tags": [
+        "definition",
+        "linear-algebra"
+      ],
+      "equations": [
+        "$\\{\\mathbf{v}^{(1)}, \\ldots, \\mathbf{v}^{(n)}\\}$",
+        "$\\sum_i c_i \\mathbf{v}^{(i)}$",
+        "$\\mathbf{A}^{-1}$",
+        "$\\mathbf{Ax}=\\mathbf{b}$",
+        "$\\mathbf{b}$",
+        "$\\mathbf{A}$",
+        "$m=n$"
+      ],
+      "relatedCards": [
+        "ch02-005"
+      ],
+      "relatedQuestions": []
+    },
+    {
+      "id": "gl-016",
+      "term": "norm",
+      "definition": "$$||\\mathbf{x}||_p = \\left(\\sum_i |x_i|^p\\right)^{1/p}, \\quad p \\in \\mathbb{R},\\; p \\geq 1$$",
+      "chapter": 2,
+      "section": "2.5",
+      "tags": [
+        "definition",
+        "linear-algebra"
+      ],
+      "equations": [
+        "$$||\\mathbf{x}||_p = \\left(\\sum_i |x_i|^p\\right)^{1/p}, \\quad p \\in \\mathbb{R},\\; p \\geq 1$$",
+        "$L^2$",
+        "$||\\mathbf{x}||_2 = \\sqrt{\\sum_i x_i^2}$",
+        "$\\mathbf{x}^\\top\\mathbf{x}$",
+        "$L^1$",
+        "$||\\mathbf{x}||_1 = \\sum_i |x_i|$",
+        "$L^\\infty$",
+        "$||\\mathbf{x}||_\\infty = \\max_i |x_i|$",
+        "$f(\\mathbf{x})=0 \\Rightarrow \\mathbf{x}=\\mathbf{0}$",
+        "$f(\\alpha\\mathbf{x})=|\\alpha|f(\\mathbf{x})$"
+      ],
+      "relatedCards": [
+        "ch02-006"
+      ],
+      "relatedQuestions": [
+        "ch02-q005",
+        "ch02-q006"
+      ]
+    },
+    {
+      "id": "gl-017",
+      "term": "Frobenius norm",
+      "definition": "Frobenius norm: analogous to the $L^2$ norm for matrices: $$||\\mathbf{A}||_F = \\sqrt{\\sum_{i,j} A_{i,j}^2} = \\sqrt{\\text{Tr}(\\mathbf{A}\\mathbf{A}^\\top)}$$",
+      "chapter": 2,
+      "section": "2.5",
+      "tags": [
+        "definition",
+        "linear-algebra"
+      ],
+      "equations": [
+        "$$||\\mathbf{A}||_F = \\sqrt{\\sum_{i,j} A_{i,j}^2} = \\sqrt{\\text{Tr}(\\mathbf{A}\\mathbf{A}^\\top)}$$",
+        "$$\\mathbf{x}^\\top\\mathbf{y} = ||\\mathbf{x}||_2 \\, ||\\mathbf{y}||_2 \\cos\\theta$$",
+        "$L^2$",
+        "$\\theta$",
+        "$\\mathbf{x}$",
+        "$\\mathbf{y}$"
+      ],
+      "relatedCards": [
+        "ch02-007"
+      ],
+      "relatedQuestions": [
+        "ch02-q005",
+        "ch02-q006"
+      ]
+    },
+    {
+      "id": "gl-018",
+      "term": "max norm",
+      "definition": "$$\\|\\mathbf{x}\\|_\\infty = \\max_i |x_i|$$; The absolute value of the largest-magnitude element; It is $\\lim_{p \\to \\infty} \\|\\mathbf{x}\\|_p$",
+      "chapter": 2,
+      "section": "2.5",
+      "tags": [
+        "linear-algebra",
+        "norms",
+        "max-norm"
+      ],
+      "equations": [
+        "$$\\|\\mathbf{x}\\|_\\infty = \\max_i |x_i|$$",
+        "$\\lim_{p \\to \\infty} \\|\\mathbf{x}\\|_p$"
+      ],
+      "relatedCards": [
+        "ch02-019"
+      ],
+      "relatedQuestions": [
+        "ch02-q005",
+        "ch02-q006"
+      ]
+    },
+    {
+      "id": "gl-019",
+      "term": "diagonal",
+      "definition": "- Diagonal: $D_{i,j} = 0$ for $i \\neq j$. Written $\\text{diag}(\\mathbf{v})$.",
+      "chapter": 2,
+      "section": "2.6",
+      "tags": [
+        "definition",
+        "linear-algebra"
+      ],
+      "equations": [
+        "$D_{i,j} = 0$",
+        "$i \\neq j$",
+        "$\\text{diag}(\\mathbf{v})$",
+        "$\\text{diag}(\\mathbf{v})\\mathbf{x} = \\mathbf{v} \\odot \\mathbf{x}$",
+        "$\\mathbf{A} = \\mathbf{A}^\\top$",
+        "$||\\mathbf{x}||_2 = 1$",
+        "$\\mathbf{x}^\\top\\mathbf{y} = 0$",
+        "$\\mathbf{A}^\\top\\mathbf{A} = \\mathbf{A}\\mathbf{A}^\\top = \\mathbf{I}$",
+        "$\\mathbf{A}^{-1} = \\mathbf{A}^\\top$"
+      ],
+      "relatedCards": [
+        "ch02-008"
+      ],
+      "relatedQuestions": [
+        "ch02-q007",
+        "ch02-q013"
+      ]
+    },
+    {
+      "id": "gl-020",
+      "term": "diagonal matrices",
+      "definition": "- Multiplication: $\\mathrm{diag}(\\mathbf{v})\\mathbf{x} = \\mathbf{v} \\odot \\mathbf{x}$, $O(n)$ not $O(n^2)$; Inverse: $\\mathrm{diag}(\\mathbf{v})^{-1} = \\mathrm{diag}([1/v_1, \\ldots, 1/v_n]^\\top)$, exists iff all $v_i \\neq 0$; Non-square diagonal matrices pad with zeros or truncate",
+      "chapter": 2,
+      "section": "2.6",
+      "tags": [
+        "linear-algebra",
+        "diagonal-matrix",
+        "computation"
+      ],
+      "equations": [
+        "$\\mathrm{diag}(\\mathbf{v})\\mathbf{x} = \\mathbf{v} \\odot \\mathbf{x}$",
+        "$O(n)$",
+        "$O(n^2)$",
+        "$\\mathrm{diag}(\\mathbf{v})^{-1} = \\mathrm{diag}([1/v_1, \\ldots, 1/v_n]^\\top)$",
+        "$v_i \\neq 0$"
+      ],
+      "relatedCards": [
+        "ch02-020"
+      ],
+      "relatedQuestions": [
+        "ch02-q007",
+        "ch02-q013"
+      ]
+    },
+    {
+      "id": "gl-021",
+      "term": "positive definite",
+      "definition": "These describe a symmetric matrix $\\mathbf{A}$ based on its eigenvalues:",
+      "chapter": 2,
+      "section": "2.7",
+      "tags": [
+        "definition",
+        "linear-algebra"
+      ],
+      "equations": [
+        "$\\mathbf{A}$",
+        "$> 0$",
+        "$\\mathbf{x}^\\top\\mathbf{A}\\mathbf{x} > 0$",
+        "$\\mathbf{x} \\neq \\mathbf{0}$",
+        "$\\geq 0$",
+        "$\\mathbf{x}^\\top\\mathbf{A}\\mathbf{x} \\geq 0$",
+        "$< 0$",
+        "$\\leq 0$"
+      ],
+      "relatedCards": [
+        "ch02-010"
+      ],
+      "relatedQuestions": [
+        "ch02-q008",
+        "ch02-q015"
+      ]
+    },
+    {
+      "id": "gl-022",
+      "term": "eigendecomposition",
+      "definition": "An eigenvector $\\mathbf{v}$ of $\\mathbf{A}$ satisfies $\\mathbf{A}\\mathbf{v} = \\lambda\\mathbf{v}$, where $\\lambda$ is the eigenvalue.",
+      "chapter": 2,
+      "section": "2.7",
+      "tags": [
+        "decomposition",
+        "linear-algebra"
+      ],
+      "equations": [
+        "$$\\mathbf{A} = \\mathbf{V}\\text{diag}(\\boldsymbol{\\lambda})\\mathbf{V}^{-1}$$",
+        "$$\\mathbf{A} = \\mathbf{Q}\\boldsymbol{\\Lambda}\\mathbf{Q}^\\top$$",
+        "$\\mathbf{v}$",
+        "$\\mathbf{A}$",
+        "$\\mathbf{A}\\mathbf{v} = \\lambda\\mathbf{v}$",
+        "$\\lambda$",
+        "$\\mathbf{Q}$",
+        "$\\boldsymbol{\\Lambda}$"
+      ],
+      "relatedCards": [
+        "ch02-009"
+      ],
+      "relatedQuestions": [
+        "ch02-q008",
+        "ch02-q015"
+      ]
+    },
+    {
+      "id": "gl-023",
+      "term": "real symmetric matrix",
+      "definition": "$$\\mathbf{A} = \\mathbf{Q} \\mathbf{\\Lambda} \\mathbf{Q}^\\top$$; $\\mathbf{Q}$: orthogonal matrix of eigenvectors; $\\mathbf{\\Lambda}$: diagonal matrix of real eigenvalues; All eigenvalues guaranteed real; Not every matrix has real eigenvalues, but symmetric matrices always do; Decomposition may not be unique if eigenvalues repeat",
+      "chapter": 2,
+      "section": "2.7",
+      "tags": [
+        "linear-algebra",
+        "eigendecomposition",
+        "real-symmetric"
+      ],
+      "equations": [
+        "$$\\mathbf{A} = \\mathbf{Q} \\mathbf{\\Lambda} \\mathbf{Q}^\\top$$",
+        "$\\mathbf{Q}$",
+        "$\\mathbf{\\Lambda}$"
+      ],
+      "relatedCards": [
+        "ch02-021"
+      ],
+      "relatedQuestions": [
+        "ch02-q008",
+        "ch02-q015"
+      ]
+    },
+    {
+      "id": "gl-024",
+      "term": "Singular Value Decomposition",
+      "definition": "Every real matrix $\\mathbf{A} \\in \\mathbb{R}^{m \\times n}$ can be factored as: $$\\mathbf{A} = \\mathbf{U}\\mathbf{D}\\mathbf{V}^\\top$$; $\\mathbf{U} \\in \\mathbb{R}^{m \\times m}$: orthogonal, columns are left-singular vectors (eigenvectors of $\\mathbf{A}\\mathbf{A}^\\top$); $\\mathbf{V} \\in \\mathbb{R}^{n \\times n}$: orthogonal, columns are right-singular vectors (eigenvectors of $\\mathbf{A}^\\top\\mathbf{A}$); $\\mathbf{D} \\in \\mathbb{R}^{m \\times n}$: diagonal, entries are singular values ($= \\sqrt{\\text{eigenvalues of } \\mathbf{A}^\\top\\mathbf{A}}$)",
+      "chapter": 2,
+      "section": "2.8",
+      "tags": [
+        "decomposition",
+        "linear-algebra"
+      ],
+      "equations": [
+        "$$\\mathbf{A} = \\mathbf{U}\\mathbf{D}\\mathbf{V}^\\top$$",
+        "$\\mathbf{A} \\in \\mathbb{R}^{m \\times n}$",
+        "$\\mathbf{U} \\in \\mathbb{R}^{m \\times m}$",
+        "$\\mathbf{A}\\mathbf{A}^\\top$",
+        "$\\mathbf{V} \\in \\mathbb{R}^{n \\times n}$",
+        "$\\mathbf{A}^\\top\\mathbf{A}$",
+        "$\\mathbf{D} \\in \\mathbb{R}^{m \\times n}$",
+        "$= \\sqrt{\\text{eigenvalues of } \\mathbf{A}^\\top\\mathbf{A}}$"
+      ],
+      "relatedCards": [
+        "ch02-011"
+      ],
+      "relatedQuestions": [
+        "ch02-q009"
+      ]
+    },
+    {
+      "id": "gl-025",
+      "term": "SVD",
+      "definition": "$$\\mathbf{A} = \\mathbf{U} \\mathbf{D} \\mathbf{V}^\\top$$; $\\mathbf{U} \\in \\mathbb{R}^{m \\times m}$: orthogonal (left singular vectors, eigenvectors of $\\mathbf{AA}^\\top$); $\\mathbf{D} \\in \\mathbb{R}^{m \\times n}$: diagonal of singular values; $\\mathbf{V} \\in \\mathbb{R}^{n \\times n}$: orthogonal (right singular vectors, eigenvectors of $\\mathbf{A}^\\top\\mathbf{A}$); Works on any matrix, not just square",
+      "chapter": 2,
+      "section": "2.8",
+      "tags": [
+        "linear-algebra",
+        "SVD",
+        "dimensions"
+      ],
+      "equations": [
+        "$$\\mathbf{A} = \\mathbf{U} \\mathbf{D} \\mathbf{V}^\\top$$",
+        "$\\mathbf{U} \\in \\mathbb{R}^{m \\times m}$",
+        "$\\mathbf{AA}^\\top$",
+        "$\\mathbf{D} \\in \\mathbb{R}^{m \\times n}$",
+        "$\\mathbf{V} \\in \\mathbb{R}^{n \\times n}$",
+        "$\\mathbf{A}^\\top\\mathbf{A}$"
+      ],
+      "relatedCards": [
+        "ch02-022"
+      ],
+      "relatedQuestions": [
+        "ch02-q009"
+      ]
+    },
+    {
+      "id": "gl-026",
+      "term": "Moore-Penrose pseudoinverse",
+      "definition": "Given $\\mathbf{A} = \\mathbf{U}\\mathbf{D}\\mathbf{V}^\\top$: $$\\mathbf{A}^+ = \\mathbf{V} \\mathbf{D}^+ \\mathbf{U}^\\top$$ where $\\mathbf{D}^+$ takes reciprocals of each nonzero diagonal element, then transposes. - More columns than rows: minimum-norm solution; More rows than columns: least-squares solution",
+      "chapter": 2,
+      "section": "2.9",
+      "tags": [
+        "definition",
+        "linear-algebra",
+        "computation",
+        "pseudoinverse",
+        "SVD"
+      ],
+      "equations": [
+        "$$\\mathbf{A}^+ = \\lim_{\\alpha \\searrow 0} (\\mathbf{A}^\\top\\mathbf{A} + \\alpha\\mathbf{I})^{-1}\\mathbf{A}^\\top$$",
+        "$\\mathbf{A}^{-1}$",
+        "$\\mathbf{A}^+ = \\mathbf{V}\\mathbf{D}^+\\mathbf{U}^\\top$",
+        "$\\mathbf{D}^+$",
+        "$\\mathbf{x} = \\mathbf{A}^+\\mathbf{y}$",
+        "$||\\mathbf{x}||_2$",
+        "$\\mathbf{x}$",
+        "$||\\mathbf{Ax} - \\mathbf{y}||_2$",
+        "$$\\mathbf{A}^+ = \\mathbf{V} \\mathbf{D}^+ \\mathbf{U}^\\top$$",
+        "$\\mathbf{A} = \\mathbf{U}\\mathbf{D}\\mathbf{V}^\\top$"
+      ],
+      "relatedCards": [
+        "ch02-012",
+        "ch02-023"
+      ],
+      "relatedQuestions": [
+        "ch02-q010"
+      ]
+    },
+    {
+      "id": "gl-027",
+      "term": "trace",
+      "definition": "$$\\text{Tr}(\\mathbf{A}) = \\sum_i A_{i,i}$$",
+      "chapter": 2,
+      "section": "2.10",
+      "tags": [
+        "definition",
+        "linear-algebra",
+        "computation"
+      ],
+      "equations": [
+        "$$\\text{Tr}(\\mathbf{A}) = \\sum_i A_{i,i}$$",
+        "$||\\mathbf{A}||_F = \\sqrt{\\text{Tr}(\\mathbf{A}\\mathbf{A}^\\top)}$",
+        "$\\text{Tr}(\\mathbf{A}) = \\text{Tr}(\\mathbf{A}^\\top)$",
+        "$\\text{Tr}(\\mathbf{ABC}) = \\text{Tr}(\\mathbf{CAB}) = \\text{Tr}(\\mathbf{BCA})$",
+        "$\\text{Tr}(\\mathbf{AB}) = \\text{Tr}(\\mathbf{BA})$",
+        "$\\mathbf{AB}$",
+        "$\\mathbf{BA}$",
+        "$a = \\text{Tr}(a)$"
+      ],
+      "relatedCards": [
+        "ch02-013"
+      ],
+      "relatedQuestions": [
+        "ch02-q011"
+      ]
+    },
+    {
+      "id": "gl-028",
+      "term": "trace operator",
+      "definition": "1. $\\mathrm{Tr}(\\mathbf{A}) = \\mathrm{Tr}(\\mathbf{A}^\\top)$; Cyclic permutation: $\\mathrm{Tr}(\\mathbf{ABC}) = \\mathrm{Tr}(\\mathbf{CAB}) = \\mathrm{Tr}(\\mathbf{BCA})$; A scalar is its own trace: $a = \\mathrm{Tr}(a)$; Frobenius norm: $\\|\\mathbf{A}\\|_F = \\sqrt{\\mathrm{Tr}(\\mathbf{AA}^\\top)}$",
+      "chapter": 2,
+      "section": "2.10",
+      "tags": [
+        "linear-algebra",
+        "trace",
+        "properties"
+      ],
+      "equations": [
+        "$\\mathrm{Tr}(\\mathbf{A}) = \\mathrm{Tr}(\\mathbf{A}^\\top)$",
+        "$\\mathrm{Tr}(\\mathbf{ABC}) = \\mathrm{Tr}(\\mathbf{CAB}) = \\mathrm{Tr}(\\mathbf{BCA})$",
+        "$a = \\mathrm{Tr}(a)$",
+        "$\\|\\mathbf{A}\\|_F = \\sqrt{\\mathrm{Tr}(\\mathbf{AA}^\\top)}$"
+      ],
+      "relatedCards": [
+        "ch02-024"
+      ],
+      "relatedQuestions": [
+        "ch02-q011"
+      ]
+    },
+    {
+      "id": "gl-029",
+      "term": "determinant",
+      "definition": "$$\\det(\\mathbf{A}) = \\prod_i \\lambda_i$$ where $\\lambda_i$ are the eigenvalues of $\\mathbf{A}$.",
+      "chapter": 2,
+      "section": "2.11",
+      "tags": [
+        "definition",
+        "linear-algebra"
+      ],
+      "equations": [
+        "$$\\det(\\mathbf{A}) = \\prod_i \\lambda_i$$",
+        "$\\lambda_i$",
+        "$\\mathbf{A}$",
+        "$|\\det(\\mathbf{A})|$",
+        "$\\det(\\mathbf{A}) = 0$",
+        "$\\det(\\mathbf{A}) = 1$"
+      ],
+      "relatedCards": [
+        "ch02-014"
+      ],
+      "relatedQuestions": [
+        "ch02-q012"
+      ]
+    },
+    {
+      "id": "gl-030",
+      "term": "PCA",
+      "definition": "Given $m$ points in $\\mathbb{R}^n$, PCA finds an encoding matrix $\\mathbf{D}$ that projects them to $\\mathbb{R}^l$ ($l < n$) with minimal reconstruction error.",
+      "chapter": 2,
+      "section": "2.12",
+      "tags": [
+        "intuition",
+        "linear-algebra",
+        "decomposition",
+        "machine-learning",
+        "PCA"
+      ],
+      "equations": [
+        "$\\mathbb{R}^n$",
+        "$\\mathbf{D}$",
+        "$\\mathbb{R}^l$",
+        "$l < n$",
+        "$f(\\mathbf{x}) = \\mathbf{D}^\\top\\mathbf{x}$",
+        "$g(\\mathbf{c}) = \\mathbf{D}\\mathbf{c}$",
+        "$r(\\mathbf{x}) = \\mathbf{D}\\mathbf{D}^\\top\\mathbf{x}$",
+        "$\\mathbf{D}$",
+        "$\\text{Tr}(\\mathbf{d}^\\top\\mathbf{X}^\\top\\mathbf{X}\\mathbf{d})$",
+        "$\\mathbf{d}^\\top\\mathbf{d}=1$",
+        "$\\mathbf{X}^\\top\\mathbf{X}$",
+        "$\\mathbf{z} = \\mathbf{x}^\\top \\mathbf{W}$",
+        "$\\mathbf{W}$",
+        "$\\mathbf{X}$",
+        "$\\mathbf{z}$"
+      ],
+      "relatedCards": [
+        "ch02-015",
+        "ch05-026"
+      ],
+      "relatedQuestions": [
+        "ch02-q014"
+      ]
+    },
+    {
+      "id": "gl-031",
+      "term": "optimization problem",
+      "definition": "Find encoding $f(\\mathbf{x}) = \\mathbf{D}^\\top \\mathbf{x}$ minimizing reconstruction error subject to $\\mathbf{D}$ having orthonormal columns. - The optimal $\\mathbf{D}$ consists of the $l$ eigenvectors of $\\mathbf{X}^\\top\\mathbf{X}$ with the largest eigenvalues; Reconstruction: $r(\\mathbf{x}) = \\mathbf{D}\\mathbf{D}^\\top\\mathbf{x}$",
+      "chapter": 2,
+      "section": "2.12",
+      "tags": [
+        "linear-algebra",
+        "PCA",
+        "derivation"
+      ],
+      "equations": [
+        "$f(\\mathbf{x}) = \\mathbf{D}^\\top \\mathbf{x}$",
+        "$\\mathbf{D}$",
+        "$\\mathbf{D}$",
+        "$\\mathbf{X}^\\top\\mathbf{X}$",
+        "$r(\\mathbf{x}) = \\mathbf{D}\\mathbf{D}^\\top\\mathbf{x}$"
+      ],
+      "relatedCards": [
+        "ch02-025"
+      ],
+      "relatedQuestions": [
+        "ch02-q014"
+      ]
+    },
+    {
+      "id": "gl-032",
+      "term": "probability mass function (PMF)",
+      "definition": "1. The domain of $P$ must be the set of all possible states of x; $\\forall x,\\; 0 \\leq P(x) \\leq 1$; $\\sum_{x} P(x) = 1$ (the normalization property)",
+      "chapter": 3,
+      "section": "3.3",
+      "tags": [
+        "probability",
+        "PMF",
+        "discrete"
+      ],
+      "equations": [
+        "$\\forall x,\\; 0 \\leq P(x) \\leq 1$",
+        "$\\sum_{x} P(x) = 1$"
+      ],
+      "relatedCards": [
+        "ch03-003"
+      ],
+      "relatedQuestions": [
+        "ch03-q003"
+      ]
+    },
+    {
+      "id": "gl-033",
+      "term": "probability density function (PDF)",
+      "definition": "1. The domain of $p$ must be the set of all possible states; $\\forall x,\\; p(x) \\geq 0$ (note: $p(x)$ can exceed 1); $\\int p(x)\\,dx = 1$",
+      "chapter": 3,
+      "section": "3.3",
+      "tags": [
+        "probability",
+        "PDF",
+        "continuous"
+      ],
+      "equations": [
+        "$\\forall x,\\; p(x) \\geq 0$",
+        "$p(x)$",
+        "$\\int p(x)\\,dx = 1$",
+        "$x \\in [a,b]$",
+        "$\\int_a^b p(x)\\,dx$"
+      ],
+      "relatedCards": [
+        "ch03-004"
+      ],
+      "relatedQuestions": [
+        "ch03-q003"
+      ]
+    },
+    {
+      "id": "gl-034",
+      "term": "marginal probability",
+      "definition": "The probability distribution over a subset of variables, obtained from a known joint distribution.; Discrete (sum rule): $P(x) = \\sum_y P(x, y)$; Continuous: $p(x) = \\int p(x, y)\\,dy$",
+      "chapter": 3,
+      "section": "3.4",
+      "tags": [
+        "probability",
+        "marginal",
+        "sum-rule"
+      ],
+      "equations": [
+        "$P(x) = \\sum_y P(x, y)$",
+        "$p(x) = \\int p(x, y)\\,dy$"
+      ],
+      "relatedCards": [
+        "ch03-005"
+      ],
+      "relatedQuestions": [
+        "ch03-q004"
+      ]
+    },
+    {
+      "id": "gl-035",
+      "term": "chain rule",
+      "definition": "Using the chain rule: $$P(\\mathbf{y}^{(1)}, \\dots, \\mathbf{y}^{(\\tau)}) = \\prod_{t=1}^{\\tau} P(\\mathbf{y}^{(t)} \\mid \\mathbf{y}^{(t-1)}, \\dots, \\mathbf{y}^{(1)})$$",
+      "chapter": 3,
+      "section": "3.6",
+      "tags": [
+        "probability",
+        "chain-rule",
+        "RNN",
+        "graphical model",
+        "sequence modeling"
+      ],
+      "equations": [
+        "$$P(x^{(1)}, \\ldots, x^{(n)}) = P(x^{(1)}) \\prod_{i=2}^{n} P(x^{(i)} \\mid x^{(1)}, \\ldots, x^{(i-1)})$$",
+        "$P(a,b,c) = P(a \\mid b,c)P(b \\mid c)P(c)$",
+        "$$P(\\mathbf{y}^{(1)}, \\dots, \\mathbf{y}^{(\\tau)}) = \\prod_{t=1}^{\\tau} P(\\mathbf{y}^{(t)} \\mid \\mathbf{y}^{(t-1)}, \\dots, \\mathbf{y}^{(1)})$$",
+        "$$P(\\mathbf{y}^{(t)} \\mid \\mathbf{y}^{(t-1)}, \\dots, \\mathbf{y}^{(1)}) = P(\\mathbf{y}^{(t)} \\mid \\mathbf{h}^{(t)})$$",
+        "$\\mathbf{h}^{(t)}$",
+        "$L^{(t)} = -\\log P(y^{(t)} = y^{(t)} \\mid y^{(t-1)}, \\dots, y^{(1)})$",
+        "$O(1)$"
+      ],
+      "relatedCards": [
+        "ch03-007",
+        "ch10-023"
+      ],
+      "relatedQuestions": [
+        "ch03-q005"
+      ]
+    },
+    {
+      "id": "gl-036",
+      "term": "independence",
+      "definition": "Independent ($x \\perp y$): $p(x, y) = p(x)\\,p(y)$",
+      "chapter": 3,
+      "section": "3.7",
+      "tags": [
+        "probability",
+        "independence",
+        "conditional-independence"
+      ],
+      "equations": [
+        "$$p(x, y \\mid z) = p(x \\mid z)\\,p(y \\mid z)$$",
+        "$x \\perp y$",
+        "$p(x, y) = p(x)\\,p(y)$",
+        "$x \\perp y \\mid z$"
+      ],
+      "relatedCards": [
+        "ch03-008"
+      ],
+      "relatedQuestions": [
+        "ch03-q006"
+      ]
+    },
+    {
+      "id": "gl-037",
+      "term": "expectation",
+      "definition": "Discrete: $\\mathbb{E}[f(x)] = \\sum_x P(x)f(x)$ Continuous: $\\mathbb{E}[f(x)] = \\int p(x)f(x)\\,dx$",
+      "chapter": 3,
+      "section": "3.8",
+      "tags": [
+        "probability",
+        "expectation",
+        "linearity"
+      ],
+      "equations": [
+        "$\\mathbb{E}[f(x)] = \\sum_x P(x)f(x)$",
+        "$\\mathbb{E}[f(x)] = \\int p(x)f(x)\\,dx$",
+        "$\\mathbb{E}[\\alpha f(x) + \\beta g(x)] = \\alpha\\,\\mathbb{E}[f(x)] + \\beta\\,\\mathbb{E}[g(x)]$"
+      ],
+      "relatedCards": [
+        "ch03-009"
+      ],
+      "relatedQuestions": [
+        "ch03-q007"
+      ]
+    },
+    {
+      "id": "gl-038",
+      "term": "variance",
+      "definition": "Variance: $\\text{Var}(f(x)) = \\mathbb{E}[(f(x) - \\mathbb{E}[f(x)])^2]$",
+      "chapter": 3,
+      "section": "3.8",
+      "tags": [
+        "probability",
+        "variance",
+        "covariance"
+      ],
+      "equations": [
+        "$\\text{Var}(f(x)) = \\mathbb{E}[(f(x) - \\mathbb{E}[f(x)])^2]$",
+        "$\\text{Cov}(f(x), g(y)) = \\mathbb{E}[(f(x) - \\mathbb{E}[f(x)])(g(y) - \\mathbb{E}[g(y)])]$"
+      ],
+      "relatedCards": [
+        "ch03-010"
+      ],
+      "relatedQuestions": [
+        "ch03-q007"
+      ]
+    },
+    {
+      "id": "gl-039",
+      "term": "covariance matrix",
+      "definition": "$$\\text{Cov}(\\mathbf{x})_{i,j} = \\text{Cov}(x_i, x_j)$$",
+      "chapter": 3,
+      "section": "3.8",
+      "tags": [
+        "probability",
+        "covariance-matrix"
+      ],
+      "equations": [
+        "$$\\text{Cov}(\\mathbf{x})_{i,j} = \\text{Cov}(x_i, x_j)$$",
+        "$\\text{Cov}(x_i, x_i) = \\text{Var}(x_i)$"
+      ],
+      "relatedCards": [
+        "ch03-011"
+      ],
+      "relatedQuestions": [
+        "ch03-q007"
+      ]
+    },
+    {
+      "id": "gl-040",
+      "term": "Bernoulli distribution",
+      "definition": "$P(x) = \\phi^x (1-\\phi)^{1-x}$",
+      "chapter": 3,
+      "section": "3.9",
+      "tags": [
+        "probability",
+        "bernoulli"
+      ],
+      "equations": [
+        "$P(x) = \\phi^x (1-\\phi)^{1-x}$",
+        "$P(x=1) = \\phi$",
+        "$P(x=0) = 1 - \\phi$",
+        "$\\mathbb{E}[x] = \\phi$",
+        "$\\text{Var}(x) = \\phi(1-\\phi)$"
+      ],
+      "relatedCards": [
+        "ch03-012"
+      ],
+      "relatedQuestions": [
+        "ch03-q008",
+        "ch03-q009",
+        "ch03-q010",
+        "ch03-q017"
+      ]
+    },
+    {
+      "id": "gl-041",
+      "term": "Gaussian distribution",
+      "definition": "Standard: $\\mathcal{N}(x;\\mu,\\sigma^2) = \\sqrt{\\frac{1}{2\\pi\\sigma^2}}\\exp\\left(-\\frac{(x-\\mu)^2}{2\\sigma^2}\\right)$",
+      "chapter": 3,
+      "section": "3.9",
+      "tags": [
+        "probability",
+        "gaussian",
+        "normal"
+      ],
+      "equations": [
+        "$\\mathcal{N}(x;\\mu,\\sigma^2) = \\sqrt{\\frac{1}{2\\pi\\sigma^2}}\\exp\\left(-\\frac{(x-\\mu)^2}{2\\sigma^2}\\right)$",
+        "$\\beta = 1/\\sigma^2$",
+        "$\\mathcal{N}(x;\\mu,\\beta^{-1}) = \\sqrt{\\frac{\\beta}{2\\pi}}\\exp\\left(-\\frac{\\beta(x-\\mu)^2}{2}\\right)$"
+      ],
+      "relatedCards": [
+        "ch03-013"
+      ],
+      "relatedQuestions": [
+        "ch03-q008",
+        "ch03-q009",
+        "ch03-q010",
+        "ch03-q017"
+      ]
+    },
+    {
+      "id": "gl-042",
+      "term": "multivariate normal distribution",
+      "definition": "$$\\mathcal{N}(\\boldsymbol{x}; \\boldsymbol{\\mu}, \\boldsymbol{\\Sigma}) = \\sqrt{\\frac{1}{(2\\pi)^n \\det(\\boldsymbol{\\Sigma})}} \\exp\\left(-\\frac{1}{2}(\\boldsymbol{x}-\\boldsymbol{\\mu})^\\top \\boldsymbol{\\Sigma}^{-1}(\\boldsymbol{x}-\\boldsymbol{\\mu})\\right)$$",
+      "chapter": 3,
+      "section": "3.9",
+      "tags": [
+        "probability",
+        "multivariate-gaussian"
+      ],
+      "equations": [
+        "$$\\mathcal{N}(\\boldsymbol{x}; \\boldsymbol{\\mu}, \\boldsymbol{\\Sigma}) = \\sqrt{\\frac{1}{(2\\pi)^n \\det(\\boldsymbol{\\Sigma})}} \\exp\\left(-\\frac{1}{2}(\\boldsymbol{x}-\\boldsymbol{\\mu})^\\top \\boldsymbol{\\Sigma}^{-1}(\\boldsymbol{x}-\\boldsymbol{\\mu})\\right)$$",
+        "$\\boldsymbol{\\mu}$",
+        "$\\boldsymbol{\\Sigma}$"
+      ],
+      "relatedCards": [
+        "ch03-015"
+      ],
+      "relatedQuestions": [
+        "ch03-q008",
+        "ch03-q009",
+        "ch03-q010",
+        "ch03-q017"
+      ]
+    },
+    {
+      "id": "gl-043",
+      "term": "exponential",
+      "definition": "Exponential: $p(x; \\lambda) = \\lambda \\mathbf{1}_{x \\geq 0} \\exp(-\\lambda x)$",
+      "chapter": 3,
+      "section": "3.9",
+      "tags": [
+        "probability",
+        "exponential",
+        "laplace"
+      ],
+      "equations": [
+        "$p(x; \\lambda) = \\lambda \\mathbf{1}_{x \\geq 0} \\exp(-\\lambda x)$",
+        "$\\text{Laplace}(x; \\mu, \\gamma) = \\frac{1}{2\\gamma} \\exp\\left(-\\frac{|x - \\mu|}{\\gamma}\\right)$"
+      ],
+      "relatedCards": [
+        "ch03-016"
+      ],
+      "relatedQuestions": [
+        "ch03-q008",
+        "ch03-q009",
+        "ch03-q010",
+        "ch03-q017"
+      ]
+    },
+    {
+      "id": "gl-044",
+      "term": "Dirac delta",
+      "definition": "Dirac delta: $p(x) = \\delta(x - \\mu)$, zero everywhere except $x=\\mu$, integrates to 1.",
+      "chapter": 3,
+      "section": "3.9",
+      "tags": [
+        "probability",
+        "dirac-delta",
+        "empirical-distribution"
+      ],
+      "equations": [
+        "$p(x) = \\delta(x - \\mu)$",
+        "$x=\\mu$",
+        "$\\hat{p}(\\boldsymbol{x}) = \\frac{1}{m} \\sum_{i=1}^{m} \\delta(\\boldsymbol{x} - \\boldsymbol{x}^{(i)})$",
+        "$1/m$"
+      ],
+      "relatedCards": [
+        "ch03-017"
+      ],
+      "relatedQuestions": [
+        "ch03-q008",
+        "ch03-q009",
+        "ch03-q010",
+        "ch03-q017"
+      ]
+    },
+    {
+      "id": "gl-045",
+      "term": "mixture distribution",
+      "definition": "$$P(x) = \\sum_i P(c = i)\\, P(x \\mid c = i)$$",
+      "chapter": 3,
+      "section": "3.9",
+      "tags": [
+        "probability",
+        "mixture-model",
+        "latent-variable"
+      ],
+      "equations": [
+        "$$P(x) = \\sum_i P(c = i)\\, P(x \\mid c = i)$$",
+        "$P(c=i)$",
+        "$P(c \\mid x)$",
+        "$\\boldsymbol{\\mu}^{(i)}$",
+        "$\\boldsymbol{\\Sigma}^{(i)}$"
+      ],
+      "relatedCards": [
+        "ch03-018"
+      ],
+      "relatedQuestions": [
+        "ch03-q008",
+        "ch03-q009",
+        "ch03-q010",
+        "ch03-q017"
+      ]
+    },
+    {
+      "id": "gl-046",
+      "term": "multinoulli",
+      "definition": "A distribution over a single discrete variable with $k$ states.; Parameterized by $\\boldsymbol{p} \\in [0,1]^{k-1}$, with $k$-th probability = $1 - \\mathbf{1}^\\top \\boldsymbol{p}$; Bernoulli is the special case $k = 2$; Multinoulli is multinomial with $n=1$ trial",
+      "chapter": 3,
+      "section": "3.9",
+      "tags": [
+        "probability",
+        "multinoulli",
+        "categorical"
+      ],
+      "equations": [
+        "$\\boldsymbol{p} \\in [0,1]^{k-1}$",
+        "$1 - \\mathbf{1}^\\top \\boldsymbol{p}$",
+        "$k = 2$",
+        "$n=1$"
+      ],
+      "relatedCards": [
+        "ch03-026"
+      ],
+      "relatedQuestions": [
+        "ch03-q008",
+        "ch03-q009",
+        "ch03-q010",
+        "ch03-q017"
+      ]
+    },
+    {
+      "id": "gl-047",
+      "term": "two reasons",
+      "definition": "1. Central limit theorem: the sum of many independent random variables is approximately normal; Maximum entropy: among all distributions with a given variance, the normal encodes the maximum amount of uncertainty",
+      "chapter": 3,
+      "section": "3.9",
+      "tags": [
+        "probability",
+        "gaussian",
+        "central-limit-theorem"
+      ],
+      "equations": [],
+      "relatedCards": [
+        "ch03-014"
+      ],
+      "relatedQuestions": [
+        "ch03-q008",
+        "ch03-q009",
+        "ch03-q010",
+        "ch03-q017"
+      ]
+    },
+    {
+      "id": "gl-048",
+      "term": "logistic sigmoid",
+      "definition": "Sigmoid: $\\sigma(x) = \\frac{1}{1 + \\exp(-x)}$, range $(0,1)$; $1 - \\sigma(x) = \\sigma(-x)$; $\\frac{d}{dx}\\sigma(x) = \\sigma(x)(1 - \\sigma(x))$",
+      "chapter": 3,
+      "section": "3.10",
+      "tags": [
+        "probability",
+        "sigmoid",
+        "softplus"
+      ],
+      "equations": [
+        "$\\sigma(x) = \\frac{1}{1 + \\exp(-x)}$",
+        "$(0,1)$",
+        "$1 - \\sigma(x) = \\sigma(-x)$",
+        "$\\frac{d}{dx}\\sigma(x) = \\sigma(x)(1 - \\sigma(x))$",
+        "$\\zeta(x) = \\log(1 + \\exp(x))$",
+        "$(0,\\infty)$",
+        "$\\frac{d}{dx}\\zeta(x) = \\sigma(x)$"
+      ],
+      "relatedCards": [
+        "ch03-019"
+      ],
+      "relatedQuestions": [
+        "ch03-q011",
+        "ch03-q012"
+      ]
+    },
+    {
+      "id": "gl-049",
+      "term": "Bayes' rule",
+      "definition": "$$P(x \\mid y) = \\frac{P(x)\\, P(y \\mid x)}{P(y)}$$",
+      "chapter": 3,
+      "section": "3.11",
+      "tags": [
+        "probability",
+        "bayes-rule"
+      ],
+      "equations": [
+        "$$P(x \\mid y) = \\frac{P(x)\\, P(y \\mid x)}{P(y)}$$",
+        "$P(y)$",
+        "$P(y) = \\sum_x P(y \\mid x)\\, P(x)$"
+      ],
+      "relatedCards": [
+        "ch03-020"
+      ],
+      "relatedQuestions": [
+        "ch03-q013"
+      ]
+    },
+    {
+      "id": "gl-050",
+      "term": "self-information",
+      "definition": "Self-information: $I(x) = -\\log P(x)$ (nats with ln, bits with log2)",
+      "chapter": 3,
+      "section": "3.13",
+      "tags": [
+        "information-theory",
+        "self-information",
+        "entropy"
+      ],
+      "equations": [
+        "$I(x) = -\\log P(x)$",
+        "$H(x) = -\\mathbb{E}[\\log P(x)]$"
+      ],
+      "relatedCards": [
+        "ch03-022"
+      ],
+      "relatedQuestions": [
+        "ch03-q014",
+        "ch03-q015",
+        "ch03-q016"
+      ]
+    },
+    {
+      "id": "gl-051",
+      "term": "KL divergence",
+      "definition": "KL divergence: $D_{\\text{KL}}(P \\| Q) = \\mathbb{E}_P[\\log P(x) - \\log Q(x)]$; Always $\\geq 0$; equals 0 iff $P = Q$; Not symmetric: $D_{\\text{KL}}(P\\|Q) \\neq D_{\\text{KL}}(Q\\|P)$",
+      "chapter": 3,
+      "section": "3.13",
+      "tags": [
+        "information-theory",
+        "KL-divergence",
+        "cross-entropy"
+      ],
+      "equations": [
+        "$D_{\\text{KL}}(P \\| Q) = \\mathbb{E}_P[\\log P(x) - \\log Q(x)]$",
+        "$\\geq 0$",
+        "$P = Q$",
+        "$D_{\\text{KL}}(P\\|Q) \\neq D_{\\text{KL}}(Q\\|P)$",
+        "$H(P, Q) = -\\mathbb{E}_P[\\log Q(x)] = H(P) + D_{\\text{KL}}(P \\| Q)$"
+      ],
+      "relatedCards": [
+        "ch03-023"
+      ],
+      "relatedQuestions": [
+        "ch03-q014",
+        "ch03-q015",
+        "ch03-q016"
+      ]
+    },
+    {
+      "id": "gl-052",
+      "term": "asymmetry",
+      "definition": "When approximating multi-modal $p$ with simpler $q$:",
+      "chapter": 3,
+      "section": "3.13",
+      "tags": [
+        "information-theory",
+        "KL-divergence",
+        "asymmetry"
+      ],
+      "equations": [
+        "$D_{\\text{KL}}(p \\| q)$",
+        "$D_{\\text{KL}}(q \\| p)$"
+      ],
+      "relatedCards": [
+        "ch03-027"
+      ],
+      "relatedQuestions": [
+        "ch03-q014",
+        "ch03-q015",
+        "ch03-q016"
+      ]
+    },
+    {
+      "id": "gl-053",
+      "term": "structured probabilistic model",
+      "definition": "A graph where nodes = random variables and edges = direct interactions.",
+      "chapter": 3,
+      "section": "3.14",
+      "tags": [
+        "graphical-models",
+        "directed",
+        "undirected"
+      ],
+      "equations": [
+        "$p(\\mathbf{x}) = \\prod_i p(x_i \\mid \\text{Parents}(x_i))$",
+        "$p(\\mathbf{x}) = \\frac{1}{Z} \\prod_i \\phi^{(i)}(\\mathcal{C}^{(i)})$",
+        "$\\phi$"
+      ],
+      "relatedCards": [
+        "ch03-024"
+      ],
+      "relatedQuestions": [
+        "ch03-q018"
+      ]
+    },
+    {
+      "id": "gl-054",
+      "term": "underflow",
+      "definition": "Underflow occurs when numbers near zero are rounded to zero.; Dangerous because many functions behave qualitatively differently at zero vs. a small positive number; Example: division by zero, or $\\log(0) = -\\infty$; Can cascade into NaN values",
+      "chapter": 4,
+      "section": "4.1",
+      "tags": [
+        "numerical",
+        "underflow",
+        "overflow"
+      ],
+      "equations": [
+        "$\\log(0) = -\\infty$"
+      ],
+      "relatedCards": [
+        "ch04-001"
+      ],
+      "relatedQuestions": [
+        "ch04-q001",
+        "ch04-q002"
+      ]
+    },
+    {
+      "id": "gl-055",
+      "term": "overflow",
+      "definition": "Overflow occurs when numbers with large magnitude are approximated as $\\infty$ or $-\\infty$.; Further arithmetic with infinite values usually produces NaN; Example: $\\exp(c)$ for very large $c$ overflows",
+      "chapter": 4,
+      "section": "4.1",
+      "tags": [
+        "numerical",
+        "overflow"
+      ],
+      "equations": [
+        "$\\infty$",
+        "$-\\infty$",
+        "$\\exp(c)$"
+      ],
+      "relatedCards": [
+        "ch04-002"
+      ],
+      "relatedQuestions": [
+        "ch04-q001",
+        "ch04-q002"
+      ]
+    },
+    {
+      "id": "gl-056",
+      "term": "softmax",
+      "definition": "$$\\text{softmax}(\\mathbf{x})_i = \\frac{\\exp(x_i)}{\\sum_j \\exp(x_j)}$$ Trick: Evaluate $\\text{softmax}(\\mathbf{z})$ where $\\mathbf{z} = \\mathbf{x} - \\max_i x_i$.; Largest argument to $\\exp$ is 0, preventing overflow; At least one term in denominator is 1, preventing division by zero",
+      "chapter": 4,
+      "section": "4.1",
+      "tags": [
+        "numerical",
+        "softmax",
+        "stabilization"
+      ],
+      "equations": [
+        "$$\\text{softmax}(\\mathbf{x})_i = \\frac{\\exp(x_i)}{\\sum_j \\exp(x_j)}$$",
+        "$\\text{softmax}(\\mathbf{z})$",
+        "$\\mathbf{z} = \\mathbf{x} - \\max_i x_i$",
+        "$\\exp$"
+      ],
+      "relatedCards": [
+        "ch04-003"
+      ],
+      "relatedQuestions": [
+        "ch04-q001",
+        "ch04-q002"
+      ]
+    },
+    {
+      "id": "gl-057",
+      "term": "condition number",
+      "definition": "$$\\kappa = \\max_{i,j} \\left| \\frac{\\lambda_i}{\\lambda_j} \\right|$$ Ratio of largest to smallest eigenvalue magnitude.; When large, matrix inversion is sensitive to rounding errors; An intrinsic property of the matrix, not the algorithm",
+      "chapter": 4,
+      "section": "4.2",
+      "tags": [
+        "numerical",
+        "conditioning",
+        "linear-algebra"
+      ],
+      "equations": [
+        "$$\\kappa = \\max_{i,j} \\left| \\frac{\\lambda_i}{\\lambda_j} \\right|$$"
+      ],
+      "relatedCards": [
+        "ch04-005"
+      ],
+      "relatedQuestions": [
+        "ch04-q003"
+      ]
+    },
+    {
+      "id": "gl-058",
+      "term": "objective function",
+      "definition": "The objective function is what we minimize or maximize.; When minimizing: called cost function, loss function, or error function; Maximizing $f(\\mathbf{x})$ = minimizing $-f(\\mathbf{x})$; Minimizer: $\\mathbf{x}^* = \\arg\\min f(\\mathbf{x})$",
+      "chapter": 4,
+      "section": "4.3",
+      "tags": [
+        "optimization",
+        "terminology"
+      ],
+      "equations": [
+        "$f(\\mathbf{x})$",
+        "$-f(\\mathbf{x})$",
+        "$\\mathbf{x}^* = \\arg\\min f(\\mathbf{x})$"
+      ],
+      "relatedCards": [
+        "ch04-006"
+      ],
+      "relatedQuestions": [
+        "ch04-q004",
+        "ch04-q005",
+        "ch04-q006",
+        "ch04-q007",
+        "ch04-q008",
+        "ch04-q009",
+        "ch04-q011"
+      ]
+    },
+    {
+      "id": "gl-059",
+      "term": "gradient descent",
+      "definition": "$$\\mathbf{x}' = \\mathbf{x} - \\epsilon \\nabla_{\\mathbf{x}} f(\\mathbf{x})$$; $\\epsilon$ is the learning rate (positive scalar); Can be a small constant or found via line search; Converges when every element of the gradient is zero",
+      "chapter": 4,
+      "section": "4.3",
+      "tags": [
+        "optimization",
+        "gradient-descent"
+      ],
+      "equations": [
+        "$$\\mathbf{x}' = \\mathbf{x} - \\epsilon \\nabla_{\\mathbf{x}} f(\\mathbf{x})$$",
+        "$\\epsilon$"
+      ],
+      "relatedCards": [
+        "ch04-007"
+      ],
+      "relatedQuestions": [
+        "ch04-q004",
+        "ch04-q005",
+        "ch04-q006",
+        "ch04-q007",
+        "ch04-q008",
+        "ch04-q009",
+        "ch04-q011"
+      ]
+    },
+    {
+      "id": "gl-060",
+      "term": "critical point",
+      "definition": "- Critical point: where $\\nabla f = \\mathbf{0}$; Local minimum: lower than all neighboring points; Local maximum: higher than all neighboring points; Saddle point: neither maximum nor minimum; Global minimum: absolute lowest value over all $x$",
+      "chapter": 4,
+      "section": "4.3",
+      "tags": [
+        "optimization",
+        "critical-points"
+      ],
+      "equations": [
+        "$\\nabla f = \\mathbf{0}$"
+      ],
+      "relatedCards": [
+        "ch04-008"
+      ],
+      "relatedQuestions": [
+        "ch04-q004",
+        "ch04-q005",
+        "ch04-q006",
+        "ch04-q007",
+        "ch04-q008",
+        "ch04-q009",
+        "ch04-q011"
+      ]
+    },
+    {
+      "id": "gl-061",
+      "term": "directional derivative",
+      "definition": "Directional derivative in direction $\\mathbf{u}$: $$\\mathbf{u}^\\top \\nabla_{\\mathbf{x}} f(\\mathbf{x}) = \\|\\nabla f\\|_2 \\cos \\theta$$",
+      "chapter": 4,
+      "section": "4.3",
+      "tags": [
+        "optimization",
+        "directional-derivative",
+        "gradient"
+      ],
+      "equations": [
+        "$$\\mathbf{u}^\\top \\nabla_{\\mathbf{x}} f(\\mathbf{x}) = \\|\\nabla f\\|_2 \\cos \\theta$$",
+        "$\\mathbf{u}$",
+        "$\\cos\\theta = -1$"
+      ],
+      "relatedCards": [
+        "ch04-009"
+      ],
+      "relatedQuestions": [
+        "ch04-q004",
+        "ch04-q005",
+        "ch04-q006",
+        "ch04-q007",
+        "ch04-q008",
+        "ch04-q009",
+        "ch04-q011"
+      ]
+    },
+    {
+      "id": "gl-062",
+      "term": "Jacobian",
+      "definition": "Jacobian ($\\mathbf{f}: \\mathbb{R}^m \\to \\mathbb{R}^n$): $J_{i,j} = \\frac{\\partial f_i}{\\partial x_j}$",
+      "chapter": 4,
+      "section": "4.3",
+      "tags": [
+        "optimization",
+        "jacobian",
+        "hessian"
+      ],
+      "equations": [
+        "$\\mathbf{f}: \\mathbb{R}^m \\to \\mathbb{R}^n$",
+        "$J_{i,j} = \\frac{\\partial f_i}{\\partial x_j}$",
+        "$f: \\mathbb{R}^n \\to \\mathbb{R}$",
+        "$H_{i,j} = \\frac{\\partial^2 f}{\\partial x_i \\partial x_j}$"
+      ],
+      "relatedCards": [
+        "ch04-010"
+      ],
+      "relatedQuestions": [
+        "ch04-q004",
+        "ch04-q005",
+        "ch04-q006",
+        "ch04-q007",
+        "ch04-q008",
+        "ch04-q009",
+        "ch04-q011"
+      ]
+    },
+    {
+      "id": "gl-063",
+      "term": "curvature",
+      "definition": "After step $-\\epsilon \\mathbf{g}$: $$f(\\mathbf{x} - \\epsilon\\mathbf{g}) \\approx f(\\mathbf{x}) - \\epsilon \\mathbf{g}^\\top\\mathbf{g} + \\frac{1}{2}\\epsilon^2 \\mathbf{g}^\\top\\mathbf{H}\\mathbf{g}$$; Zero curvature: gradient perfectly predicts decrease; Negative curvature: cost decreases faster than predicted; Positive curvature: cost decreases less than predicted; too-large steps can increase $f$",
+      "chapter": 4,
+      "section": "4.3",
+      "tags": [
+        "optimization",
+        "hessian",
+        "curvature"
+      ],
+      "equations": [
+        "$$f(\\mathbf{x} - \\epsilon\\mathbf{g}) \\approx f(\\mathbf{x}) - \\epsilon \\mathbf{g}^\\top\\mathbf{g} + \\frac{1}{2}\\epsilon^2 \\mathbf{g}^\\top\\mathbf{H}\\mathbf{g}$$",
+        "$-\\epsilon \\mathbf{g}$"
+      ],
+      "relatedCards": [
+        "ch04-011"
+      ],
+      "relatedQuestions": [
+        "ch04-q004",
+        "ch04-q005",
+        "ch04-q006",
+        "ch04-q007",
+        "ch04-q008",
+        "ch04-q009",
+        "ch04-q011"
+      ]
+    },
+    {
+      "id": "gl-064",
+      "term": "optimal learning rate",
+      "definition": "When $\\mathbf{g}^\\top \\mathbf{H} \\mathbf{g} > 0$: $$\\epsilon^* = \\frac{\\mathbf{g}^\\top \\mathbf{g}}{\\mathbf{g}^\\top \\mathbf{H} \\mathbf{g}}$$; Worst case (gradient aligns with largest eigenvector): $\\epsilon^* = \\frac{1}{\\lambda_{\\max}}$",
+      "chapter": 4,
+      "section": "4.3",
+      "tags": [
+        "optimization",
+        "learning-rate",
+        "hessian"
+      ],
+      "equations": [
+        "$$\\epsilon^* = \\frac{\\mathbf{g}^\\top \\mathbf{g}}{\\mathbf{g}^\\top \\mathbf{H} \\mathbf{g}}$$",
+        "$\\mathbf{g}^\\top \\mathbf{H} \\mathbf{g} > 0$",
+        "$\\epsilon^* = \\frac{1}{\\lambda_{\\max}}$"
+      ],
+      "relatedCards": [
+        "ch04-012"
+      ],
+      "relatedQuestions": [
+        "ch04-q004",
+        "ch04-q005",
+        "ch04-q006",
+        "ch04-q007",
+        "ch04-q008",
+        "ch04-q009",
+        "ch04-q011"
+      ]
+    },
+    {
+      "id": "gl-065",
+      "term": "second derivative test",
+      "definition": "1D: $f''(x) > 0 \\Rightarrow$ local min; $f''(x) < 0 \\Rightarrow$ local max",
+      "chapter": 4,
+      "section": "4.3",
+      "tags": [
+        "optimization",
+        "second-derivative-test"
+      ],
+      "equations": [
+        "$f''(x) > 0 \\Rightarrow$",
+        "$f''(x) < 0 \\Rightarrow$",
+        "$\\mathbf{H}$",
+        "$> 0$",
+        "$< 0$"
+      ],
+      "relatedCards": [
+        "ch04-013"
+      ],
+      "relatedQuestions": [
+        "ch04-q004",
+        "ch04-q005",
+        "ch04-q006",
+        "ch04-q007",
+        "ch04-q008",
+        "ch04-q009",
+        "ch04-q011"
+      ]
+    },
+    {
+      "id": "gl-066",
+      "term": "Newton's method",
+      "definition": "$$\\mathbf{x}^* = \\mathbf{x}^{(0)} - \\mathbf{H}^{-1} \\nabla f(\\mathbf{x}^{(0)})$$; Converges in one step for positive definite quadratic functions; For non-quadratic: iterate; Limitation: near saddle points, Newton's method is attracted to them",
+      "chapter": 4,
+      "section": "4.3",
+      "tags": [
+        "optimization",
+        "newtons-method",
+        "second-order"
+      ],
+      "equations": [
+        "$$\\mathbf{x}^* = \\mathbf{x}^{(0)} - \\mathbf{H}^{-1} \\nabla f(\\mathbf{x}^{(0)})$$"
+      ],
+      "relatedCards": [
+        "ch04-015"
+      ],
+      "relatedQuestions": [
+        "ch04-q004",
+        "ch04-q005",
+        "ch04-q006",
+        "ch04-q007",
+        "ch04-q008",
+        "ch04-q009",
+        "ch04-q011"
+      ]
+    },
+    {
+      "id": "gl-067",
+      "term": "Lipschitz continuous",
+      "definition": "$$\\forall \\mathbf{x}, \\mathbf{y}: |f(\\mathbf{x}) - f(\\mathbf{y})| \\leq \\mathcal{L} \\|\\mathbf{x} - \\mathbf{y}\\|_2$$; Rate of change bounded by Lipschitz constant $\\mathcal{L}$; Useful for bounding output change from small input changes during gradient descent",
+      "chapter": 4,
+      "section": "4.3",
+      "tags": [
+        "optimization",
+        "first-order",
+        "lipschitz"
+      ],
+      "equations": [
+        "$$\\forall \\mathbf{x}, \\mathbf{y}: |f(\\mathbf{x}) - f(\\mathbf{y})| \\leq \\mathcal{L} \\|\\mathbf{x} - \\mathbf{y}\\|_2$$",
+        "$\\mathcal{L}$"
+      ],
+      "relatedCards": [
+        "ch04-016"
+      ],
+      "relatedQuestions": [
+        "ch04-q004",
+        "ch04-q005",
+        "ch04-q006",
+        "ch04-q007",
+        "ch04-q008",
+        "ch04-q009",
+        "ch04-q011"
+      ]
+    },
+    {
+      "id": "gl-068",
+      "term": "gradient",
+      "definition": "Vector of all partial derivatives: element $i$ is $\\frac{\\partial f}{\\partial x_i}$.",
+      "chapter": 4,
+      "section": "4.3",
+      "tags": [
+        "optimization",
+        "gradient",
+        "partial-derivative"
+      ],
+      "equations": [
+        "$\\frac{\\partial f}{\\partial x_i}$",
+        "$f(x + \\epsilon) \\approx f(x) + \\epsilon f'(x)$"
+      ],
+      "relatedCards": [
+        "ch04-021"
+      ],
+      "relatedQuestions": [
+        "ch04-q004",
+        "ch04-q005",
+        "ch04-q006",
+        "ch04-q007",
+        "ch04-q008",
+        "ch04-q009",
+        "ch04-q011"
+      ]
+    },
+    {
+      "id": "gl-069",
+      "term": "second-order Taylor approximation",
+      "definition": "$$f(\\mathbf{x}) \\approx f(\\mathbf{x}^{(0)}) + (\\mathbf{x} - \\mathbf{x}^{(0)})^\\top \\mathbf{g} + \\frac{1}{2}(\\mathbf{x} - \\mathbf{x}^{(0)})^\\top \\mathbf{H} (\\mathbf{x} - \\mathbf{x}^{(0)})$$ where $\\mathbf{g}$ = gradient, $\\mathbf{H}$ = Hessian at $\\mathbf{x}^{(0)}$.",
+      "chapter": 4,
+      "section": "4.3",
+      "tags": [
+        "optimization",
+        "taylor",
+        "second-order"
+      ],
+      "equations": [
+        "$$f(\\mathbf{x}) \\approx f(\\mathbf{x}^{(0)}) + (\\mathbf{x} - \\mathbf{x}^{(0)})^\\top \\mathbf{g} + \\frac{1}{2}(\\mathbf{x} - \\mathbf{x}^{(0)})^\\top \\mathbf{H} (\\mathbf{x} - \\mathbf{x}^{(0)})$$",
+        "$\\mathbf{g}$",
+        "$\\mathbf{H}$",
+        "$\\mathbf{x}^{(0)}$"
+      ],
+      "relatedCards": [
+        "ch04-022"
+      ],
+      "relatedQuestions": [
+        "ch04-q004",
+        "ch04-q005",
+        "ch04-q006",
+        "ch04-q007",
+        "ch04-q008",
+        "ch04-q009",
+        "ch04-q011"
+      ]
+    },
+    {
+      "id": "gl-070",
+      "term": "Hessian condition number",
+      "definition": "- Step size must be small enough for the strongest curvature direction; This makes steps too small for the weakest curvature direction; Results in a zig-zag path rather than moving toward the minimum; The function resembles an elongated canyon",
+      "chapter": 4,
+      "section": "4.3",
+      "tags": [
+        "optimization",
+        "condition-number",
+        "hessian"
+      ],
+      "equations": [],
+      "relatedCards": [
+        "ch04-014"
+      ],
+      "relatedQuestions": [
+        "ch04-q004",
+        "ch04-q005",
+        "ch04-q006",
+        "ch04-q007",
+        "ch04-q008",
+        "ch04-q009",
+        "ch04-q011"
+      ]
+    },
+    {
+      "id": "gl-071",
+      "term": "convex optimization",
+      "definition": "Applies to functions whose Hessian is positive semidefinite everywhere.; No saddle points, all local minima are global; Strong theoretical guarantees; Less central to DL because most deep learning cost functions are non-convex",
+      "chapter": 4,
+      "section": "4.3",
+      "tags": [
+        "optimization",
+        "convex"
+      ],
+      "equations": [],
+      "relatedCards": [
+        "ch04-017"
+      ],
+      "relatedQuestions": [
+        "ch04-q004",
+        "ch04-q005",
+        "ch04-q006",
+        "ch04-q007",
+        "ch04-q008",
+        "ch04-q009",
+        "ch04-q011"
+      ]
+    },
+    {
+      "id": "gl-072",
+      "term": "generalized Lagrangian",
+      "definition": "$$L(\\mathbf{x}, \\boldsymbol{\\lambda}, \\boldsymbol{\\alpha}) = f(\\mathbf{x}) + \\sum_i \\lambda_i g^{(i)}(\\mathbf{x}) + \\sum_j \\alpha_j h^{(j)}(\\mathbf{x})$$; $\\lambda_i$: multipliers for equality constraints $g^{(i)} = 0$; $\\alpha_j \\geq 0$: multipliers for inequality constraints $h^{(j)} \\leq 0$",
+      "chapter": 4,
+      "section": "4.4",
+      "tags": [
+        "optimization",
+        "constrained",
+        "lagrangian",
+        "KKT"
+      ],
+      "equations": [
+        "$$L(\\mathbf{x}, \\boldsymbol{\\lambda}, \\boldsymbol{\\alpha}) = f(\\mathbf{x}) + \\sum_i \\lambda_i g^{(i)}(\\mathbf{x}) + \\sum_j \\alpha_j h^{(j)}(\\mathbf{x})$$",
+        "$\\lambda_i$",
+        "$g^{(i)} = 0$",
+        "$\\alpha_j \\geq 0$",
+        "$h^{(j)} \\leq 0$"
+      ],
+      "relatedCards": [
+        "ch04-018"
+      ],
+      "relatedQuestions": [
+        "ch04-q010"
+      ]
+    },
+    {
+      "id": "gl-073",
+      "term": "KKT conditions",
+      "definition": "Necessary conditions for optimality:; $\\nabla_{\\mathbf{x}} L = \\mathbf{0}$; All constraints satisfied ($g^{(i)} = 0$, $h^{(j)} \\leq 0$, $\\alpha_j \\geq 0$); Complementary slackness: $\\alpha_j h^{(j)} = 0$ for all $j$",
+      "chapter": 4,
+      "section": "4.4",
+      "tags": [
+        "optimization",
+        "KKT",
+        "conditions"
+      ],
+      "equations": [
+        "$\\nabla_{\\mathbf{x}} L = \\mathbf{0}$",
+        "$g^{(i)} = 0$",
+        "$h^{(j)} \\leq 0$",
+        "$\\alpha_j \\geq 0$",
+        "$\\alpha_j h^{(j)} = 0$",
+        "$\\alpha_j = 0$",
+        "$h^{(j)} = 0$"
+      ],
+      "relatedCards": [
+        "ch04-019"
+      ],
+      "relatedQuestions": [
+        "ch04-q010"
+      ]
+    },
+    {
+      "id": "gl-074",
+      "term": "learning algorithm",
+      "definition": "A computer program learns from experience $E$ with respect to tasks $T$ and performance measure $P$, if its performance at $T$, measured by $P$, improves with $E$.",
+      "chapter": 5,
+      "section": "5.1",
+      "tags": [
+        "machine-learning",
+        "definition"
+      ],
+      "equations": [],
+      "relatedCards": [
+        "ch05-001"
+      ],
+      "relatedQuestions": [
+        "ch05-q001"
+      ]
+    },
+    {
+      "id": "gl-075",
+      "term": "i.i.d. assumptions",
+      "definition": "- Examples are independent from each other; Train and test sets are identically distributed from the same $p_{\\text{data}}$; These assumptions let us relate training error to test error",
+      "chapter": 5,
+      "section": "5.2",
+      "tags": [
+        "machine-learning",
+        "i.i.d."
+      ],
+      "equations": [
+        "$p_{\\text{data}}$"
+      ],
+      "relatedCards": [
+        "ch05-007"
+      ],
+      "relatedQuestions": [
+        "ch05-q002",
+        "ch05-q018"
+      ]
+    },
+    {
+      "id": "gl-076",
+      "term": "regularization",
+      "definition": "Regularization is any modification to a learning algorithm intended to reduce its generalization error but not its training error. It works by trading increased bias for reduced variance.",
+      "chapter": 5,
+      "section": "5.2.2",
+      "tags": [
+        "machine-learning",
+        "regularization",
+        "weight-decay",
+        "concept"
+      ],
+      "equations": [
+        "$$J(\\mathbf{w}) = \\text{MSE}_{\\text{train}} + \\lambda \\mathbf{w}^\\top \\mathbf{w}$$",
+        "$\\lambda$",
+        "$\\Omega(\\mathbf{w}) = \\mathbf{w}^\\top \\mathbf{w}$"
+      ],
+      "relatedCards": [
+        "ch05-009",
+        "ch07-001"
+      ],
+      "relatedQuestions": [
+        "ch05-q004",
+        "ch07-q001",
+        "ch07-q006"
+      ]
+    },
+    {
+      "id": "gl-077",
+      "term": "hyperparameters",
+      "definition": "Hyperparameters: settings not adapted by the learning algorithm (e.g., $\\lambda$, polynomial degree).",
+      "chapter": 5,
+      "section": "5.3",
+      "tags": [
+        "machine-learning",
+        "hyperparameters",
+        "validation-set"
+      ],
+      "equations": [
+        "$\\lambda$"
+      ],
+      "relatedCards": [
+        "ch05-011"
+      ],
+      "relatedQuestions": [
+        "ch05-q011"
+      ]
+    },
+    {
+      "id": "gl-078",
+      "term": "point estimator",
+      "definition": "A function of the data: $\\hat{\\boldsymbol{\\theta}}_m = g(\\mathbf{x}^{(1)}, \\ldots, \\mathbf{x}^{(m)})$",
+      "chapter": 5,
+      "section": "5.4.1",
+      "tags": [
+        "statistics",
+        "point-estimation"
+      ],
+      "equations": [
+        "$\\hat{\\boldsymbol{\\theta}}_m = g(\\mathbf{x}^{(1)}, \\ldots, \\mathbf{x}^{(m)})$",
+        "$\\mathbb{E}[\\hat{\\boldsymbol{\\theta}}] = \\boldsymbol{\\theta}$",
+        "$\\lim_{m \\to \\infty} \\mathbb{E}[\\hat{\\boldsymbol{\\theta}}] = \\boldsymbol{\\theta}$"
+      ],
+      "relatedCards": [
+        "ch05-013"
+      ],
+      "relatedQuestions": [
+        "ch05-q015"
+      ]
+    },
+    {
+      "id": "gl-079",
+      "term": "bias-variance decomposition",
+      "definition": "$$\\text{MSE} = \\text{Bias}^2 + \\text{Var}$$",
+      "chapter": 5,
+      "section": "5.4.4",
+      "tags": [
+        "statistics",
+        "bias-variance-tradeoff"
+      ],
+      "equations": [
+        "$$\\text{MSE} = \\text{Bias}^2 + \\text{Var}$$"
+      ],
+      "relatedCards": [
+        "ch05-016"
+      ],
+      "relatedQuestions": [
+        "ch05-q005"
+      ]
+    },
+    {
+      "id": "gl-080",
+      "term": "consistent",
+      "definition": "$\\text{plim}_{m \\to \\infty} \\hat{\\theta}_m = \\theta$",
+      "chapter": 5,
+      "section": "5.4.5",
+      "tags": [
+        "statistics",
+        "consistency"
+      ],
+      "equations": [
+        "$\\text{plim}_{m \\to \\infty} \\hat{\\theta}_m = \\theta$",
+        "$x^{(1)}$"
+      ],
+      "relatedCards": [
+        "ch05-017"
+      ],
+      "relatedQuestions": [
+        "ch05-q009"
+      ]
+    },
+    {
+      "id": "gl-081",
+      "term": "MLE",
+      "definition": "$$\\boldsymbol{\\theta}_{\\text{ML}} = \\arg\\max \\sum_i \\log p_{\\text{model}}(\\mathbf{x}^{(i)}; \\boldsymbol{\\theta})$$",
+      "chapter": 5,
+      "section": "5.5",
+      "tags": [
+        "statistics",
+        "maximum-likelihood",
+        "KL-divergence"
+      ],
+      "equations": [
+        "$$\\boldsymbol{\\theta}_{\\text{ML}} = \\arg\\max \\sum_i \\log p_{\\text{model}}(\\mathbf{x}^{(i)}; \\boldsymbol{\\theta})$$",
+        "$D_{\\text{KL}}(\\hat{p}_{\\text{data}} \\| p_{\\text{model}})$",
+        "$\\log \\hat{p}_{\\text{data}}$",
+        "$\\boldsymbol{\\theta}$"
+      ],
+      "relatedCards": [
+        "ch05-018"
+      ],
+      "relatedQuestions": [
+        "ch05-q006"
+      ]
+    },
+    {
+      "id": "gl-082",
+      "term": "minimizing MSE",
+      "definition": "With $p(y \\mid \\mathbf{x}) = \\mathcal{N}(y; \\hat{y}, \\sigma^2)$:",
+      "chapter": 5,
+      "section": "5.5.1",
+      "tags": [
+        "statistics",
+        "maximum-likelihood",
+        "MSE"
+      ],
+      "equations": [
+        "$p(y \\mid \\mathbf{x}) = \\mathcal{N}(y; \\hat{y}, \\sigma^2)$",
+        "$\\propto -\\sum_i \\|\\hat{y}^{(i)} - y^{(i)}\\|^2$",
+        "$\\mathbf{w}$"
+      ],
+      "relatedCards": [
+        "ch05-019"
+      ],
+      "relatedQuestions": [
+        "ch05-q007"
+      ]
+    },
+    {
+      "id": "gl-083",
+      "term": "MAP estimation",
+      "definition": "$$\\boldsymbol{\\theta}_{\\text{MAP}} = \\arg\\max [\\log p(\\text{data} \\mid \\boldsymbol{\\theta}) + \\log p(\\boldsymbol{\\theta})]$$",
+      "chapter": 5,
+      "section": "5.6.1",
+      "tags": [
+        "statistics",
+        "MAP",
+        "weight-decay"
+      ],
+      "equations": [
+        "$$\\boldsymbol{\\theta}_{\\text{MAP}} = \\arg\\max [\\log p(\\text{data} \\mid \\boldsymbol{\\theta}) + \\log p(\\boldsymbol{\\theta})]$$",
+        "$p(\\mathbf{w}) = \\mathcal{N}(\\mathbf{0}, \\frac{1}{\\lambda}\\mathbf{I})$",
+        "$\\log p(\\mathbf{w}) \\propto -\\lambda \\mathbf{w}^\\top\\mathbf{w}$"
+      ],
+      "relatedCards": [
+        "ch05-022"
+      ],
+      "relatedQuestions": [
+        "ch05-q008"
+      ]
+    },
+    {
+      "id": "gl-084",
+      "term": "kernel trick",
+      "definition": "Replace $\\mathbf{x}^\\top \\mathbf{x}^{(i)}$ with $k(\\mathbf{x}, \\mathbf{x}^{(i)}) = \\phi(\\mathbf{x}) \\cdot \\phi(\\mathbf{x}^{(i)})$.",
+      "chapter": 5,
+      "section": "5.7.2",
+      "tags": [
+        "machine-learning",
+        "SVM",
+        "kernel-trick"
+      ],
+      "equations": [
+        "$\\mathbf{x}^\\top \\mathbf{x}^{(i)}$",
+        "$k(\\mathbf{x}, \\mathbf{x}^{(i)}) = \\phi(\\mathbf{x}) \\cdot \\phi(\\mathbf{x}^{(i)})$",
+        "$f(\\mathbf{x}) = b + \\sum_i \\alpha_i k(\\mathbf{x}, \\mathbf{x}^{(i)})$",
+        "$\\phi$",
+        "$\\alpha_i \\neq 0$"
+      ],
+      "relatedCards": [
+        "ch05-024"
+      ],
+      "relatedQuestions": [
+        "ch05-q014"
+      ]
+    },
+    {
+      "id": "gl-085",
+      "term": "SGD",
+      "definition": "Approximate gradient using minibatch $\\mathbb{B}$: $$\\hat{\\mathbf{g}} = \\frac{1}{m'}\\sum_{i \\in \\mathbb{B}} \\nabla L_i$$",
+      "chapter": 5,
+      "section": "5.9",
+      "tags": [
+        "machine-learning",
+        "SGD"
+      ],
+      "equations": [
+        "$$\\hat{\\mathbf{g}} = \\frac{1}{m'}\\sum_{i \\in \\mathbb{B}} \\nabla L_i$$",
+        "$\\mathbb{B}$",
+        "$\\boldsymbol{\\theta} \\leftarrow \\boldsymbol{\\theta} - \\epsilon \\hat{\\mathbf{g}}$",
+        "$O(1/\\sqrt{m'})$"
+      ],
+      "relatedCards": [
+        "ch05-027"
+      ],
+      "relatedQuestions": [
+        "ch05-q010"
+      ]
+    },
+    {
+      "id": "gl-086",
+      "term": "manifold hypothesis",
+      "definition": "Real-world data concentrates near a low-dimensional manifold in high-dimensional space.; Effective dimensionality is much lower than ambient space; Most of $\\mathbb{R}^n$ has negligible probability mass; Deep learning learns representations capturing manifold structure",
+      "chapter": 5,
+      "section": "5.11",
+      "tags": [
+        "machine-learning",
+        "manifold-learning"
+      ],
+      "equations": [
+        "$\\mathbb{R}^n$"
+      ],
+      "relatedCards": [
+        "ch05-030"
+      ],
+      "relatedQuestions": [
+        "ch05-q012",
+        "ch05-q013"
+      ]
+    },
+    {
+      "id": "gl-087",
+      "term": "deep feedforward network",
+      "definition": "A mapping $\\mathbf{y} = f(\\mathbf{x}; \\boldsymbol{\\theta})$ with no feedback connections. - Information flows forward from $\\mathbf{x}$ through intermediate computations to $\\mathbf{y}$; Composed functions: $f(\\mathbf{x}) = f^{(3)}(f^{(2)}(f^{(1)}(\\mathbf{x})))$; Chain length = depth; final layer = output layer; intermediate = hidden layers",
+      "chapter": 6,
+      "section": "6.0",
+      "tags": [
+        "feedforward",
+        "definition",
+        "MLP"
+      ],
+      "equations": [
+        "$\\mathbf{y} = f(\\mathbf{x}; \\boldsymbol{\\theta})$",
+        "$\\mathbf{x}$",
+        "$\\mathbf{y}$",
+        "$f(\\mathbf{x}) = f^{(3)}(f^{(2)}(f^{(1)}(\\mathbf{x})))$"
+      ],
+      "relatedCards": [
+        "ch06-001"
+      ],
+      "relatedQuestions": [
+        "ch06-q001"
+      ]
+    },
+    {
+      "id": "gl-088",
+      "term": "three strategies for choosing feature mapping $\\phi$",
+      "definition": "1. Generic $\\phi$ (e.g., RBF kernel): enough capacity but poor generalization; Manually engineered $\\phi$: decades of domain-specific effort; Learn $\\phi$ (deep learning): $y = \\phi(\\mathbf{x}; \\boldsymbol{\\theta})^\\top \\mathbf{w}$; Only option 3 gives up convexity, but benefits outweigh cost",
+      "chapter": 6,
+      "section": "6.0",
+      "tags": [
+        "feedforward",
+        "representation"
+      ],
+      "equations": [
+        "$\\phi$",
+        "$\\phi$",
+        "$\\phi$",
+        "$y = \\phi(\\mathbf{x}; \\boldsymbol{\\theta})^\\top \\mathbf{w}$"
+      ],
+      "relatedCards": [
+        "ch06-002"
+      ],
+      "relatedQuestions": [
+        "ch06-q001"
+      ]
+    },
+    {
+      "id": "gl-089",
+      "term": "cross-entropy",
+      "definition": "$$J = -\\mathbb{E}[\\log p_{\\text{model}}(\\mathbf{y} \\mid \\mathbf{x})]$$; The $\\log$ undoes the $\\exp$ in sigmoid/softmax, preventing saturation; MSE/MAE produce very small gradients when output units saturate; Cross-entropy ensures strong gradient whenever model has wrong answer",
+      "chapter": 6,
+      "section": "6.2.1",
+      "tags": [
+        "cost-function",
+        "cross-entropy"
+      ],
+      "equations": [
+        "$$J = -\\mathbb{E}[\\log p_{\\text{model}}(\\mathbf{y} \\mid \\mathbf{x})]$$",
+        "$\\log$",
+        "$\\exp$"
+      ],
+      "relatedCards": [
+        "ch06-006"
+      ],
+      "relatedQuestions": [
+        "ch06-q003"
+      ]
+    },
+    {
+      "id": "gl-090",
+      "term": "MSE",
+      "definition": "- MSE: learns the mean of $\\mathbf{y}$ given $\\mathbf{x}$; MAE: learns the median of $\\mathbf{y}$ given $\\mathbf{x}$; Both often produce poor results with gradient-based optimization due to saturation",
+      "chapter": 6,
+      "section": "6.2.1.2",
+      "tags": [
+        "cost-function",
+        "conditional-statistics"
+      ],
+      "equations": [
+        "$\\mathbf{y}$",
+        "$\\mathbf{x}$",
+        "$\\mathbf{y}$",
+        "$\\mathbf{x}$"
+      ],
+      "relatedCards": [
+        "ch06-007"
+      ],
+      "relatedQuestions": [
+        "ch06-q013"
+      ]
+    },
+    {
+      "id": "gl-091",
+      "term": "sigmoid",
+      "definition": "Both saturate across most of their domain. - Widespread saturation causes vanishing gradients; When sigmoidal must be used, tanh is preferred because $\\tanh(0)=0$ resembles the identity near 0, while $\\sigma(0) = 0.5$; Relationship: $\\tanh(z) = 2\\sigma(2z) - 1$; More common in recurrent networks and probabilistic models",
+      "chapter": 6,
+      "section": "6.2.2.2",
+      "tags": [
+        "hidden-units",
+        "sigmoid",
+        "tanh",
+        "logit"
+      ],
+      "equations": [
+        "$\\tanh(0)=0$",
+        "$\\sigma(0) = 0.5$",
+        "$\\tanh(z) = 2\\sigma(2z) - 1$",
+        "$$P(y) = \\frac{\\exp(yz)}{\\sum_{y'=0}^{1} \\exp(y'z)} = \\sigma((2y-1)z)$$",
+        "$\\log \\tilde{P}(y) = yz$",
+        "$\\tilde{P}(y) = \\exp(yz)$",
+        "$y \\in \\{0,1\\}$",
+        "$J = \\zeta((1-2y)z)$",
+        "$\\zeta$"
+      ],
+      "relatedCards": [
+        "ch06-015",
+        "ch06-026"
+      ],
+      "relatedQuestions": [
+        "ch06-q005",
+        "ch06-q015"
+      ]
+    },
+    {
+      "id": "gl-092",
+      "term": "sigmoid output unit",
+      "definition": "$\\hat{y} = \\sigma(\\mathbf{w}^\\top\\mathbf{h} + b)$ where $z = \\mathbf{w}^\\top\\mathbf{h} + b$ is the logit.",
+      "chapter": 6,
+      "section": "6.2.2.2",
+      "tags": [
+        "output-units",
+        "sigmoid",
+        "bernoulli"
+      ],
+      "equations": [
+        "$\\hat{y} = \\sigma(\\mathbf{w}^\\top\\mathbf{h} + b)$",
+        "$z = \\mathbf{w}^\\top\\mathbf{h} + b$",
+        "$J = \\zeta((1-2y)z)$",
+        "$\\approx \\text{sign}(z)$"
+      ],
+      "relatedCards": [
+        "ch06-009"
+      ],
+      "relatedQuestions": [
+        "ch06-q015"
+      ]
+    },
+    {
+      "id": "gl-093",
+      "term": "softmax function",
+      "definition": "$$\\text{softmax}(\\mathbf{z})_i = \\frac{\\exp(z_i)}{\\sum_j \\exp(z_j)}$$",
+      "chapter": 6,
+      "section": "6.2.2.3",
+      "tags": [
+        "output-units",
+        "softmax",
+        "classification"
+      ],
+      "equations": [
+        "$$\\text{softmax}(\\mathbf{z})_i = \\frac{\\exp(z_i)}{\\sum_j \\exp(z_j)}$$",
+        "$\\log\\text{softmax}(\\mathbf{z})_i = z_i - \\log\\sum_j\\exp(z_j)$",
+        "$z_i$",
+        "$\\approx \\max_j z_j$",
+        "$\\text{softmax}(\\mathbf{z}) = \\text{softmax}(\\mathbf{z} - \\max z_i)$"
+      ],
+      "relatedCards": [
+        "ch06-010"
+      ],
+      "relatedQuestions": [
+        "ch06-q011"
+      ]
+    },
+    {
+      "id": "gl-094",
+      "term": "overparametrization",
+      "definition": "Saturates when one $z_i$ is much larger than all others.",
+      "chapter": 6,
+      "section": "6.2.2.3",
+      "tags": [
+        "softmax",
+        "overparametrization"
+      ],
+      "equations": [
+        "$z_i$",
+        "$n-1$",
+        "$z_n = 0$"
+      ],
+      "relatedCards": [
+        "ch06-011"
+      ],
+      "relatedQuestions": [
+        "ch06-q011"
+      ]
+    },
+    {
+      "id": "gl-095",
+      "term": "mixture density network",
+      "definition": "Neural net with Gaussian mixture output for multimodal regression: $$p(\\mathbf{y} \\mid \\mathbf{x}) = \\sum_{i=1}^{n} p(\\text{c} = i \\mid \\mathbf{x}) \\, \\mathcal{N}(\\mathbf{y}; \\boldsymbol{\\mu}^{(i)}(\\mathbf{x}), \\boldsymbol{\\Sigma}^{(i)}(\\mathbf{x}))$$",
+      "chapter": 6,
+      "section": "6.2.2.4",
+      "tags": [
+        "output-units",
+        "mixture-density"
+      ],
+      "equations": [
+        "$$p(\\mathbf{y} \\mid \\mathbf{x}) = \\sum_{i=1}^{n} p(\\text{c} = i \\mid \\mathbf{x}) \\, \\mathcal{N}(\\mathbf{y}; \\boldsymbol{\\mu}^{(i)}(\\mathbf{x}), \\boldsymbol{\\Sigma}^{(i)}(\\mathbf{x}))$$"
+      ],
+      "relatedCards": [
+        "ch06-012"
+      ],
+      "relatedQuestions": [
+        "ch06-q016"
+      ]
+    },
+    {
+      "id": "gl-096",
+      "term": "ReLU",
+      "definition": "$g(z) = \\max\\{0, z\\}$",
+      "chapter": 6,
+      "section": "6.3.1",
+      "tags": [
+        "hidden-units",
+        "ReLU"
+      ],
+      "equations": [
+        "$g(z) = \\max\\{0, z\\}$"
+      ],
+      "relatedCards": [
+        "ch06-013"
+      ],
+      "relatedQuestions": [
+        "ch06-q004",
+        "ch06-q012"
+      ]
+    },
+    {
+      "id": "gl-097",
+      "term": "catastrophic forgetting",
+      "definition": "Divide $\\mathbf{z}$ into groups of $k$ and output max of each group: $$g(\\mathbf{z})_i = \\max_{j \\in \\mathbb{G}^{(i)}} z_j$$",
+      "chapter": 6,
+      "section": "6.3.1",
+      "tags": [
+        "maxout",
+        "activation-function"
+      ],
+      "equations": [
+        "$$g(\\mathbf{z})_i = \\max_{j \\in \\mathbb{G}^{(i)}} z_j$$",
+        "$\\mathbf{z}$",
+        "$k=2$"
+      ],
+      "relatedCards": [
+        "ch06-027"
+      ],
+      "relatedQuestions": [
+        "ch06-q004",
+        "ch06-q012"
+      ]
+    },
+    {
+      "id": "gl-098",
+      "term": "not differentiable",
+      "definition": "- Training algorithms don't usually arrive at exact local minima; they merely reduce cost significantly; Software returns one of the one-sided derivatives (left = 0, right = 1); Numerical error means the underlying value was likely some small $\\epsilon$ rounded to 0; In practice, gradient descent works well despite non-differentiability at a small number of points",
+      "chapter": 6,
+      "section": "6.3.1",
+      "tags": [
+        "hidden-units",
+        "non-differentiability"
+      ],
+      "equations": [
+        "$\\epsilon$"
+      ],
+      "relatedCards": [
+        "ch06-028"
+      ],
+      "relatedQuestions": [
+        "ch06-q004",
+        "ch06-q012"
+      ]
+    },
+    {
+      "id": "gl-099",
+      "term": "exponential advantage of depth",
+      "definition": "A deep rectifier net with $d$ inputs, depth $l$, $n$ units per layer carves out: $$O\\left(\\binom{n}{d}^{d(l-1)} n^d\\right)$$ linear regions -- exponential in depth $l$.",
+      "chapter": 6,
+      "section": "6.4.1",
+      "tags": [
+        "architecture",
+        "depth",
+        "exponential-advantage"
+      ],
+      "equations": [
+        "$$O\\left(\\binom{n}{d}^{d(l-1)} n^d\\right)$$",
+        "$$O\\left(k^{(l-1)+d}\\right)$$"
+      ],
+      "relatedCards": [
+        "ch06-018"
+      ],
+      "relatedQuestions": [
+        "ch06-q006",
+        "ch06-q007",
+        "ch06-q018"
+      ]
+    },
+    {
+      "id": "gl-100",
+      "term": "universal approximation theorem",
+      "definition": "A feedforward net with one hidden layer and any \"squashing\" activation (sigmoid, ReLU, etc.) can approximate any Borel measurable function to any desired non-zero error, given enough hidden units.",
+      "chapter": 6,
+      "section": "6.4.1",
+      "tags": [
+        "architecture",
+        "universal-approximation"
+      ],
+      "equations": [],
+      "relatedCards": [
+        "ch06-017"
+      ],
+      "relatedQuestions": [
+        "ch06-q006",
+        "ch06-q007",
+        "ch06-q018"
+      ]
+    },
+    {
+      "id": "gl-101",
+      "term": "deeper",
+      "definition": "- Deep models encode a prior belief that the target function is a hierarchical composition of simpler functions; Equivalent to believing the learning problem involves discovering factors of variation composed at multiple levels; Empirically, test accuracy increases with depth (not just parameter count); Simply increasing width without depth leads to overfitting at a much lower parameter count",
+      "chapter": 6,
+      "section": "6.4.1",
+      "tags": [
+        "architecture",
+        "depth-vs-width"
+      ],
+      "equations": [],
+      "relatedCards": [
+        "ch06-029"
+      ],
+      "relatedQuestions": [
+        "ch06-q006",
+        "ch06-q007",
+        "ch06-q018"
+      ]
+    },
+    {
+      "id": "gl-102",
+      "term": "skip connections",
+      "definition": "Connections from layer $i$ to layer $i+2$ or higher, bypassing intermediate layers. - Make it easier for gradients to flow to earlier layers; Enable training of very deep networks that would otherwise suffer from vanishing gradients; Empirically, greater depth tends to result in better generalization when skip connections are used",
+      "chapter": 6,
+      "section": "6.4.2",
+      "tags": [
+        "architecture",
+        "skip-connections"
+      ],
+      "equations": [
+        "$i+2$"
+      ],
+      "relatedCards": [
+        "ch06-019"
+      ],
+      "relatedQuestions": [
+        "ch06-q014"
+      ]
+    },
+    {
+      "id": "gl-103",
+      "term": "forward propagation",
+      "definition": "Forward prop: input flows through network to produce output and cost $J$. Backprop: cost info flows backwards to compute $\\nabla_{\\boldsymbol{\\theta}} J$.",
+      "chapter": 6,
+      "section": "6.5",
+      "tags": [
+        "backprop",
+        "forward-propagation"
+      ],
+      "equations": [
+        "$\\nabla_{\\boldsymbol{\\theta}} J$"
+      ],
+      "relatedCards": [
+        "ch06-020"
+      ],
+      "relatedQuestions": [
+        "ch06-q008"
+      ]
+    },
+    {
+      "id": "gl-104",
+      "term": "chain rule for vectors",
+      "definition": "If $\\mathbf{y} = g(\\mathbf{x})$ and $z = f(\\mathbf{y})$: $$\\nabla_{\\mathbf{x}} z = \\left(\\frac{\\partial \\mathbf{y}}{\\partial \\mathbf{x}}\\right)^\\top \\nabla_{\\mathbf{y}} z$$",
+      "chapter": 6,
+      "section": "6.5.2",
+      "tags": [
+        "backprop",
+        "chain-rule",
+        "Jacobian"
+      ],
+      "equations": [
+        "$$\\nabla_{\\mathbf{x}} z = \\left(\\frac{\\partial \\mathbf{y}}{\\partial \\mathbf{x}}\\right)^\\top \\nabla_{\\mathbf{y}} z$$",
+        "$\\mathbf{y} = g(\\mathbf{x})$",
+        "$z = f(\\mathbf{y})$",
+        "$\\frac{\\partial \\mathbf{y}}{\\partial \\mathbf{x}}$",
+        "$n \\times m$"
+      ],
+      "relatedCards": [
+        "ch06-022"
+      ],
+      "relatedQuestions": [
+        "ch06-q017"
+      ]
+    },
+    {
+      "id": "gl-105",
+      "term": "tensors",
+      "definition": "For tensor $\\mathbf{X}$ with index tuple $i$: $(\\nabla_{\\mathbf{X}} z)_i = \\frac{\\partial z}{\\partial X_i}$",
+      "chapter": 6,
+      "section": "6.5.2",
+      "tags": [
+        "backprop",
+        "chain-rule",
+        "tensor"
+      ],
+      "equations": [
+        "$$\\nabla_{\\mathbf{X}} z = \\sum_j (\\nabla_{\\mathbf{X}} Y_j) \\frac{\\partial z}{\\partial Y_j}$$",
+        "$\\mathbf{X}$",
+        "$(\\nabla_{\\mathbf{X}} z)_i = \\frac{\\partial z}{\\partial X_i}$",
+        "$\\mathbf{Y} = g(\\mathbf{X})$",
+        "$z = f(\\mathbf{Y})$"
+      ],
+      "relatedCards": [
+        "ch06-025"
+      ],
+      "relatedQuestions": [
+        "ch06-q017"
+      ]
+    },
+    {
+      "id": "gl-106",
+      "term": "back-propagation algorithm",
+      "definition": "1. Forward pass: compute all node values in topological order 2.",
+      "chapter": 6,
+      "section": "6.5.3",
+      "tags": [
+        "backprop",
+        "algorithm"
+      ],
+      "equations": [
+        "$$\\text{grad}[u^{(j)}] = \\sum_{i: j \\in \\text{Pa}(u^{(i)})} \\text{grad}[u^{(i)}] \\frac{\\partial u^{(i)}}{\\partial u^{(j)}}$$",
+        "$\\text{grad}[u^{(n)}] = 1$",
+        "$j = n-1$"
+      ],
+      "relatedCards": [
+        "ch06-023"
+      ],
+      "relatedQuestions": [
+        "ch06-q009",
+        "ch06-q010"
+      ]
+    },
+    {
+      "id": "gl-107",
+      "term": "computational cost of backprop and the memory tradeoff",
+      "definition": "- Cost: $O(|\\text{edges}|)$ -- same order as forward propagation; Each edge visited exactly once; Memory: stores intermediate forward-pass values; Alternative: recompute subexpressions (trade runtime for memory); Without storage, repeated subexpressions grow exponentially with depth",
+      "chapter": 6,
+      "section": "6.5.3",
+      "tags": [
+        "backprop",
+        "complexity"
+      ],
+      "equations": [
+        "$O(|\\text{edges}|)$"
+      ],
+      "relatedCards": [
+        "ch06-024"
+      ],
+      "relatedQuestions": [
+        "ch06-q009",
+        "ch06-q010"
+      ]
+    },
+    {
+      "id": "gl-108",
+      "term": "reverse-mode",
+      "definition": "- Reverse mode: one backward pass computes gradients w.r.t. all parameters simultaneously; Forward mode: requires a separate pass for each parameter; Neural nets have many parameters but one scalar cost $J$; Reverse mode: $O(|\\text{edges}|)$ total; Forward mode: $O(n_{\\text{params}} \\times |\\text{edges}|)$ total; Forward mode is better when there are more outputs than inputs (rare in training)",
+      "chapter": 6,
+      "section": "6.5.3",
+      "tags": [
+        "backprop",
+        "reverse-mode"
+      ],
+      "equations": [
+        "$O(|\\text{edges}|)$",
+        "$O(n_{\\text{params}} \\times |\\text{edges}|)$"
+      ],
+      "relatedCards": [
+        "ch06-030"
+      ],
+      "relatedQuestions": [
+        "ch06-q009",
+        "ch06-q010"
+      ]
+    },
+    {
+      "id": "gl-109",
+      "term": "weights",
+      "definition": "Each weight controls the interaction between two variables and requires observing both under varied conditions to fit well. Each bias controls only a single variable's output, so it requires less data to fit accurately.",
+      "chapter": 7,
+      "section": "7.1",
+      "tags": [
+        "regularization",
+        "concept",
+        "bias"
+      ],
+      "equations": [
+        "$\\alpha$",
+        "$\\alpha$"
+      ],
+      "relatedCards": [
+        "ch07-007"
+      ],
+      "relatedQuestions": [
+        "ch07-q001",
+        "ch07-q006"
+      ]
+    },
+    {
+      "id": "gl-110",
+      "term": "weight decay",
+      "definition": "Regularized objective: $$\\tilde{J}(\\mathbf{w}; \\mathbf{X}, \\mathbf{y}) = \\frac{\\alpha}{2}\\mathbf{w}^\\top\\mathbf{w} + J(\\mathbf{w}; \\mathbf{X}, \\mathbf{y})$$",
+      "chapter": 7,
+      "section": "7.1.1",
+      "tags": [
+        "regularization",
+        "L2",
+        "weight-decay",
+        "math"
+      ],
+      "equations": [
+        "$$\\tilde{J}(\\mathbf{w}; \\mathbf{X}, \\mathbf{y}) = \\frac{\\alpha}{2}\\mathbf{w}^\\top\\mathbf{w} + J(\\mathbf{w}; \\mathbf{X}, \\mathbf{y})$$",
+        "$$\\mathbf{w} \\leftarrow (1 - \\epsilon\\alpha)\\mathbf{w} - \\epsilon\\nabla_{\\mathbf{w}}J$$",
+        "$\\nabla_{\\mathbf{w}}\\tilde{J} = \\alpha\\mathbf{w} + \\nabla_{\\mathbf{w}}J$",
+        "$(1 - \\epsilon\\alpha)$"
+      ],
+      "relatedCards": [
+        "ch07-002"
+      ],
+      "relatedQuestions": [
+        "ch07-q002",
+        "ch07-q003"
+      ]
+    },
+    {
+      "id": "gl-111",
+      "term": "sparse",
+      "definition": "Gradient: $\\nabla_{\\mathbf{w}}\\tilde{J} = \\alpha\\,\\text{sign}(\\mathbf{w}) + \\nabla_{\\mathbf{w}}J$",
+      "chapter": 7,
+      "section": "7.1.2",
+      "tags": [
+        "regularization",
+        "L1",
+        "sparsity",
+        "math"
+      ],
+      "equations": [
+        "$\\nabla_{\\mathbf{w}}\\tilde{J} = \\alpha\\,\\text{sign}(\\mathbf{w}) + \\nabla_{\\mathbf{w}}J$",
+        "$L^1$",
+        "$\\alpha\\,\\text{sign}(w_i)$",
+        "$|w_i|$",
+        "$w_i = \\text{sign}(w_i^*)\\max\\left\\{|w_i^*| - \\frac{\\alpha}{H_{i,i}},\\, 0\\right\\}$",
+        "$|w_i^*| \\leq \\frac{\\alpha}{H_{i,i}}$",
+        "$L^2$",
+        "$\\frac{H_{i,i}}{H_{i,i}+\\alpha}$",
+        "$L^1$"
+      ],
+      "relatedCards": [
+        "ch07-005"
+      ],
+      "relatedQuestions": [
+        "ch07-q004",
+        "ch07-q005"
+      ]
+    },
+    {
+      "id": "gl-112",
+      "term": "dataset augmentation",
+      "definition": "Creating transformed copies of training data effectively increases dataset size, reducing overfitting. For classifiers, we generate new $(\\mathbf{x}, y)$ pairs by transforming inputs while preserving labels.",
+      "chapter": 7,
+      "section": "7.4",
+      "tags": [
+        "regularization",
+        "dataset-augmentation"
+      ],
+      "equations": [
+        "$(\\mathbf{x}, y)$"
+      ],
+      "relatedCards": [
+        "ch07-010"
+      ],
+      "relatedQuestions": [
+        "ch07-q007"
+      ]
+    },
+    {
+      "id": "gl-113",
+      "term": "label smoothing",
+      "definition": "Label smoothing replaces hard targets (0 and 1) with soft targets: $\\frac{\\epsilon}{k-1}$ for incorrect classes and $1 - \\epsilon$ for the correct class.",
+      "chapter": 7,
+      "section": "7.5.1",
+      "tags": [
+        "regularization",
+        "label-smoothing"
+      ],
+      "equations": [
+        "$\\frac{\\epsilon}{k-1}$",
+        "$1 - \\epsilon$"
+      ],
+      "relatedCards": [
+        "ch07-012"
+      ],
+      "relatedQuestions": [
+        "ch07-q012"
+      ]
+    },
+    {
+      "id": "gl-114",
+      "term": "parameter tying",
+      "definition": "Parameter tying: Regularizing parameters to be close to each other using a norm penalty, e.g., $\\Omega(\\mathbf{w}^{(A)}, \\mathbf{w}^{(B)}) = \\|\\mathbf{w}^{(A)} - \\mathbf{w}^{(B)}\\|_2^2$. Parameters remain distinct but coupled.",
+      "chapter": 7,
+      "section": "7.9",
+      "tags": [
+        "regularization",
+        "parameter-sharing",
+        "CNN"
+      ],
+      "equations": [
+        "$\\Omega(\\mathbf{w}^{(A)}, \\mathbf{w}^{(B)}) = \\|\\mathbf{w}^{(A)} - \\mathbf{w}^{(B)}\\|_2^2$"
+      ],
+      "relatedCards": [
+        "ch07-018"
+      ],
+      "relatedQuestions": [
+        "ch07-q013"
+      ]
+    },
+    {
+      "id": "gl-115",
+      "term": "bagging",
+      "definition": "Bagging trains $k$ models on $k$ different datasets created by sampling with replacement from the original training set, then averages their predictions.",
+      "chapter": 7,
+      "section": "7.11",
+      "tags": [
+        "regularization",
+        "bagging",
+        "ensemble"
+      ],
+      "equations": [
+        "$$\\frac{1}{k}v + \\frac{k-1}{k}c$$",
+        "$\\epsilon_i$",
+        "$\\mathbb{E}[\\epsilon_i^2] = v$",
+        "$\\mathbb{E}[\\epsilon_i\\epsilon_j] = c$",
+        "$k \\to \\infty$",
+        "$c \\approx 0$"
+      ],
+      "relatedCards": [
+        "ch07-020"
+      ],
+      "relatedQuestions": [
+        "ch07-q015"
+      ]
+    },
+    {
+      "id": "gl-116",
+      "term": "weight scaling inference rule",
+      "definition": "Training: For each minibatch, independently sample a binary mask $\\boldsymbol{\\mu}$ where each unit is kept with probability $p$ (typically 0.8 for inputs, 0.5 for hidden). The effective input to subsequent layers is $\\tilde{\\mathbf{h}} = \\boldsymbol{\\mu} \\odot \\mathbf{h}$.",
+      "chapter": 7,
+      "section": "7.12",
+      "tags": [
+        "regularization",
+        "dropout",
+        "math"
+      ],
+      "equations": [
+        "$\\boldsymbol{\\mu}$",
+        "$\\tilde{\\mathbf{h}} = \\boldsymbol{\\mu} \\odot \\mathbf{h}$",
+        "$\\mathbb{E}[\\boldsymbol{\\mu} \\odot \\mathbf{h}] = p\\mathbf{h}$"
+      ],
+      "relatedCards": [
+        "ch07-021"
+      ],
+      "relatedQuestions": [
+        "ch07-q009",
+        "ch07-q010",
+        "ch07-q011"
+      ]
+    },
+    {
+      "id": "gl-117",
+      "term": "ensemble method",
+      "definition": "With $n$ droppable units, there are $2^n$ possible binary masks, each defining a different sub-network (a subset of the original architecture). Dropout trains all $2^n$ sub-networks simultaneously with shared weights.",
+      "chapter": 7,
+      "section": "7.12",
+      "tags": [
+        "regularization",
+        "dropout",
+        "ensemble"
+      ],
+      "equations": [
+        "$2^n$",
+        "$2^n$",
+        "$2^n$",
+        "$O(n)$",
+        "$O(1)$"
+      ],
+      "relatedCards": [
+        "ch07-022"
+      ],
+      "relatedQuestions": [
+        "ch07-q009",
+        "ch07-q010",
+        "ch07-q011"
+      ]
+    },
+    {
+      "id": "gl-118",
+      "term": "sexual reproduction",
+      "definition": "Hinton's biological motivation: Sexual reproduction means a gene cannot rely on a specific set of partner genes -- it must be individually useful across random genetic backgrounds.",
+      "chapter": 7,
+      "section": "7.12",
+      "tags": [
+        "regularization",
+        "dropout",
+        "concept"
+      ],
+      "equations": [],
+      "relatedCards": [
+        "ch07-023"
+      ],
+      "relatedQuestions": [
+        "ch07-q009",
+        "ch07-q010",
+        "ch07-q011"
+      ]
+    },
+    {
+      "id": "gl-119",
+      "term": "adversarial examples",
+      "definition": "Adversarial examples are inputs formed by applying small, intentional perturbations to a correctly-classified input that cause the network to misclassify with high confidence. Often the perturbation is imperceptible to humans.",
+      "chapter": 7,
+      "section": "7.13",
+      "tags": [
+        "regularization",
+        "adversarial-training"
+      ],
+      "equations": [
+        "$\\mathbf{w}^\\top\\boldsymbol{\\epsilon}$",
+        "$\\|\\boldsymbol{\\epsilon}\\|_\\infty \\leq \\delta$",
+        "$\\boldsymbol{\\epsilon} = \\delta\\,\\text{sign}(\\mathbf{w})$"
+      ],
+      "relatedCards": [
+        "ch07-024"
+      ],
+      "relatedQuestions": [
+        "ch07-q014"
+      ]
+    },
+    {
+      "id": "gl-120",
+      "term": "training deep models",
+      "definition": "In pure optimization, minimizing $J$ is a goal in itself. In machine learning, we care about a performance measure $P$ defined on the test set, which is intractable.",
+      "chapter": 8,
+      "section": "8.1",
+      "tags": [
+        "optimization",
+        "machine-learning",
+        "concept"
+      ],
+      "equations": [
+        "$J(\\boldsymbol{\\theta})$"
+      ],
+      "relatedCards": [
+        "ch08-001"
+      ],
+      "relatedQuestions": [
+        "ch08-q001"
+      ]
+    },
+    {
+      "id": "gl-121",
+      "term": "in total computation",
+      "definition": "The standard error of the mean gradient estimated from $n$ samples is $\\sigma / \\sqrt{n}$. Increasing the batch from 100 to 10,000 costs 100x more computation but only reduces the standard error by 10x.",
+      "chapter": 8,
+      "section": "8.1.3",
+      "tags": [
+        "optimization",
+        "minibatch",
+        "SGD"
+      ],
+      "equations": [
+        "$\\sigma / \\sqrt{n}$"
+      ],
+      "relatedCards": [
+        "ch08-004"
+      ],
+      "relatedQuestions": [
+        "ch08-q013"
+      ]
+    },
+    {
+      "id": "gl-122",
+      "term": "true generalization error",
+      "definition": "On the first pass through the training set (no examples repeated), each minibatch is a fair i.i.d. sample from $p_{\\text{data}}$, so the minibatch gradient $$\\hat{\\mathbf{g}} = \\frac{1}{m}\\nabla_{\\boldsymbol{\\theta}} \\sum_i L(f(\\mathbf{x}^{(i)};\\boldsymbol{\\theta}), y^{(i)})$$ is an unbiased estimator of $\\nabla_{\\boldsymbol{\\theta}} J^*(\\boldsymbol{\\theta})$, the gradient of the true generalization error.",
+      "chapter": 8,
+      "section": "8.1.3",
+      "tags": [
+        "optimization",
+        "minibatch",
+        "generalization"
+      ],
+      "equations": [
+        "$$\\hat{\\mathbf{g}} = \\frac{1}{m}\\nabla_{\\boldsymbol{\\theta}} \\sum_i L(f(\\mathbf{x}^{(i)};\\boldsymbol{\\theta}), y^{(i)})$$",
+        "$p_{\\text{data}}$",
+        "$\\nabla_{\\boldsymbol{\\theta}} J^*(\\boldsymbol{\\theta})$"
+      ],
+      "relatedCards": [
+        "ch08-005"
+      ],
+      "relatedQuestions": [
+        "ch08-q013"
+      ]
+    },
+    {
+      "id": "gl-123",
+      "term": "second-order methods",
+      "definition": "Second-order methods compute updates like $\\mathbf{H}^{-1}\\mathbf{g}$. Even if $\\mathbf{H}$ is estimated perfectly, a poorly conditioned Hessian amplifies small estimation errors in $\\mathbf{g}$.",
+      "chapter": 8,
+      "section": "8.1.3",
+      "tags": [
+        "optimization",
+        "minibatch",
+        "batch-size"
+      ],
+      "equations": [
+        "$\\mathbf{H}^{-1}\\mathbf{g}$",
+        "$\\mathbf{H}$",
+        "$\\mathbf{g}$",
+        "$\\mathbf{H}^{-1}\\mathbf{g}$",
+        "$\\mathbf{g}$",
+        "$\\mathbf{g}$",
+        "$\\mathbf{g}$"
+      ],
+      "relatedCards": [
+        "ch08-006"
+      ],
+      "relatedQuestions": [
+        "ch08-q013"
+      ]
+    },
+    {
+      "id": "gl-124",
+      "term": "gradient clipping",
+      "definition": "Cliffs arise from the multiplication of several large weights (especially in RNNs with long sequences), creating extremely steep regions with very high derivatives. An unclipped gradient step can catapult parameters far away, undoing all previous optimization.",
+      "chapter": 8,
+      "section": "8.2.4",
+      "tags": [
+        "optimization",
+        "gradient-clipping",
+        "challenge",
+        "exploding gradient",
+        "gradient clipping",
+        "training"
+      ],
+      "equations": [
+        "$$\\mathbf{g} \\leftarrow \\frac{v}{\\|\\mathbf{g}\\|} \\mathbf{g}$$",
+        "$\\|\\mathbf{g}\\| > v$",
+        "$[-v, v]$"
+      ],
+      "relatedCards": [
+        "ch08-010",
+        "ch10-015"
+      ],
+      "relatedQuestions": [
+        "ch08-q010",
+        "ch10-q007",
+        "ch10-q008"
+      ]
+    },
+    {
+      "id": "gl-125",
+      "term": "SGD update rule",
+      "definition": "Update rule: $$\\boldsymbol{\\theta} \\leftarrow \\boldsymbol{\\theta} - \\epsilon_k \\hat{\\mathbf{g}}$$ where $\\hat{\\mathbf{g}} = \\frac{1}{m}\\nabla_{\\boldsymbol{\\theta}} \\sum_i L(f(\\mathbf{x}^{(i)};\\boldsymbol{\\theta}), y^{(i)})$.",
+      "chapter": 8,
+      "section": "8.3.1",
+      "tags": [
+        "optimization",
+        "SGD",
+        "algorithm"
+      ],
+      "equations": [
+        "$$\\boldsymbol{\\theta} \\leftarrow \\boldsymbol{\\theta} - \\epsilon_k \\hat{\\mathbf{g}}$$",
+        "$$\\sum_{k=1}^{\\infty} \\epsilon_k = \\infty \\quad \\text{and} \\quad \\sum_{k=1}^{\\infty} \\epsilon_k^2 < \\infty$$",
+        "$\\hat{\\mathbf{g}} = \\frac{1}{m}\\nabla_{\\boldsymbol{\\theta}} \\sum_i L(f(\\mathbf{x}^{(i)};\\boldsymbol{\\theta}), y^{(i)})$"
+      ],
+      "relatedCards": [
+        "ch08-012"
+      ],
+      "relatedQuestions": [
+        "ch08-q012"
+      ]
+    },
+    {
+      "id": "gl-126",
+      "term": "excess error",
+      "definition": "Convex: excess error $J(\\boldsymbol{\\theta}) - \\min J(\\boldsymbol{\\theta})$ is $O(1/\\sqrt{k})$ after $k$ iterations. Strongly convex: $O(1/k)$.",
+      "chapter": 8,
+      "section": "8.3.1",
+      "tags": [
+        "optimization",
+        "SGD",
+        "convergence"
+      ],
+      "equations": [
+        "$J(\\boldsymbol{\\theta}) - \\min J(\\boldsymbol{\\theta})$",
+        "$O(1/\\sqrt{k})$",
+        "$O(1/k)$",
+        "$O(1/k)$",
+        "$O(1/k)$"
+      ],
+      "relatedCards": [
+        "ch08-013"
+      ],
+      "relatedQuestions": [
+        "ch08-q012"
+      ]
+    },
+    {
+      "id": "gl-127",
+      "term": "momentum",
+      "definition": "Update equations: $$\\mathbf{v} \\leftarrow \\alpha \\mathbf{v} - \\epsilon \\nabla_{\\boldsymbol{\\theta}} \\left(\\frac{1}{m}\\sum_{i=1}^m L(f(\\mathbf{x}^{(i)};\\boldsymbol{\\theta}), \\mathbf{y}^{(i)})\\right)$$ $$\\boldsymbol{\\theta} \\leftarrow \\boldsymbol{\\theta} + \\mathbf{v}$$",
+      "chapter": 8,
+      "section": "8.3.2",
+      "tags": [
+        "optimization",
+        "momentum",
+        "algorithm"
+      ],
+      "equations": [
+        "$$\\mathbf{v} \\leftarrow \\alpha \\mathbf{v} - \\epsilon \\nabla_{\\boldsymbol{\\theta}} \\left(\\frac{1}{m}\\sum_{i=1}^m L(f(\\mathbf{x}^{(i)};\\boldsymbol{\\theta}), \\mathbf{y}^{(i)})\\right)$$",
+        "$$\\boldsymbol{\\theta} \\leftarrow \\boldsymbol{\\theta} + \\mathbf{v}$$",
+        "$\\mathbf{g}$",
+        "$\\mathbf{v}$",
+        "$\\frac{\\epsilon \\|\\mathbf{g}\\|}{1-\\alpha}$",
+        "$\\alpha=0.9$",
+        "$10\\times$"
+      ],
+      "relatedCards": [
+        "ch08-014"
+      ],
+      "relatedQuestions": [
+        "ch08-q004"
+      ]
+    },
+    {
+      "id": "gl-128",
+      "term": "Nesterov momentum",
+      "definition": "Standard momentum: compute gradient at current position $\\boldsymbol{\\theta}$, then update velocity. Nesterov momentum: first apply velocity to get an interim point $\\tilde{\\boldsymbol{\\theta}} = \\boldsymbol{\\theta} + \\alpha \\mathbf{v}$, then compute the gradient at that interim point: $$\\mathbf{v} \\leftarrow \\alpha \\mathbf{v} - \\epsilon \\nabla_{\\boldsymbol{\\theta}} \\left[\\frac{1}{m}\\sum_i L\\left(f(\\mathbf{x}^{(i)};\\boldsymbol{\\theta}+\\alpha \\mathbf{v}), \\mathbf{y}^{(i)}\\right)\\right]$$ This acts as a correction factor -- \"look ahead\" before committing.",
+      "chapter": 8,
+      "section": "8.3.3",
+      "tags": [
+        "optimization",
+        "nesterov",
+        "algorithm"
+      ],
+      "equations": [
+        "$$\\mathbf{v} \\leftarrow \\alpha \\mathbf{v} - \\epsilon \\nabla_{\\boldsymbol{\\theta}} \\left[\\frac{1}{m}\\sum_i L\\left(f(\\mathbf{x}^{(i)};\\boldsymbol{\\theta}+\\alpha \\mathbf{v}), \\mathbf{y}^{(i)}\\right)\\right]$$",
+        "$\\boldsymbol{\\theta}$",
+        "$\\tilde{\\boldsymbol{\\theta}} = \\boldsymbol{\\theta} + \\alpha \\mathbf{v}$",
+        "$O(1/k)$",
+        "$O(1/k^2)$"
+      ],
+      "relatedCards": [
+        "ch08-015"
+      ],
+      "relatedQuestions": [
+        "ch08-q005"
+      ]
+    },
+    {
+      "id": "gl-129",
+      "term": "break symmetry",
+      "definition": "If two hidden units with the same activation receive the same inputs and start with identical weights, a deterministic algorithm will update them identically forever -- they can never learn different features.",
+      "chapter": 8,
+      "section": "8.4",
+      "tags": [
+        "optimization",
+        "initialization",
+        "concept"
+      ],
+      "equations": [
+        "$$W_{i,j} \\sim U\\left(-\\sqrt{\\frac{6}{m+n}},\\; \\sqrt{\\frac{6}{m+n}}\\right)$$"
+      ],
+      "relatedCards": [
+        "ch08-016"
+      ],
+      "relatedQuestions": [
+        "ch08-q009"
+      ]
+    },
+    {
+      "id": "gl-130",
+      "term": "continuous",
+      "definition": "Continuous: $s(t) = (x * w)(t) = \\int x(a)\\,w(t - a)\\,da$",
+      "chapter": 9,
+      "section": "9.1",
+      "tags": [
+        "CNN",
+        "convolution",
+        "definition"
+      ],
+      "equations": [
+        "$s(t) = (x * w)(t) = \\int x(a)\\,w(t - a)\\,da$",
+        "$s(t) = (x * w)(t) = \\sum_{a=-\\infty}^{\\infty} x(a)\\,w(t-a)$"
+      ],
+      "relatedCards": [
+        "ch09-001"
+      ],
+      "relatedQuestions": [
+        "ch09-q001",
+        "ch09-q002"
+      ]
+    },
+    {
+      "id": "gl-131",
+      "term": "convolution",
+      "definition": "Convolution flips the kernel: $S(i,j) = \\sum_m \\sum_n I(i-m, j-n)\\,K(m,n)$",
+      "chapter": 9,
+      "section": "9.1",
+      "tags": [
+        "CNN",
+        "convolution",
+        "cross-correlation"
+      ],
+      "equations": [
+        "$S(i,j) = \\sum_m \\sum_n I(i-m, j-n)\\,K(m,n)$",
+        "$S(i,j) = \\sum_m \\sum_n I(i+m, j+n)\\,K(m,n)$"
+      ],
+      "relatedCards": [
+        "ch09-002"
+      ],
+      "relatedQuestions": [
+        "ch09-q001",
+        "ch09-q002"
+      ]
+    },
+    {
+      "id": "gl-132",
+      "term": "equivariance",
+      "definition": "Equivariance: Shifting input shifts output by the same amount. Convolution provides this -- it tells you where features are.",
+      "chapter": 9,
+      "section": "9.2",
+      "tags": [
+        "CNN",
+        "motivation",
+        "equivariance",
+        "pooling",
+        "invariance"
+      ],
+      "equations": [
+        "$f(g(x)) = g(f(x))$"
+      ],
+      "relatedCards": [
+        "ch09-006",
+        "ch09-008"
+      ],
+      "relatedQuestions": [
+        "ch09-q003",
+        "ch09-q004",
+        "ch09-q005",
+        "ch09-q015",
+        "ch09-q006",
+        "ch09-q007"
+      ]
+    },
+    {
+      "id": "gl-133",
+      "term": "sparse interactions",
+      "definition": "Traditional layers use full matrix multiplication: every output depends on every input, requiring $m \\times n$ parameters and $O(m \\times n)$ operations.",
+      "chapter": 9,
+      "section": "9.2",
+      "tags": [
+        "CNN",
+        "motivation",
+        "sparse-interactions"
+      ],
+      "equations": [
+        "$m \\times n$",
+        "$O(m \\times n)$",
+        "$k \\ll m$",
+        "$k \\times n$",
+        "$O(k \\times n)$"
+      ],
+      "relatedCards": [
+        "ch09-004"
+      ],
+      "relatedQuestions": [
+        "ch09-q003",
+        "ch09-q004",
+        "ch09-q005",
+        "ch09-q015",
+        "ch09-q006",
+        "ch09-q007"
+      ]
+    },
+    {
+      "id": "gl-134",
+      "term": "parameter sharing",
+      "definition": "Parameter sharing means the same kernel weights are used at every spatial position of the input, rather than learning a separate weight for each location.",
+      "chapter": 9,
+      "section": "9.2",
+      "tags": [
+        "CNN",
+        "motivation",
+        "parameter-sharing"
+      ],
+      "equations": [
+        "$O(m \\times n)$",
+        "$O(k)$",
+        "$k \\ll m$",
+        "$m \\approx n$",
+        "$O(k \\times n)$"
+      ],
+      "relatedCards": [
+        "ch09-005"
+      ],
+      "relatedQuestions": [
+        "ch09-q003",
+        "ch09-q004",
+        "ch09-q005",
+        "ch09-q015",
+        "ch09-q006",
+        "ch09-q007"
+      ]
+    },
+    {
+      "id": "gl-135",
+      "term": "receptive field",
+      "definition": "The receptive field of a unit is the set of input pixels that can affect its value. For a single convolutional layer with kernel width $k$, the receptive field is $k$ pixels.",
+      "chapter": 9,
+      "section": "9.2",
+      "tags": [
+        "CNN",
+        "receptive-field",
+        "depth"
+      ],
+      "equations": [
+        "$O(L \\cdot k)$"
+      ],
+      "relatedCards": [
+        "ch09-024"
+      ],
+      "relatedQuestions": [
+        "ch09-q003",
+        "ch09-q004",
+        "ch09-q005",
+        "ch09-q015",
+        "ch09-q006",
+        "ch09-q007"
+      ]
+    },
+    {
+      "id": "gl-136",
+      "term": "three stages",
+      "definition": "1. Convolution stage: Performs several parallel convolutions (affine transforms) to produce a set of linear activations.",
+      "chapter": 9,
+      "section": "9.3",
+      "tags": [
+        "CNN",
+        "pooling",
+        "stages"
+      ],
+      "equations": [
+        "$L^2$"
+      ],
+      "relatedCards": [
+        "ch09-007"
+      ],
+      "relatedQuestions": [
+        "ch09-q006",
+        "ch09-q007"
+      ]
+    },
+    {
+      "id": "gl-137",
+      "term": "strided convolution",
+      "definition": "Strided convolution samples the output only every $s$ pixels:",
+      "chapter": 9,
+      "section": "9.5",
+      "tags": [
+        "CNN",
+        "convolution-variant",
+        "stride"
+      ],
+      "equations": [
+        "$$Z_{i,j,k} = c(\\mathsf{K}, \\mathsf{V}, s)_{i,j,k} = \\sum_{l,m,n} V_{l,\\,(j-1) \\times s + m,\\,(k-1) \\times s + n}\\; K_{i,l,m,n}$$"
+      ],
+      "relatedCards": [
+        "ch09-014"
+      ],
+      "relatedQuestions": [
+        "ch09-q008",
+        "ch09-q009",
+        "ch09-q011"
+      ]
+    },
+    {
+      "id": "gl-138",
+      "term": "zero-padding",
+      "definition": "Valid (no padding): Output width = $m - k + 1$. Output shrinks each layer; limits network depth.",
+      "chapter": 9,
+      "section": "9.5",
+      "tags": [
+        "CNN",
+        "zero-padding",
+        "valid-same-full"
+      ],
+      "equations": [
+        "$m - k + 1$",
+        "$m + k - 1$"
+      ],
+      "relatedCards": [
+        "ch09-015"
+      ],
+      "relatedQuestions": [
+        "ch09-q008",
+        "ch09-q009",
+        "ch09-q011"
+      ]
+    },
+    {
+      "id": "gl-139",
+      "term": "locally connected layer",
+      "definition": "A locally connected layer has the same sparse connectivity as convolution (each output depends only on a local patch), but does not share parameters across locations. Each spatial position has its own set of weights, specified by a 6-D tensor $\\mathsf{W}$.",
+      "chapter": 9,
+      "section": "9.5",
+      "tags": [
+        "CNN",
+        "convolution-variant",
+        "unshared"
+      ],
+      "equations": [
+        "$$Z_{i,j,k} = \\sum_{l,m,n} V_{l,\\,j+m-1,\\,k+n-1}\\; w_{i,j,k,l,m,n}$$",
+        "$\\mathsf{W}$",
+        "$O(n \\cdot k)$",
+        "$O(k)$"
+      ],
+      "relatedCards": [
+        "ch09-016"
+      ],
+      "relatedQuestions": [
+        "ch09-q008",
+        "ch09-q009",
+        "ch09-q011"
+      ]
+    },
+    {
+      "id": "gl-140",
+      "term": "tiled convolution",
+      "definition": "Tiled convolution uses a set of $t$ different kernels that cycle through spatial locations:",
+      "chapter": 9,
+      "section": "9.5",
+      "tags": [
+        "CNN",
+        "convolution-variant",
+        "tiled"
+      ],
+      "equations": [
+        "$$Z_{i,j,k} = \\sum_{l,m,n} V_{l,\\,j+m-1,\\,k+n-1}\\; K_{i,l,m,n,\\, j\\%t+1,\\, k\\%t+1}$$",
+        "$t = 1$"
+      ],
+      "relatedCards": [
+        "ch09-017"
+      ],
+      "relatedQuestions": [
+        "ch09-q008",
+        "ch09-q009",
+        "ch09-q011"
+      ]
+    },
+    {
+      "id": "gl-141",
+      "term": "transpose convolution",
+      "definition": "The three operations are:; Convolution itself (forward pass) 2.",
+      "chapter": 9,
+      "section": "9.5",
+      "tags": [
+        "CNN",
+        "backprop",
+        "transpose-convolution"
+      ],
+      "equations": [
+        "$\\mathsf{K}$",
+        "$g(\\mathsf{G}, \\mathsf{V}, s)_{i,j,k,l} = \\sum_{m,n} G_{i,m,n}\\, V_{j,(m-1) \\times s+k,(n-1) \\times s+l}$",
+        "$\\mathsf{V}$"
+      ],
+      "relatedCards": [
+        "ch09-018"
+      ],
+      "relatedQuestions": [
+        "ch09-q008",
+        "ch09-q009",
+        "ch09-q011"
+      ]
+    },
+    {
+      "id": "gl-142",
+      "term": "unfold",
+      "definition": "Unfolding converts a circuit with cycles (e.g. $\\mathbf{s}^{(t)} = f(\\mathbf{s}^{(t-1)}; \\boldsymbol{\\theta})$) into an acyclic graph by replicating the computation for each time step.",
+      "chapter": 10,
+      "section": "10.1",
+      "tags": [
+        "RNN",
+        "unfolding",
+        "computational graph"
+      ],
+      "equations": [
+        "$\\mathbf{s}^{(t)} = f(\\mathbf{s}^{(t-1)}; \\boldsymbol{\\theta})$",
+        "$\\boldsymbol{\\theta}$"
+      ],
+      "relatedCards": [
+        "ch10-001"
+      ],
+      "relatedQuestions": [
+        "ch10-q001",
+        "ch10-q002"
+      ]
+    },
+    {
+      "id": "gl-143",
+      "term": "lossy summary",
+      "definition": "The hidden state $\\mathbf{h}^{(t)}$ maps an arbitrary-length input history $(\\mathbf{x}^{(t)}, \\mathbf{x}^{(t-1)}, \\dots, \\mathbf{x}^{(1)})$ to a fixed-length vector. Because the dimensionality of $\\mathbf{h}^{(t)}$ does not grow with $t$, information must be discarded.",
+      "chapter": 10,
+      "section": "10.1",
+      "tags": [
+        "RNN",
+        "hidden state",
+        "concept"
+      ],
+      "equations": [
+        "$\\mathbf{h}^{(t)}$",
+        "$(\\mathbf{x}^{(t)}, \\mathbf{x}^{(t-1)}, \\dots, \\mathbf{x}^{(1)})$",
+        "$\\mathbf{h}^{(t)}$"
+      ],
+      "relatedCards": [
+        "ch10-002"
+      ],
+      "relatedQuestions": [
+        "ch10-q001",
+        "ch10-q002"
+      ]
+    },
+    {
+      "id": "gl-144",
+      "term": "forward propagation equations",
+      "definition": "$$\\mathbf{a}^{(t)} = \\mathbf{b} + \\mathbf{W}\\mathbf{h}^{(t-1)} + \\mathbf{U}\\mathbf{x}^{(t)}$$ $$\\mathbf{h}^{(t)} = \\tanh(\\mathbf{a}^{(t)})$$ $$\\mathbf{o}^{(t)} = \\mathbf{c} + \\mathbf{V}\\mathbf{h}^{(t)}$$ $$\\hat{\\mathbf{y}}^{(t)} = \\text{softmax}(\\mathbf{o}^{(t)})$$",
+      "chapter": 10,
+      "section": "10.2",
+      "tags": [
+        "RNN",
+        "forward propagation",
+        "equations"
+      ],
+      "equations": [
+        "$$\\mathbf{a}^{(t)} = \\mathbf{b} + \\mathbf{W}\\mathbf{h}^{(t-1)} + \\mathbf{U}\\mathbf{x}^{(t)}$$",
+        "$$\\mathbf{h}^{(t)} = \\tanh(\\mathbf{a}^{(t)})$$",
+        "$$\\mathbf{o}^{(t)} = \\mathbf{c} + \\mathbf{V}\\mathbf{h}^{(t)}$$",
+        "$$\\hat{\\mathbf{y}}^{(t)} = \\text{softmax}(\\mathbf{o}^{(t)})$$",
+        "$\\mathbf{U}$",
+        "$\\mathbf{W}$",
+        "$\\mathbf{V}$",
+        "$\\mathbf{b}$",
+        "$\\mathbf{c}$"
+      ],
+      "relatedCards": [
+        "ch10-003"
+      ],
+      "relatedQuestions": [
+        "ch10-q003",
+        "ch10-q004"
+      ]
+    },
+    {
+      "id": "gl-145",
+      "term": "design patterns",
+      "definition": "1. Hidden-to-hidden recurrence (Fig 10.3): Recurrent connections between hidden units; produces output at each step.",
+      "chapter": 10,
+      "section": "10.2",
+      "tags": [
+        "RNN",
+        "design patterns"
+      ],
+      "equations": [
+        "$\\mathbf{o}$",
+        "$\\mathbf{o}$"
+      ],
+      "relatedCards": [
+        "ch10-004"
+      ],
+      "relatedQuestions": [
+        "ch10-q003",
+        "ch10-q004"
+      ]
+    },
+    {
+      "id": "gl-146",
+      "term": "encoder-decoder",
+      "definition": "The architecture has two components:; An encoder RNN reads input $(\\mathbf{x}^{(1)}, \\dots, \\mathbf{x}^{(n_x)})$ and produces a context $C$ (typically from its final hidden state $\\mathbf{h}_{n_x}$).",
+      "chapter": 10,
+      "section": "10.4",
+      "tags": [
+        "encoder-decoder",
+        "seq2seq",
+        "architecture"
+      ],
+      "equations": [
+        "$(\\mathbf{x}^{(1)}, \\dots, \\mathbf{x}^{(n_x)})$",
+        "$\\mathbf{h}_{n_x}$",
+        "$(\\mathbf{y}^{(1)}, \\dots, \\mathbf{y}^{(n_y)})$",
+        "$n_x$",
+        "$n_y$",
+        "$n_x = n_y = \\tau$"
+      ],
+      "relatedCards": [
+        "ch10-011"
+      ],
+      "relatedQuestions": [
+        "ch10-q012",
+        "ch10-q013"
+      ]
+    },
+    {
+      "id": "gl-147",
+      "term": "vanishing and exploding gradient",
+      "definition": "In BPTT, gradients at time $t$ involve products of Jacobians: $$\\frac{\\partial \\mathbf{h}^{(t)}}{\\partial \\mathbf{h}^{(1)}} = \\prod_{i=2}^{t} \\frac{\\partial \\mathbf{h}^{(i)}}{\\partial \\mathbf{h}^{(i-1)}}$$",
+      "chapter": 10,
+      "section": "10.7",
+      "tags": [
+        "vanishing gradient",
+        "exploding gradient",
+        "challenge"
+      ],
+      "equations": [
+        "$$\\frac{\\partial \\mathbf{h}^{(t)}}{\\partial \\mathbf{h}^{(1)}} = \\prod_{i=2}^{t} \\frac{\\partial \\mathbf{h}^{(i)}}{\\partial \\mathbf{h}^{(i-1)}}$$",
+        "$\\mathbf{W}^\\top \\cdot \\text{diag}(1 - (\\mathbf{h}^{(i)})^2)$",
+        "$\\mathbf{W}$",
+        "$\\rightarrow$",
+        "$\\rightarrow$"
+      ],
+      "relatedCards": [
+        "ch10-014"
+      ],
+      "relatedQuestions": [
+        "ch10-q007",
+        "ch10-q008"
+      ]
+    },
+    {
+      "id": "gl-148",
+      "term": "long-term dependencies",
+      "definition": "In a vanilla RNN, the gradient of $\\mathbf{h}^{(t)}$ w.r.t. $\\mathbf{h}^{(t-k)}$ involves $k$ multiplications by $\\mathbf{W}^\\top \\cdot \\text{diag}(1-(\\mathbf{h})^2)$. Since $\\tanh'(x) \\in (0,1]$, this product tends to shrink exponentially.",
+      "chapter": 10,
+      "section": "10.7",
+      "tags": [
+        "vanishing gradient",
+        "gated RNN",
+        "long-term dependencies"
+      ],
+      "equations": [
+        "$$\\mathbf{C}^{(t)} = \\mathbf{f}^{(t)} \\odot \\mathbf{C}^{(t-1)} + \\dots$$",
+        "$$\\frac{\\partial \\mathbf{C}^{(t)}}{\\partial \\mathbf{C}^{(t-k)}} = \\prod_{i=1}^{k} \\mathbf{f}^{(t-i+1)}$$",
+        "$\\mathbf{h}^{(t)}$",
+        "$\\mathbf{h}^{(t-k)}$",
+        "$\\mathbf{W}^\\top \\cdot \\text{diag}(1-(\\mathbf{h})^2)$",
+        "$\\tanh'(x) \\in (0,1]$",
+        "$\\mathbf{f} \\approx 1$"
+      ],
+      "relatedCards": [
+        "ch10-024"
+      ],
+      "relatedQuestions": [
+        "ch10-q007",
+        "ch10-q008"
+      ]
+    },
+    {
+      "id": "gl-149",
+      "term": "LSTM cell",
+      "definition": "The LSTM introduces a cell state $\\mathbf{C}^{(t)}$ with three gates:",
+      "chapter": 10,
+      "section": "10.10",
+      "tags": [
+        "LSTM",
+        "gated RNN",
+        "architecture"
+      ],
+      "equations": [
+        "$\\mathbf{C}^{(t)}$",
+        "$\\mathbf{f}^{(t)} = \\sigma(\\mathbf{W}_f [\\mathbf{h}^{(t-1)}, \\mathbf{x}^{(t)}] + \\mathbf{b}_f)$",
+        "$\\mathbf{i}^{(t)} = \\sigma(\\mathbf{W}_i [\\mathbf{h}^{(t-1)}, \\mathbf{x}^{(t)}] + \\mathbf{b}_i)$",
+        "$\\tilde{\\mathbf{C}}^{(t)}$",
+        "$\\mathbf{o}^{(t)} = \\sigma(\\mathbf{W}_o [\\mathbf{h}^{(t-1)}, \\mathbf{x}^{(t)}] + \\mathbf{b}_o)$",
+        "$\\mathbf{h}^{(t)}$",
+        "$\\mathbf{C}^{(t)} = \\mathbf{f}^{(t)} \\odot \\mathbf{C}^{(t-1)} + \\mathbf{i}^{(t)} \\odot \\tilde{\\mathbf{C}}^{(t)}$",
+        "$\\mathbf{f}^{(t)}$",
+        "$\\mathbf{f} \\approx 1$",
+        "$\\mathbf{i} \\approx 0$"
+      ],
+      "relatedCards": [
+        "ch10-016"
+      ],
+      "relatedQuestions": [
+        "ch10-q009",
+        "ch10-q010"
+      ]
+    },
+    {
+      "id": "gl-150",
+      "term": "GRU",
+      "definition": "The GRU (Cho et al., 2014) merges the cell and hidden state into a single $\\mathbf{h}^{(t)}$ and uses two gates instead of three:",
+      "chapter": 10,
+      "section": "10.10",
+      "tags": [
+        "GRU",
+        "gated RNN",
+        "architecture"
+      ],
+      "equations": [
+        "$\\mathbf{h}^{(t)}$",
+        "$\\mathbf{z}^{(t)} = \\sigma(\\mathbf{W}_z [\\mathbf{h}^{(t-1)}, \\mathbf{x}^{(t)}])$",
+        "$\\mathbf{r}^{(t)} = \\sigma(\\mathbf{W}_r [\\mathbf{h}^{(t-1)}, \\mathbf{x}^{(t)}])$",
+        "$\\tilde{\\mathbf{h}}^{(t)} = \\tanh(\\mathbf{W}[\\mathbf{r}^{(t)} \\odot \\mathbf{h}^{(t-1)}, \\mathbf{x}^{(t)}])$",
+        "$\\mathbf{h}^{(t)} = (1 - \\mathbf{z}^{(t)}) \\odot \\mathbf{h}^{(t-1)} + \\mathbf{z}^{(t)} \\odot \\tilde{\\mathbf{h}}^{(t)}$",
+        "$\\mathbf{z}$",
+        "$\\mathbf{z}$",
+        "$1-\\mathbf{z}$"
+      ],
+      "relatedCards": [
+        "ch10-017"
+      ],
+      "relatedQuestions": [
+        "ch10-q009",
+        "ch10-q010"
+      ]
+    }
+  ]
+}

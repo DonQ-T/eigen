@@ -1,0 +1,428 @@
+{
+  "meta": {
+    "title": "Key Equations - Deep Learning (Goodfellow et al.)",
+    "version": 1
+  },
+  "equations": [
+    {
+      "chapter": 2,
+      "name": "Matrix Product",
+      "equation": "$$C_{i,j} = \\sum_k A_{i,k} B_{k,j}$$",
+      "description": "Each entry of the product matrix is the dot product of a row of A with a column of B."
+    },
+    {
+      "chapter": 2,
+      "name": "Transpose of a Product",
+      "equation": "$$(\\mathbf{AB})^\\top = \\mathbf{B}^\\top \\mathbf{A}^\\top$$",
+      "description": "The transpose of a matrix product reverses the order of the factors."
+    },
+    {
+      "chapter": 2,
+      "name": "Matrix Inverse",
+      "equation": "$$\\mathbf{A}^{-1}\\mathbf{A} = \\mathbf{I}$$",
+      "description": "A matrix multiplied by its inverse yields the identity matrix."
+    },
+    {
+      "chapter": 2,
+      "name": "Solving Linear Systems",
+      "equation": "$$\\mathbf{Ax} = \\mathbf{b} \\implies \\mathbf{x} = \\mathbf{A}^{-1}\\mathbf{b}$$",
+      "description": "A system of linear equations can be solved by left-multiplying both sides by the inverse of A."
+    },
+    {
+      "chapter": 2,
+      "name": "L2 Norm (Euclidean)",
+      "equation": "$$\\|\\mathbf{x}\\|_2 = \\sqrt{\\sum_i x_i^2}$$",
+      "description": "The Euclidean norm measures the ordinary straight-line distance from the origin."
+    },
+    {
+      "chapter": 2,
+      "name": "Lp Norm",
+      "equation": "$$\\|\\mathbf{x}\\|_p = \\left(\\sum_i |x_i|^p\\right)^{1/p}$$",
+      "description": "The general Lp norm family, which includes L1 (Manhattan) and L2 (Euclidean) as special cases."
+    },
+    {
+      "chapter": 2,
+      "name": "Eigendecomposition",
+      "equation": "$$\\mathbf{A} = \\mathbf{V}\\text{diag}(\\boldsymbol{\\lambda})\\mathbf{V}^{-1}$$",
+      "description": "A square matrix can be decomposed into its eigenvalues and eigenvectors, revealing how it stretches space."
+    },
+    {
+      "chapter": 2,
+      "name": "Singular Value Decomposition (SVD)",
+      "equation": "$$\\mathbf{A} = \\mathbf{U}\\mathbf{D}\\mathbf{V}^\\top$$",
+      "description": "Any matrix (including non-square) can be factored into orthogonal matrices U, V and a diagonal matrix D of singular values."
+    },
+    {
+      "chapter": 2,
+      "name": "Moore-Penrose Pseudoinverse",
+      "equation": "$$\\mathbf{A}^+ = \\lim_{\\alpha \\to 0} (\\mathbf{A}^\\top\\mathbf{A} + \\alpha\\mathbf{I})^{-1}\\mathbf{A}^\\top$$",
+      "description": "Generalizes the matrix inverse to non-square or singular matrices, enabling least-squares solutions."
+    },
+    {
+      "chapter": 2,
+      "name": "Trace Cyclic Property",
+      "equation": "$$\\text{Tr}(\\mathbf{ABC}) = \\text{Tr}(\\mathbf{CAB}) = \\text{Tr}(\\mathbf{BCA})$$",
+      "description": "The trace is invariant under cyclic permutations of the matrix product."
+    },
+    {
+      "chapter": 2,
+      "name": "Determinant from Eigenvalues",
+      "equation": "$$\\det(\\mathbf{A}) = \\prod_i \\lambda_i$$",
+      "description": "The determinant equals the product of all eigenvalues, measuring the volume scaling factor of the linear transformation."
+    },
+    {
+      "chapter": 3,
+      "name": "Marginalization (Sum Rule)",
+      "equation": "$$P(x) = \\sum_y P(x, y)$$",
+      "description": "A marginal probability is obtained by summing (or integrating) a joint distribution over the other variables."
+    },
+    {
+      "chapter": 3,
+      "name": "Product Rule (Chain Rule of Probability)",
+      "equation": "$$P(x, y) = P(x|y)P(y)$$",
+      "description": "The joint probability of two events equals the conditional probability times the marginal."
+    },
+    {
+      "chapter": 3,
+      "name": "Bayes' Rule",
+      "equation": "$$P(y|x) = \\frac{P(x|y)P(y)}{P(x)}$$",
+      "description": "Relates the posterior probability to the likelihood and prior, forming the foundation of Bayesian inference."
+    },
+    {
+      "chapter": 3,
+      "name": "Expectation (Discrete)",
+      "equation": "$$\\mathbb{E}_{x \\sim P}[f(x)] = \\sum_x P(x) f(x)$$",
+      "description": "The expected value is the probability-weighted average of a function over all possible outcomes."
+    },
+    {
+      "chapter": 3,
+      "name": "Variance",
+      "equation": "$$\\text{Var}(f(x)) = \\mathbb{E}[(f(x) - \\mathbb{E}[f(x)])^2]$$",
+      "description": "Variance measures how much a random variable's values spread around its mean."
+    },
+    {
+      "chapter": 3,
+      "name": "Gaussian (Normal) Distribution",
+      "equation": "$$\\mathcal{N}(x; \\mu, \\sigma^2) = \\frac{1}{\\sqrt{2\\pi\\sigma^2}} \\exp\\left(-\\frac{(x-\\mu)^2}{2\\sigma^2}\\right)$$",
+      "description": "The most commonly used continuous distribution, parameterized by mean and variance."
+    },
+    {
+      "chapter": 3,
+      "name": "Multivariate Gaussian Distribution",
+      "equation": "$$\\mathcal{N}(\\mathbf{x}; \\boldsymbol{\\mu}, \\boldsymbol{\\Sigma}) = \\frac{1}{\\sqrt{(2\\pi)^n \\det(\\boldsymbol{\\Sigma})}} \\exp\\left(-\\frac{1}{2}(\\mathbf{x}-\\boldsymbol{\\mu})^\\top \\boldsymbol{\\Sigma}^{-1}(\\mathbf{x}-\\boldsymbol{\\mu})\\right)$$",
+      "description": "Generalizes the Gaussian to vectors, with a covariance matrix capturing correlations between dimensions."
+    },
+    {
+      "chapter": 3,
+      "name": "Shannon Entropy",
+      "equation": "$$H(x) = -\\mathbb{E}_{x \\sim P}[\\log P(x)]$$",
+      "description": "Quantifies the average amount of information (or surprise) in a probability distribution."
+    },
+    {
+      "chapter": 3,
+      "name": "KL Divergence",
+      "equation": "$$D_\\text{KL}(P \\| Q) = \\mathbb{E}_{x \\sim P}\\left[\\log \\frac{P(x)}{Q(x)}\\right]$$",
+      "description": "Measures how much distribution P differs from a reference distribution Q; it is non-negative and asymmetric."
+    },
+    {
+      "chapter": 3,
+      "name": "Cross-Entropy",
+      "equation": "$$H(P, Q) = -\\mathbb{E}_{x \\sim P}[\\log Q(x)]$$",
+      "description": "Measures the average number of bits needed to encode data from P using a code optimized for Q."
+    },
+    {
+      "chapter": 3,
+      "name": "Softmax Function",
+      "equation": "$$\\text{softmax}(\\mathbf{z})_i = \\frac{\\exp(z_i)}{\\sum_j \\exp(z_j)}$$",
+      "description": "Converts a vector of real numbers into a valid probability distribution over discrete classes."
+    },
+    {
+      "chapter": 3,
+      "name": "Sigmoid Function",
+      "equation": "$$\\sigma(x) = \\frac{1}{1 + \\exp(-x)}$$",
+      "description": "Squashes any real value into the range (0, 1), commonly used for binary probabilities and gating."
+    },
+    {
+      "chapter": 4,
+      "name": "Gradient Descent Update",
+      "equation": "$$\\mathbf{x}' = \\mathbf{x} - \\epsilon \\nabla_\\mathbf{x} f(\\mathbf{x})$$",
+      "description": "Iteratively moves parameters in the direction of steepest descent, scaled by learning rate epsilon."
+    },
+    {
+      "chapter": 4,
+      "name": "Jacobian Matrix",
+      "equation": "$$J_{i,j} = \\frac{\\partial f(\\mathbf{x})_i}{\\partial x_j}$$",
+      "description": "Collects all first-order partial derivatives of a vector-valued function into a matrix."
+    },
+    {
+      "chapter": 4,
+      "name": "Hessian Matrix",
+      "equation": "$$H_{i,j} = \\frac{\\partial^2 f}{\\partial x_i \\partial x_j}$$",
+      "description": "The matrix of second-order partial derivatives, describing the local curvature of a scalar function."
+    },
+    {
+      "chapter": 4,
+      "name": "Second-Order Taylor Expansion",
+      "equation": "$$f(\\mathbf{x}) \\approx f(\\mathbf{x}_0) + (\\mathbf{x} - \\mathbf{x}_0)^\\top \\mathbf{g} + \\frac{1}{2}(\\mathbf{x} - \\mathbf{x}_0)^\\top \\mathbf{H}(\\mathbf{x} - \\mathbf{x}_0)$$",
+      "description": "Approximates a function locally using its value, gradient g, and Hessian H at a reference point."
+    },
+    {
+      "chapter": 4,
+      "name": "Lagrangian (Constrained Optimization)",
+      "equation": "$$L(\\mathbf{x}, \\boldsymbol{\\lambda}) = f(\\mathbf{x}) + \\sum_i \\lambda_i g_i(\\mathbf{x})$$",
+      "description": "Converts a constrained optimization problem into an unconstrained one using Lagrange multipliers."
+    },
+    {
+      "chapter": 5,
+      "name": "Mean Squared Error (MSE)",
+      "equation": "$$\\text{MSE} = \\frac{1}{m}\\sum_{i=1}^{m}(\\hat{y}_i - y_i)^2$$",
+      "description": "The average squared difference between predictions and true values, the most common regression loss."
+    },
+    {
+      "chapter": 5,
+      "name": "Estimator Bias",
+      "equation": "$$\\text{bias}(\\hat{\\theta}_m) = \\mathbb{E}[\\hat{\\theta}_m] - \\theta$$",
+      "description": "The difference between an estimator's expected value and the true parameter value."
+    },
+    {
+      "chapter": 5,
+      "name": "Bias-Variance Decomposition",
+      "equation": "$$\\text{MSE} = \\text{Bias}(\\hat{\\theta}_m)^2 + \\text{Var}(\\hat{\\theta}_m)$$",
+      "description": "Total estimation error decomposes into squared bias plus variance, capturing the underfitting-overfitting tradeoff."
+    },
+    {
+      "chapter": 5,
+      "name": "Maximum Likelihood Estimation (MLE)",
+      "equation": "$$\\boldsymbol{\\theta}_\\text{ML} = \\arg\\max_{\\boldsymbol{\\theta}} \\sum_{i=1}^{m} \\log p_\\text{model}(x^{(i)}; \\boldsymbol{\\theta})$$",
+      "description": "Finds the parameters that maximize the log-likelihood of the observed data under the model."
+    },
+    {
+      "chapter": 5,
+      "name": "MAP Estimation",
+      "equation": "$$\\boldsymbol{\\theta}_\\text{MAP} = \\arg\\max_{\\boldsymbol{\\theta}} \\left[\\log p(\\mathbf{x}|\\boldsymbol{\\theta}) + \\log p(\\boldsymbol{\\theta})\\right]$$",
+      "description": "Extends MLE by incorporating a prior over parameters, equivalent to adding a regularization term."
+    },
+    {
+      "chapter": 5,
+      "name": "Linear Regression Normal Equation",
+      "equation": "$$\\hat{\\mathbf{w}} = (\\mathbf{X}^\\top\\mathbf{X})^{-1}\\mathbf{X}^\\top\\mathbf{y}$$",
+      "description": "The closed-form least-squares solution for linear regression weights."
+    },
+    {
+      "chapter": 5,
+      "name": "Logistic Regression",
+      "equation": "$$P(y=1|\\mathbf{x}; \\mathbf{w}, b) = \\sigma(\\mathbf{w}^\\top\\mathbf{x} + b)$$",
+      "description": "Models binary classification probability by passing a linear function through the sigmoid."
+    },
+    {
+      "chapter": 6,
+      "name": "Feedforward Network",
+      "equation": "$$f(\\mathbf{x}) = f^{(3)}(f^{(2)}(f^{(1)}(\\mathbf{x})))$$",
+      "description": "A deep network is a composition of learned functions, each layer transforming the representation from the previous one."
+    },
+    {
+      "chapter": 6,
+      "name": "Affine Transform + Activation",
+      "equation": "$$\\mathbf{h} = g(\\mathbf{W}^\\top\\mathbf{x} + \\mathbf{b})$$",
+      "description": "Each hidden layer applies a linear transformation followed by a nonlinear activation function."
+    },
+    {
+      "chapter": 6,
+      "name": "ReLU",
+      "equation": "$$g(z) = \\max(0, z)$$",
+      "description": "The rectified linear unit, the default activation for modern deep networks due to its simplicity and non-saturating gradient."
+    },
+    {
+      "chapter": 6,
+      "name": "Leaky ReLU",
+      "equation": "$$g(z) = \\max(0, z) + \\alpha\\min(0, z)$$",
+      "description": "A ReLU variant that allows a small gradient when the unit is inactive, preventing dead neurons."
+    },
+    {
+      "chapter": 6,
+      "name": "Cross-Entropy Loss (Binary)",
+      "equation": "$$J(\\theta) = -\\frac{1}{m}\\sum_{i=1}^{m}\\left[y^{(i)}\\log\\hat{y}^{(i)} + (1-y^{(i)})\\log(1-\\hat{y}^{(i)})\\right]$$",
+      "description": "The standard loss function for binary classification, derived from maximum likelihood of a Bernoulli model."
+    },
+    {
+      "chapter": 6,
+      "name": "Softmax Output",
+      "equation": "$$P(y=k|\\mathbf{x}) = \\frac{\\exp(\\mathbf{z}_k)}{\\sum_j \\exp(\\mathbf{z}_j)}$$",
+      "description": "Converts the output layer's logits into a normalized probability distribution over classes."
+    },
+    {
+      "chapter": 6,
+      "name": "Chain Rule (Backpropagation)",
+      "equation": "$$\\frac{\\partial L}{\\partial w_{ij}^{(l)}} = \\frac{\\partial L}{\\partial a_j^{(l)}} \\cdot \\frac{\\partial a_j^{(l)}}{\\partial w_{ij}^{(l)}}$$",
+      "description": "Backpropagation computes gradients layer by layer using the chain rule, enabling efficient training of deep networks."
+    },
+    {
+      "chapter": 6,
+      "name": "Gradient of Loss w.r.t. Output",
+      "equation": "$$\\nabla_{\\mathbf{z}} J = \\hat{\\mathbf{y}} - \\mathbf{y}$$",
+      "description": "For softmax with cross-entropy, the gradient at the output layer simplifies to the difference between predictions and targets."
+    },
+    {
+      "chapter": 7,
+      "name": "L2 Regularization (Weight Decay)",
+      "equation": "$$\\tilde{J}(\\mathbf{w}) = J(\\mathbf{w}) + \\frac{\\alpha}{2}\\mathbf{w}^\\top\\mathbf{w}$$",
+      "description": "Adds a penalty proportional to the squared magnitude of weights, encouraging smaller and more diffuse weight vectors."
+    },
+    {
+      "chapter": 7,
+      "name": "L1 Regularization",
+      "equation": "$$\\tilde{J}(\\mathbf{w}) = J(\\mathbf{w}) + \\alpha\\|\\mathbf{w}\\|_1$$",
+      "description": "Penalizes the sum of absolute weight values, encouraging sparsity by driving some weights exactly to zero."
+    },
+    {
+      "chapter": 7,
+      "name": "Dropout (Forward Pass)",
+      "equation": "$$\\tilde{h}_i = \\mu_i \\cdot h_i, \\quad \\mu_i \\sim \\text{Bernoulli}(p)$$",
+      "description": "Randomly zeroes out hidden units during training, preventing co-adaptation and acting as an ensemble approximation."
+    },
+    {
+      "chapter": 7,
+      "name": "Dropout Weight Scaling (Inference)",
+      "equation": "$$\\mathbf{W}_\\text{test} = p\\mathbf{W}$$",
+      "description": "At test time, weights are scaled by the keep probability to compensate for the missing dropout masks."
+    },
+    {
+      "chapter": 7,
+      "name": "Batch Normalization",
+      "equation": "$$\\hat{x}_i = \\frac{x_i - \\mu_\\mathcal{B}}{\\sqrt{\\sigma_\\mathcal{B}^2 + \\epsilon}}$$",
+      "description": "Normalizes each mini-batch to zero mean and unit variance, reducing internal covariate shift and stabilizing training."
+    },
+    {
+      "chapter": 7,
+      "name": "Batch Norm (Learnable Parameters)",
+      "equation": "$$y_i = \\gamma\\hat{x}_i + \\beta$$",
+      "description": "After normalization, learnable scale and shift parameters restore the network's representational power."
+    },
+    {
+      "chapter": 8,
+      "name": "SGD Update",
+      "equation": "$$\\boldsymbol{\\theta} \\leftarrow \\boldsymbol{\\theta} - \\epsilon \\mathbf{g}$$",
+      "description": "The simplest optimization update: move parameters in the negative gradient direction scaled by the learning rate."
+    },
+    {
+      "chapter": 8,
+      "name": "SGD with Momentum",
+      "equation": "$$\\mathbf{v} \\leftarrow \\alpha\\mathbf{v} - \\epsilon\\mathbf{g}, \\quad \\boldsymbol{\\theta} \\leftarrow \\boldsymbol{\\theta} + \\mathbf{v}$$",
+      "description": "Accumulates a velocity vector to accelerate through flat regions and dampen oscillations in steep directions."
+    },
+    {
+      "chapter": 8,
+      "name": "Nesterov Momentum",
+      "equation": "$$\\mathbf{v} \\leftarrow \\alpha\\mathbf{v} - \\epsilon\\nabla_\\theta J(\\boldsymbol{\\theta} + \\alpha\\mathbf{v})$$",
+      "description": "Evaluates the gradient at a lookahead position, providing better convergence than standard momentum."
+    },
+    {
+      "chapter": 8,
+      "name": "AdaGrad",
+      "equation": "$$\\theta_i \\leftarrow \\theta_i - \\frac{\\epsilon}{\\sqrt{r_i + \\delta}} g_i$$",
+      "description": "Adapts the learning rate per-parameter by dividing by the accumulated sum of squared gradients."
+    },
+    {
+      "chapter": 8,
+      "name": "RMSProp",
+      "equation": "$$r \\leftarrow \\rho r + (1-\\rho)\\mathbf{g}^2, \\quad \\boldsymbol{\\theta} \\leftarrow \\boldsymbol{\\theta} - \\frac{\\epsilon}{\\sqrt{r + \\delta}}\\mathbf{g}$$",
+      "description": "Uses an exponential moving average of squared gradients to adapt learning rates, fixing AdaGrad's diminishing rates."
+    },
+    {
+      "chapter": 8,
+      "name": "Adam Update",
+      "equation": "$$\\hat{\\mathbf{m}} = \\frac{\\mathbf{m}}{1-\\beta_1^t}, \\quad \\hat{\\mathbf{v}} = \\frac{\\mathbf{v}}{1-\\beta_2^t}, \\quad \\boldsymbol{\\theta} \\leftarrow \\boldsymbol{\\theta} - \\frac{\\epsilon\\hat{\\mathbf{m}}}{\\sqrt{\\hat{\\mathbf{v}}} + \\delta}$$",
+      "description": "Combines momentum and adaptive learning rates with bias correction, the default optimizer for most deep learning."
+    },
+    {
+      "chapter": 8,
+      "name": "Learning Rate Decay",
+      "equation": "$$\\epsilon_t = \\epsilon_0 \\cdot \\tau / \\max(t, \\tau)$$",
+      "description": "Gradually reduces the learning rate over training to allow fine-grained convergence near a minimum."
+    },
+    {
+      "chapter": 8,
+      "name": "Xavier Initialization",
+      "equation": "$$W_{ij} \\sim U\\left(-\\sqrt{\\frac{6}{m+n}}, \\sqrt{\\frac{6}{m+n}}\\right)$$",
+      "description": "Initializes weights to maintain variance across layers, preventing signal from exploding or vanishing at initialization."
+    },
+    {
+      "chapter": 9,
+      "name": "1D Convolution",
+      "equation": "$$s(t) = (x * w)(t) = \\sum_a x(a)w(t-a)$$",
+      "description": "Applies a filter by sliding it across a 1D input and computing weighted sums at each position."
+    },
+    {
+      "chapter": 9,
+      "name": "2D Convolution",
+      "equation": "$$S(i,j) = (K * I)(i,j) = \\sum_m \\sum_n I(i-m, j-n)K(m,n)$$",
+      "description": "The fundamental operation of CNNs: slides a 2D kernel across an image, computing local weighted sums."
+    },
+    {
+      "chapter": 9,
+      "name": "Cross-Correlation",
+      "equation": "$$S(i,j) = \\sum_m \\sum_n I(i+m, j+n)K(m,n)$$",
+      "description": "What deep learning frameworks actually compute — convolution without flipping the kernel."
+    },
+    {
+      "chapter": 9,
+      "name": "Convolution Output Size",
+      "equation": "$$o = \\lfloor(n - k + 2p)/s\\rfloor + 1$$",
+      "description": "Computes the spatial dimension of a convolution output given input size n, kernel size k, padding p, and stride s."
+    },
+    {
+      "chapter": 9,
+      "name": "Conv Layer Parameter Count",
+      "equation": "$$\\text{params} = (k_h \\times k_w \\times c_\\text{in} + 1) \\times c_\\text{out}$$",
+      "description": "The number of learnable parameters in a convolutional layer, including bias terms."
+    },
+    {
+      "chapter": 10,
+      "name": "RNN Hidden State",
+      "equation": "$$\\mathbf{h}^{(t)} = f(\\mathbf{h}^{(t-1)}, \\mathbf{x}^{(t)}; \\boldsymbol{\\theta})$$",
+      "description": "The core recurrence relation: each hidden state is a function of the previous state and the current input."
+    },
+    {
+      "chapter": 10,
+      "name": "Vanilla RNN",
+      "equation": "$$\\mathbf{h}^{(t)} = \\tanh(\\mathbf{W}\\mathbf{h}^{(t-1)} + \\mathbf{U}\\mathbf{x}^{(t)} + \\mathbf{b})$$",
+      "description": "The standard RNN update equation with tanh activation, simple but prone to vanishing gradients."
+    },
+    {
+      "chapter": 10,
+      "name": "RNN Output",
+      "equation": "$$\\hat{\\mathbf{y}}^{(t)} = \\text{softmax}(\\mathbf{V}\\mathbf{h}^{(t)} + \\mathbf{c})$$",
+      "description": "Produces a probability distribution at each time step by applying softmax to a linear transform of the hidden state."
+    },
+    {
+      "chapter": 10,
+      "name": "BPTT Gradient",
+      "equation": "$$\\frac{\\partial L}{\\partial \\mathbf{W}} = \\sum_t \\frac{\\partial L^{(t)}}{\\partial \\mathbf{W}}$$",
+      "description": "Backpropagation through time sums the gradient contributions from every time step in the sequence."
+    },
+    {
+      "chapter": 10,
+      "name": "LSTM Forget Gate",
+      "equation": "$$\\mathbf{f}^{(t)} = \\sigma(\\mathbf{W}_f\\mathbf{h}^{(t-1)} + \\mathbf{U}_f\\mathbf{x}^{(t)} + \\mathbf{b}_f)$$",
+      "description": "Controls how much of the previous cell state to retain, enabling LSTMs to learn long-range dependencies."
+    },
+    {
+      "chapter": 10,
+      "name": "LSTM Cell State Update",
+      "equation": "$$\\mathbf{c}^{(t)} = \\mathbf{f}^{(t)} \\odot \\mathbf{c}^{(t-1)} + \\mathbf{i}^{(t)} \\odot \\tilde{\\mathbf{c}}^{(t)}$$",
+      "description": "The cell state is updated by forgetting some old information and adding new candidate values gated by the input gate."
+    },
+    {
+      "chapter": 10,
+      "name": "GRU Update",
+      "equation": "$$\\mathbf{h}^{(t)} = (1-\\mathbf{z}^{(t)})\\odot\\mathbf{h}^{(t-1)} + \\mathbf{z}^{(t)}\\odot\\tilde{\\mathbf{h}}^{(t)}$$",
+      "description": "A simplified gated architecture that interpolates between the previous state and a candidate using a single update gate."
+    },
+    {
+      "chapter": 10,
+      "name": "Gradient Vanishing Condition",
+      "equation": "$$\\left\\|\\frac{\\partial \\mathbf{h}^{(t)}}{\\partial \\mathbf{h}^{(t-1)}}\\right\\| < 1 \\implies \\text{gradients vanish exponentially}$$",
+      "description": "When the Jacobian of the hidden state transition has norm less than 1, gradients shrink exponentially over time steps."
+    }
+  ]
+}

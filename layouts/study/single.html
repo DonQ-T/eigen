@@ -1,0 +1,26 @@
+{{ define "main" }}
+<article class="project-article">
+  <div class="post-header">
+    {{ if not .Date.IsZero }}
+    <span class="post-date">{{ .Date.Format "January 2, 2006" }}</span>
+    {{ end }}
+    <h1 class="post-title">{{ .Title }}</h1>
+    {{ with .Description }}<p class="post-description">{{ . }}</p>{{ end }}
+    {{ if .Params.tags }}
+    <div class="post-tags">
+      {{ range .Params.tags }}
+      <span class="tag">{{ . }}</span>
+      {{ end }}
+    </div>
+    {{ end }}
+  </div>
+
+  <div class="post-content">
+    {{ .Content }}
+  </div>
+</article>
+
+{{ with .Params.js }}
+<script src="{{ . | relURL }}"></script>
+{{ end }}
+{{ end }}

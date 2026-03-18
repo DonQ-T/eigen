@@ -1,0 +1,605 @@
+{
+  "meta": {
+    "title": "Deep Learning Concept Map (Goodfellow et al.)",
+    "version": 1
+  },
+  "nodes": [
+    {
+      "id": "ai",
+      "label": "Artificial Intelligence",
+      "chapter": 1,
+      "description": "The broad goal of building intelligent machines",
+      "x": 80,
+      "y": 100
+    },
+    {
+      "id": "machine-learning",
+      "label": "Machine Learning",
+      "chapter": 1,
+      "description": "Systems that improve with experience rather than being explicitly programmed",
+      "x": 80,
+      "y": 200
+    },
+    {
+      "id": "representation-learning",
+      "label": "Representation Learning",
+      "chapter": 1,
+      "description": "Learning the representation itself, not just the mapping from representation to output",
+      "x": 80,
+      "y": 300
+    },
+    {
+      "id": "deep-learning",
+      "label": "Deep Learning",
+      "chapter": 1,
+      "description": "Learning hierarchies of concepts built from simpler concepts across many layers",
+      "x": 80,
+      "y": 400
+    },
+
+    {
+      "id": "scalars-vectors-matrices",
+      "label": "Scalars, Vectors, Matrices & Tensors",
+      "chapter": 2,
+      "description": "Fundamental mathematical objects: scalars, vectors, matrices, and higher-order tensors",
+      "x": 230,
+      "y": 50
+    },
+    {
+      "id": "matrix-operations",
+      "label": "Matrix Operations",
+      "chapter": 2,
+      "description": "Multiplication, inversion, norms, and systems of linear equations",
+      "x": 230,
+      "y": 140
+    },
+    {
+      "id": "eigendecomposition",
+      "label": "Eigendecomposition",
+      "chapter": 2,
+      "description": "Decomposing a matrix into eigenvalues and eigenvectors",
+      "x": 230,
+      "y": 230
+    },
+    {
+      "id": "svd",
+      "label": "Singular Value Decomposition",
+      "chapter": 2,
+      "description": "Generalizing eigendecomposition to non-square matrices",
+      "x": 230,
+      "y": 320
+    },
+    {
+      "id": "pca",
+      "label": "PCA",
+      "chapter": 2,
+      "description": "Dimensionality reduction by projecting onto principal components",
+      "x": 230,
+      "y": 410
+    },
+    {
+      "id": "trace-determinant",
+      "label": "Trace & Determinant",
+      "chapter": 2,
+      "description": "Scalar summaries of matrices used in optimization and probability",
+      "x": 230,
+      "y": 500
+    },
+
+    {
+      "id": "probability-distributions",
+      "label": "Probability Distributions",
+      "chapter": 3,
+      "description": "PMFs, PDFs, and the rules governing uncertainty",
+      "x": 380,
+      "y": 50
+    },
+    {
+      "id": "conditional-probability",
+      "label": "Conditional Probability",
+      "chapter": 3,
+      "description": "Probability of events given that other events have occurred",
+      "x": 380,
+      "y": 140
+    },
+    {
+      "id": "expectation-variance",
+      "label": "Expectation & Variance",
+      "chapter": 3,
+      "description": "Summarizing distributions by their mean and spread",
+      "x": 380,
+      "y": 230
+    },
+    {
+      "id": "common-distributions",
+      "label": "Common Distributions",
+      "chapter": 3,
+      "description": "Bernoulli, Gaussian, multinoulli, exponential, Laplace, and mixtures",
+      "x": 380,
+      "y": 320
+    },
+    {
+      "id": "bayes-rule",
+      "label": "Bayes' Rule",
+      "chapter": 3,
+      "description": "Updating beliefs given new evidence: P(A|B) = P(B|A)P(A)/P(B)",
+      "x": 380,
+      "y": 410
+    },
+    {
+      "id": "information-theory",
+      "label": "Information Theory",
+      "chapter": 3,
+      "description": "Entropy, KL divergence, and cross-entropy for quantifying information",
+      "x": 380,
+      "y": 500
+    },
+
+    {
+      "id": "overflow-underflow",
+      "label": "Overflow & Underflow",
+      "chapter": 4,
+      "description": "Numerical pitfalls when representing real numbers in finite precision",
+      "x": 530,
+      "y": 80
+    },
+    {
+      "id": "gradient-based-optimization",
+      "label": "Gradient-Based Optimization",
+      "chapter": 4,
+      "description": "Minimizing functions by following the gradient downhill",
+      "x": 530,
+      "y": 200
+    },
+    {
+      "id": "jacobian-hessian",
+      "label": "Jacobian & Hessian",
+      "chapter": 4,
+      "description": "First- and second-order derivative matrices for multivariable functions",
+      "x": 530,
+      "y": 320
+    },
+    {
+      "id": "constrained-optimization",
+      "label": "Constrained Optimization",
+      "chapter": 4,
+      "description": "Optimization with equality/inequality constraints via KKT conditions and Lagrange multipliers",
+      "x": 530,
+      "y": 440
+    },
+
+    {
+      "id": "learning-algorithms",
+      "label": "Learning Algorithms",
+      "chapter": 5,
+      "description": "Task T, performance measure P, experience E framework",
+      "x": 680,
+      "y": 50
+    },
+    {
+      "id": "capacity-overfitting",
+      "label": "Capacity & Overfitting",
+      "chapter": 5,
+      "description": "Model complexity, underfitting, overfitting, and the bias-variance tradeoff",
+      "x": 680,
+      "y": 130
+    },
+    {
+      "id": "hyperparameters-validation",
+      "label": "Hyperparameters & Validation",
+      "chapter": 5,
+      "description": "Tuning settings not learned by training, using held-out validation sets",
+      "x": 680,
+      "y": 210
+    },
+    {
+      "id": "estimators-bias-variance",
+      "label": "Estimators, Bias & Variance",
+      "chapter": 5,
+      "description": "Point estimation, bias, variance, consistency, and the bias-variance tradeoff",
+      "x": 680,
+      "y": 290
+    },
+    {
+      "id": "mle",
+      "label": "Maximum Likelihood Estimation",
+      "chapter": 5,
+      "description": "Choosing parameters that maximize the probability of observed data",
+      "x": 680,
+      "y": 370
+    },
+    {
+      "id": "bayesian-statistics",
+      "label": "Bayesian Statistics",
+      "chapter": 5,
+      "description": "Using prior distributions over parameters and updating via Bayes' rule",
+      "x": 680,
+      "y": 450
+    },
+    {
+      "id": "supervised-learning",
+      "label": "Supervised Learning",
+      "chapter": 5,
+      "description": "Learning from labeled input-output pairs (classification and regression)",
+      "x": 680,
+      "y": 530
+    },
+    {
+      "id": "unsupervised-learning",
+      "label": "Unsupervised Learning",
+      "chapter": 5,
+      "description": "Discovering structure in unlabeled data (clustering, density estimation)",
+      "x": 680,
+      "y": 610
+    },
+
+    {
+      "id": "feedforward-networks",
+      "label": "Feedforward Networks",
+      "chapter": 6,
+      "description": "The basic deep learning model: layers of learned affine transforms and nonlinearities",
+      "x": 830,
+      "y": 50
+    },
+    {
+      "id": "gradient-based-learning",
+      "label": "Gradient-Based Learning",
+      "chapter": 6,
+      "description": "Training neural networks by computing gradients of a cost function",
+      "x": 830,
+      "y": 140
+    },
+    {
+      "id": "hidden-units",
+      "label": "Hidden Units",
+      "chapter": 6,
+      "description": "Neurons in intermediate layers that learn internal representations",
+      "x": 830,
+      "y": 230
+    },
+    {
+      "id": "activation-functions",
+      "label": "Activation Functions",
+      "chapter": 6,
+      "description": "Nonlinearities like ReLU, sigmoid, and tanh applied to hidden units",
+      "x": 830,
+      "y": 320
+    },
+    {
+      "id": "output-units",
+      "label": "Output Units",
+      "chapter": 6,
+      "description": "Final layer units: linear, sigmoid, or softmax depending on the task",
+      "x": 830,
+      "y": 410
+    },
+    {
+      "id": "architecture-design",
+      "label": "Architecture Design",
+      "chapter": 6,
+      "description": "Choosing depth, width, and connectivity patterns for neural networks",
+      "x": 830,
+      "y": 500
+    },
+    {
+      "id": "backpropagation",
+      "label": "Backpropagation",
+      "chapter": 6,
+      "description": "Efficiently computing gradients via the chain rule applied layer by layer",
+      "x": 830,
+      "y": 590
+    },
+
+    {
+      "id": "parameter-norm-penalties",
+      "label": "Parameter Norm Penalties",
+      "chapter": 7,
+      "description": "Adding a penalty on weight magnitudes to the loss function",
+      "x": 980,
+      "y": 50
+    },
+    {
+      "id": "l1-l2-regularization",
+      "label": "L1 & L2 Regularization",
+      "chapter": 7,
+      "description": "Weight decay (L2) and sparsity-inducing (L1) penalties",
+      "x": 980,
+      "y": 140
+    },
+    {
+      "id": "dropout",
+      "label": "Dropout",
+      "chapter": 7,
+      "description": "Randomly zeroing units during training as a form of ensemble regularization",
+      "x": 980,
+      "y": 230
+    },
+    {
+      "id": "data-augmentation",
+      "label": "Data Augmentation",
+      "chapter": 7,
+      "description": "Creating fake training data via transformations to reduce overfitting",
+      "x": 980,
+      "y": 320
+    },
+    {
+      "id": "early-stopping",
+      "label": "Early Stopping",
+      "chapter": 7,
+      "description": "Halting training when validation error stops improving",
+      "x": 980,
+      "y": 410
+    },
+    {
+      "id": "ensemble-methods",
+      "label": "Ensemble Methods",
+      "chapter": 7,
+      "description": "Combining multiple models to reduce generalization error",
+      "x": 980,
+      "y": 500
+    },
+    {
+      "id": "batch-normalization",
+      "label": "Batch Normalization",
+      "chapter": 7,
+      "description": "Normalizing layer inputs to stabilize and accelerate training",
+      "x": 980,
+      "y": 590
+    },
+
+    {
+      "id": "sgd",
+      "label": "Stochastic Gradient Descent",
+      "chapter": 8,
+      "description": "Approximating the full gradient using random minibatches",
+      "x": 1130,
+      "y": 50
+    },
+    {
+      "id": "momentum",
+      "label": "Momentum",
+      "chapter": 8,
+      "description": "Accumulating a velocity vector to accelerate SGD in consistent directions",
+      "x": 1130,
+      "y": 140
+    },
+    {
+      "id": "learning-rate",
+      "label": "Learning Rate Schedules",
+      "chapter": 8,
+      "description": "Strategies for decaying or adapting the step size during training",
+      "x": 1130,
+      "y": 230
+    },
+    {
+      "id": "adam-optimizer",
+      "label": "Adam Optimizer",
+      "chapter": 8,
+      "description": "Adaptive learning rates using first and second moment estimates",
+      "x": 1130,
+      "y": 320
+    },
+    {
+      "id": "second-order-methods",
+      "label": "Second-Order Methods",
+      "chapter": 8,
+      "description": "Newton's method, conjugate gradients, and other curvature-aware optimizers",
+      "x": 1130,
+      "y": 410
+    },
+    {
+      "id": "batch-normalization-opt",
+      "label": "Batch Norm (Optimization)",
+      "chapter": 8,
+      "description": "Batch normalization as an optimization technique for smoother loss surfaces",
+      "x": 1130,
+      "y": 500
+    },
+    {
+      "id": "parameter-initialization",
+      "label": "Parameter Initialization",
+      "chapter": 8,
+      "description": "Strategies for setting initial weights to enable effective training",
+      "x": 1130,
+      "y": 590
+    },
+
+    {
+      "id": "convolution-operation",
+      "label": "Convolution Operation",
+      "chapter": 9,
+      "description": "Applying learned kernels that share weights across spatial locations",
+      "x": 1280,
+      "y": 100
+    },
+    {
+      "id": "pooling",
+      "label": "Pooling",
+      "chapter": 9,
+      "description": "Downsampling feature maps to achieve translation invariance",
+      "x": 1280,
+      "y": 230
+    },
+    {
+      "id": "cnn-architecture",
+      "label": "CNN Architecture",
+      "chapter": 9,
+      "description": "Stacking convolution, pooling, and fully connected layers for vision tasks",
+      "x": 1280,
+      "y": 360
+    },
+    {
+      "id": "convolution-variants",
+      "label": "Convolution Variants",
+      "chapter": 9,
+      "description": "Strided, dilated, tiled, and locally connected convolutions",
+      "x": 1280,
+      "y": 490
+    },
+
+    {
+      "id": "unfolding-graphs",
+      "label": "Unfolding Computational Graphs",
+      "chapter": 10,
+      "description": "Representing recurrence as a deep feedforward graph over time steps",
+      "x": 1430,
+      "y": 50
+    },
+    {
+      "id": "rnn-architecture",
+      "label": "RNN Architecture",
+      "chapter": 10,
+      "description": "Networks with recurrent connections for processing sequential data",
+      "x": 1430,
+      "y": 130
+    },
+    {
+      "id": "bidirectional-rnn",
+      "label": "Bidirectional RNN",
+      "chapter": 10,
+      "description": "Processing sequences in both forward and backward directions",
+      "x": 1430,
+      "y": 210
+    },
+    {
+      "id": "encoder-decoder",
+      "label": "Encoder-Decoder",
+      "chapter": 10,
+      "description": "Mapping variable-length input sequences to variable-length output sequences",
+      "x": 1430,
+      "y": 290
+    },
+    {
+      "id": "long-term-dependencies",
+      "label": "Long-Term Dependencies",
+      "chapter": 10,
+      "description": "The challenge of learning to connect information across many time steps",
+      "x": 1430,
+      "y": 370
+    },
+    {
+      "id": "lstm",
+      "label": "LSTM",
+      "chapter": 10,
+      "description": "Gated recurrent units with explicit memory cells that mitigate vanishing gradients",
+      "x": 1430,
+      "y": 450
+    },
+    {
+      "id": "gru",
+      "label": "GRU",
+      "chapter": 10,
+      "description": "A simplified gated architecture alternative to LSTM",
+      "x": 1430,
+      "y": 530
+    },
+    {
+      "id": "echo-state-networks",
+      "label": "Echo State Networks",
+      "chapter": 10,
+      "description": "RNNs with fixed random recurrent weights and only trained output weights",
+      "x": 1430,
+      "y": 610
+    }
+  ],
+  "edges": [
+    { "from": "ai", "to": "machine-learning", "label": "subfield" },
+    { "from": "machine-learning", "to": "representation-learning", "label": "subfield" },
+    { "from": "representation-learning", "to": "deep-learning", "label": "subfield" },
+
+    { "from": "scalars-vectors-matrices", "to": "matrix-operations", "label": "enables" },
+    { "from": "matrix-operations", "to": "eigendecomposition", "label": "enables" },
+    { "from": "eigendecomposition", "to": "svd", "label": "generalizes" },
+    { "from": "svd", "to": "pca", "label": "enables" },
+    { "from": "matrix-operations", "to": "trace-determinant", "label": "enables" },
+    { "from": "eigendecomposition", "to": "trace-determinant", "label": "relates" },
+
+    { "from": "probability-distributions", "to": "conditional-probability", "label": "enables" },
+    { "from": "probability-distributions", "to": "expectation-variance", "label": "enables" },
+    { "from": "probability-distributions", "to": "common-distributions", "label": "enables" },
+    { "from": "conditional-probability", "to": "bayes-rule", "label": "enables" },
+    { "from": "probability-distributions", "to": "information-theory", "label": "enables" },
+    { "from": "expectation-variance", "to": "information-theory", "label": "enables" },
+
+    { "from": "matrix-operations", "to": "gradient-based-optimization", "label": "requires" },
+    { "from": "gradient-based-optimization", "to": "jacobian-hessian", "label": "extends" },
+    { "from": "jacobian-hessian", "to": "constrained-optimization", "label": "enables" },
+    { "from": "gradient-based-optimization", "to": "constrained-optimization", "label": "extends" },
+    { "from": "scalars-vectors-matrices", "to": "gradient-based-optimization", "label": "requires" },
+
+    { "from": "machine-learning", "to": "learning-algorithms", "label": "formalizes" },
+    { "from": "learning-algorithms", "to": "capacity-overfitting", "label": "enables" },
+    { "from": "capacity-overfitting", "to": "hyperparameters-validation", "label": "motivates" },
+    { "from": "learning-algorithms", "to": "estimators-bias-variance", "label": "enables" },
+    { "from": "estimators-bias-variance", "to": "mle", "label": "enables" },
+    { "from": "probability-distributions", "to": "mle", "label": "requires" },
+    { "from": "common-distributions", "to": "mle", "label": "requires" },
+    { "from": "bayes-rule", "to": "bayesian-statistics", "label": "enables" },
+    { "from": "mle", "to": "bayesian-statistics", "label": "contrasts" },
+    { "from": "learning-algorithms", "to": "supervised-learning", "label": "enables" },
+    { "from": "learning-algorithms", "to": "unsupervised-learning", "label": "enables" },
+    { "from": "pca", "to": "unsupervised-learning", "label": "exemplifies" },
+    { "from": "information-theory", "to": "mle", "label": "relates" },
+
+    { "from": "deep-learning", "to": "feedforward-networks", "label": "realized by" },
+    { "from": "supervised-learning", "to": "feedforward-networks", "label": "enables" },
+    { "from": "mle", "to": "gradient-based-learning", "label": "enables" },
+    { "from": "gradient-based-optimization", "to": "gradient-based-learning", "label": "enables" },
+    { "from": "feedforward-networks", "to": "gradient-based-learning", "label": "requires" },
+    { "from": "feedforward-networks", "to": "hidden-units", "label": "contains" },
+    { "from": "hidden-units", "to": "activation-functions", "label": "requires" },
+    { "from": "feedforward-networks", "to": "output-units", "label": "contains" },
+    { "from": "common-distributions", "to": "output-units", "label": "informs" },
+    { "from": "feedforward-networks", "to": "architecture-design", "label": "requires" },
+    { "from": "gradient-based-learning", "to": "backpropagation", "label": "implemented by" },
+    { "from": "jacobian-hessian", "to": "backpropagation", "label": "enables" },
+    { "from": "information-theory", "to": "gradient-based-learning", "label": "informs" },
+
+    { "from": "capacity-overfitting", "to": "parameter-norm-penalties", "label": "motivates" },
+    { "from": "parameter-norm-penalties", "to": "l1-l2-regularization", "label": "realized by" },
+    { "from": "constrained-optimization", "to": "l1-l2-regularization", "label": "relates" },
+    { "from": "capacity-overfitting", "to": "dropout", "label": "motivates" },
+    { "from": "ensemble-methods", "to": "dropout", "label": "inspires" },
+    { "from": "capacity-overfitting", "to": "data-augmentation", "label": "motivates" },
+    { "from": "hyperparameters-validation", "to": "early-stopping", "label": "enables" },
+    { "from": "capacity-overfitting", "to": "early-stopping", "label": "motivates" },
+    { "from": "capacity-overfitting", "to": "ensemble-methods", "label": "motivates" },
+    { "from": "feedforward-networks", "to": "batch-normalization", "label": "enables" },
+
+    { "from": "backpropagation", "to": "sgd", "label": "enables" },
+    { "from": "gradient-based-optimization", "to": "sgd", "label": "enables" },
+    { "from": "sgd", "to": "momentum", "label": "extends" },
+    { "from": "sgd", "to": "learning-rate", "label": "requires" },
+    { "from": "momentum", "to": "adam-optimizer", "label": "extends" },
+    { "from": "learning-rate", "to": "adam-optimizer", "label": "adapts" },
+    { "from": "jacobian-hessian", "to": "second-order-methods", "label": "enables" },
+    { "from": "sgd", "to": "second-order-methods", "label": "extends" },
+    { "from": "batch-normalization", "to": "batch-normalization-opt", "label": "same concept" },
+    { "from": "sgd", "to": "parameter-initialization", "label": "requires" },
+    { "from": "activation-functions", "to": "parameter-initialization", "label": "constrains" },
+    { "from": "overflow-underflow", "to": "parameter-initialization", "label": "motivates" },
+
+    { "from": "feedforward-networks", "to": "convolution-operation", "label": "specializes" },
+    { "from": "matrix-operations", "to": "convolution-operation", "label": "enables" },
+    { "from": "convolution-operation", "to": "pooling", "label": "enables" },
+    { "from": "convolution-operation", "to": "cnn-architecture", "label": "enables" },
+    { "from": "pooling", "to": "cnn-architecture", "label": "enables" },
+    { "from": "architecture-design", "to": "cnn-architecture", "label": "informs" },
+    { "from": "convolution-operation", "to": "convolution-variants", "label": "extends" },
+
+    { "from": "feedforward-networks", "to": "unfolding-graphs", "label": "enables" },
+    { "from": "backpropagation", "to": "unfolding-graphs", "label": "enables" },
+    { "from": "unfolding-graphs", "to": "rnn-architecture", "label": "enables" },
+    { "from": "architecture-design", "to": "rnn-architecture", "label": "informs" },
+    { "from": "rnn-architecture", "to": "bidirectional-rnn", "label": "extends" },
+    { "from": "rnn-architecture", "to": "encoder-decoder", "label": "enables" },
+    { "from": "rnn-architecture", "to": "long-term-dependencies", "label": "suffers from" },
+    { "from": "long-term-dependencies", "to": "lstm", "label": "addresses" },
+    { "from": "long-term-dependencies", "to": "gru", "label": "addresses" },
+    { "from": "lstm", "to": "gru", "label": "simplifies" },
+    { "from": "long-term-dependencies", "to": "echo-state-networks", "label": "addresses" },
+    { "from": "rnn-architecture", "to": "echo-state-networks", "label": "variant" },
+    { "from": "dropout", "to": "rnn-architecture", "label": "regularizes" },
+    { "from": "sgd", "to": "rnn-architecture", "label": "trains" }
+  ]
+}
