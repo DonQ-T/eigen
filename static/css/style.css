@@ -2700,3 +2700,43 @@ footer {
     grid-template-columns: 1fr;
   }
 }
+
+/* ============================================
+   Markdown tables (rendered from |---|---| syntax)
+   ============================================ */
+
+.post-content table,
+.single-content table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-code);
+  font-size: 0.8125rem;
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  display: block;
+}
+
+.post-content table th,
+.single-content table th {
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-dim);
+  font-weight: 500;
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.post-content table td,
+.single-content table td {
+  padding: 0.4rem 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  white-space: nowrap;
+}
+
+.post-content table tr:hover td,
+.single-content table tr:hover td {
+  background: rgba(255, 255, 255, 0.03);
+}
