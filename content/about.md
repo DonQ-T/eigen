@@ -36,7 +36,7 @@ The math behind machine learning — theory, proofs, geometry, and the code. If 
 
 ## Connect
 
-- **YouTube:** [@donq.T](https://www.youtube.com/@donq.T)
+- **YouTube:** [@eigen.io-ai](https://www.youtube.com/@eigen.io-ai)
 - **Instagram:** [@eigen.io](https://www.instagram.com/eigen.io/)
 - **Email:** mattjacob1107@gmail.com
 
