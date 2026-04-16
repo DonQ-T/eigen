@@ -7,15 +7,15 @@ tags: ["NMF", "bioinformatics", "similarity-metrics", "gene-expression"]
 draft: false
 ---
 
-You have a curve. It describes how gene expression should behave over time --- rising here, dipping there, spiking at hour 3. Somewhere in a matrix of 17,856 genes, each measured at four timepoints, there are genes that follow this curve. Your job is to find them.
+A curve describes how gene expression should behave over time --- rising here, dipping there, spiking at hour 3. Somewhere in a matrix of 17,856 genes, each measured at four timepoints, are the genes that follow it. The task is to find them.
 
-This sounds like a solved problem. Compute a similarity score between each gene and the pattern, sort, take the top 20. But which similarity score? Pearson correlation? Dynamic Time Warping? Cosine similarity? Mean Squared Error? Each one claims to measure "how similar are these two curves," and each one will hand you a different list of genes.
+This sounds like a solved problem. Compute a similarity score between each gene and the pattern, sort, take the top 20. But which similarity score? Pearson correlation? Dynamic Time Warping? Cosine similarity? Mean Squared Error? Each one claims to measure "how similar are these two curves," and each one returns a different list of genes.
 
-The question isn't which metric is "correct." The question is what each metric *means* --- what property of the data it's actually measuring --- and whether that property is the one you care about.
+The question isn't which metric is "correct." The question is what each metric *means* --- what property of the data it's actually measuring --- and whether that property is the one that matters for the biological question at hand.
 
 ## The Problem
 
-This is part of ongoing research with [Dr. Nancy Guo's group](https://doi.org/10.1158/2767-9764.CRC-22-0383) at Binghamton University, extending the NMF-based analysis described in [a previous post](../nmf-chemoimmuno-analysis). NMF decomposition of single-cell TCR and gene expression data produced four clusters, each with a **constraint pattern** --- a biologically observed expression trend across four timepoints (0, 3, 6, and 9 hours post-stimulation):
+This work is part of ongoing computational biology research at Binghamton University, extending the NMF-based analysis described in [a previous post](../nmf-chemoimmuno-analysis). NMF decomposition of single-cell TCR and gene expression data produced four clusters, each with a **constraint pattern** --- a biologically observed expression trend across four timepoints (0, 3, 6, and 9 hours post-stimulation):
 
 | Cluster | Shape | LT Values (0, 3, 6, 9h) | Character |
 |---------|-------|--------------------------|-----------|
@@ -24,7 +24,7 @@ This is part of ongoing research with [Dr. Nancy Guo's group](https://doi.org/10
 | Three | Flat with dip | 0.04, 0.00, 0.04, 0.03 | Near-constant, drops to zero at t=3 |
 | Four | Extreme spike | 0.009, 0.49, 0.02, 0.02 | 70$\times$ spike at t=3, then collapse |
 
-The previous student had used NMF's own factor loadings to rank genes, but NMF uses non-negative factors, meaning a gene upregulated 2$\times$ and one downregulated 2$\times$ can get similar coefficients. We needed metrics that directly measure how well each gene's expression curve matches the constraint pattern.
+Previous work had used NMF's own factor loadings to rank genes, but NMF uses non-negative factors, meaning a gene upregulated 2$\times$ and one downregulated 2$\times$ can get similar coefficients. The project needed metrics that directly measure how well each gene's expression curve matches the constraint pattern.
 
 ### Normalization
 
@@ -32,7 +32,7 @@ Before computing any metric, each gene's expression time series is min-max norma
 
 $$x_{\text{norm}} = \frac{x - x_{\min} + \varepsilon}{x_{\max} - x_{\min} + \varepsilon}$$
 
-The $\varepsilon$ offset prevents division by zero for constant-expression genes (which get mapped to 1.0 at all timepoints). This puts every gene on the same scale so metrics compare *shape* rather than raw magnitude. Whether this is the right thing to do turns out to be a deeper question than it looks, but we'll save that for the next post.
+The $\varepsilon$ offset prevents division by zero for constant-expression genes (which get mapped to 1.0 at all timepoints). This puts every gene on the same scale so metrics compare *shape* rather than raw magnitude. Whether this is the right thing to do turns out to be a deeper question than it appears --- more on that in the [next post](../when-correlation-lies-gene-expression-pattern-matching).
 
 ## The Six Metrics
 
@@ -42,7 +42,7 @@ $$r = \frac{\sum(p_i - \bar{p})(g_i - \bar{g})}{\sqrt{\sum(p_i - \bar{p})^2 \cdo
 
 Pearson is the cosine of the angle between the *mean-centered* versions of two vectors. By subtracting the mean before comparing, it strips away the overall expression level and isolates the temporal shape --- the pattern of relative increases and decreases.
 
-The key properties: Pearson is **scale invariant** (multiplying all values by a constant doesn't change $r$) and **shift invariant** (adding a constant doesn't change $r$). The gene $[1, 12, 5, 7]$ and $[100, 1200, 500, 700]$ yield identical Pearson scores. If you're asking "does this gene go up and down at the same times as the pattern," this is exactly the right tool.
+The key properties: Pearson is **scale invariant** (multiplying all values by a constant doesn't change $r$) and **shift invariant** (adding a constant doesn't change $r$). The gene $[1, 12, 5, 7]$ and $[100, 1200, 500, 700]$ yield identical Pearson scores. For the question "does this gene go up and down at the same times as the pattern," it is exactly the right tool.
 
 The limitation: with $n = 4$ timepoints, the t-test for significance has $n - 2 = 2$ degrees of freedom. Two random vectors in $\mathbb{R}^4$ have roughly a 20% chance of $|r| > 0.8$ purely by chance. Individual $r$ values shouldn't be overinterpreted --- the value lies in the ranking across all 17,856 genes, not in any single score.
 
@@ -52,13 +52,13 @@ $$\cos(\theta) = \frac{\sum p_i \cdot g_i}{\sqrt{\sum p_i^2} \cdot \sqrt{\sum g_
 
 Same dot-product-over-magnitudes formula as Pearson, but *without* mean-centering first. This seems like a minor difference. It isn't.
 
-Pearson on raw vectors can be decomposed as:
+Cosine similarity on raw vectors can be decomposed as:
 
 $$\cos(\mathbf{p}, \mathbf{g}) = \frac{r \cdot \sigma_p \cdot \sigma_g + n \cdot \bar{p} \cdot \bar{g}}{\sqrt{\sum p_i^2} \cdot \sqrt{\sum g_i^2}}$$
 
 The first term captures shape similarity (proportional to Pearson $r$). The second is a **baseline bias** that scales with the product of the means. When both vectors have large means relative to their variation --- a housekeeping gene with high, stable expression --- the bias term dominates and cosine returns a high score even if the shapes don't match at all.
 
-Consider a flat housekeeping gene $[10, 10, 10, 10]$ against a spiking pattern. After normalization, the gene becomes $[1, 1, 1, 1]$. Pearson correctly says "undefined --- this gene has no shape." Cosine says 0.788 --- suggesting it's a decent match. That's enough to rank it above thousands of genes with real temporal dynamics.
+A flat housekeeping gene $[10, 10, 10, 10]$ against a spiking pattern illustrates this. After normalization, the gene becomes $[1, 1, 1, 1]$. Pearson correctly returns undefined --- this gene has no shape. Cosine returns 0.788 --- suggesting a decent match. That's enough to rank it above thousands of genes with real temporal dynamics.
 
 ### 3. Dynamic Time Warping (DTW)
 
@@ -66,7 +66,7 @@ DTW finds the optimal temporal alignment between two time series via dynamic pro
 
 $$C[i, j] = d(p_i, g_j) + \min\big(C[i{-}1, j],\; C[i, j{-}1],\; C[i{-}1, j{-}1]\big)$$
 
-Imagine stretching or compressing one series' time axis to best align it with the other. A gene that peaks at hour 6 instead of hour 3 would get a high MSE (the peaks don't line up point-by-point) but potentially a low DTW score, because DTW can warp $t = 6$ to align with $t = 3$.
+The algorithm stretches or compresses one series' time axis to best align it with the other. A gene that peaks at hour 6 instead of hour 3 would get a high MSE (the peaks don't line up point-by-point) but potentially a low DTW score, because DTW can warp $t = 6$ to align with $t = 3$.
 
 The catch: with only 4 timepoints, the $4 \times 4$ cost matrix limits the warping to at most 1--2 positions. The flexibility that makes DTW powerful on longer time series (15+ points) barely manifests here. In practice, DTW reduces to a slightly flexible version of pointwise distance, which is why it shows 16--17 out of 20 overlap with Pearson on most clusters.
 
@@ -76,7 +76,7 @@ Where DTW diverges is clusterTwo (the monotonic increase), where its warping cap
 
 $$C[i, j] = \max\Big(d(p_i, g_j),\; \min\big(C[i{-}1, j],\; C[i, j{-}1],\; C[i{-}1, j{-}1]\big)\Big)$$
 
-The "dog-walking distance": a person walks along curve P, a dog along curve G, connected by a leash. Both can vary speed but neither can go backward. The Frechet distance is the shortest leash that works.
+The classic "dog-walking distance": a person walks along curve P, a dog along curve G, connected by a leash. Both can vary speed but neither can go backward. The Frechet distance is the shortest leash that permits both to complete their respective curves.
 
 The only structural difference from DTW: **max** instead of **sum**. DTW accumulates all pointwise errors. Frechet only cares about the *worst* single-point deviation. A gene that's slightly off everywhere gets low DTW and low Frechet. A gene that's perfect at 3 timepoints but way off at 1 gets low DTW (3 good points dilute the bad one) but high Frechet (worst point dominates).
 
@@ -86,13 +86,13 @@ At 4 timepoints, this distinction creates minimal divergence. The largest error 
 
 $$\text{MSE} = \frac{1}{n} \sum(p_i - g_i)^2$$
 
-The simplest possible distance metric: average squared difference between corresponding timepoints. No alignment, no angular measurement. Just "how far apart are these two vectors, point by point?"
+The simplest possible distance metric: average squared difference between corresponding timepoints. No alignment, no angular measurement --- just the pointwise distance between two vectors.
 
 MSE and Pearson are mathematically related:
 
 $$\text{MSE} = \text{Var}(\mathbf{p}) + \text{Var}(\mathbf{g}) - 2r\,\sigma_p\sigma_g + (\bar{p} - \bar{g})^2$$
 
-When two normalized vectors have similar variance and mean, this simplifies to roughly $\text{MSE} \approx 2\sigma^2(1 - r)$. The Pearson $r$ term dominates, which is why MSE and Pearson show 16--18 out of 20 overlap in practice. They're measuring nearly the same thing from complementary perspectives --- angular similarity vs Euclidean distance.
+When two normalized vectors have similar variance and mean, this simplifies to roughly $\text{MSE} \approx 2\sigma^2(1 - r)$. The Pearson $r$ term dominates, which is why MSE and Pearson show 16--18 out of 20 overlap in practice. They measure nearly the same thing from complementary perspectives --- angular similarity vs Euclidean distance.
 
 ### 6. sMAPE (Symmetric Mean Absolute Percentage Error)
 
@@ -108,7 +108,7 @@ The term saturates at the maximum possible value for *every* gene, regardless of
 
 On clusterThree, whose pattern dips to zero at $t = 3$, this failure is catastrophic. sMAPE ranks genes based solely on noise at the three non-informative timepoints, missing the biologically important dip entirely. The result: **0 out of 20 overlap** with every other method.
 
-## What Happened When We Ran Them
+## Results
 
 ### ClusterTwo: The best case
 
@@ -126,7 +126,7 @@ When the pattern is a clean, steady curve without extreme spikes or zeros, all s
 
 ### ClusterFour: The worst case
 
-ClusterFour (70$\times$ spike at $t = 3$) is where everything falls apart. The overlap matrix tells the story:
+ClusterFour (70$\times$ spike at $t = 3$) is where everything falls apart:
 
 <img src="/eigen/images/pattern-matching-methods/overlap_6methods_LT_clusterFourLT.png" alt="Overlap heatmap for clusterFour showing zero agreement between method groups" style="max-width: 100%;">
 
@@ -144,11 +144,11 @@ After normalization, clusterFour's pattern is effectively $[0, 1, 0, 0]$ --- a n
 
 <img src="/eigen/images/pattern-matching-methods/Ensemble_LT_clusterFourLT_constraint.png" alt="Ensemble results for clusterFour showing scattered gene curves" style="max-width: 100%;">
 
-*Ensemble results for clusterFour. With no consensus between methods, the voting produces a compromise list where no gene has more than 3/6 votes. The gene curves are scattered --- the ensemble can't find genes that all methods agree on because the methods are measuring fundamentally different things on a delta-function pattern.*
+*Ensemble results for clusterFour. With no consensus between methods, the voting produces a compromise list where no gene has more than 3/6 votes. The gene curves are scattered --- the ensemble cannot find agreement because the methods are measuring fundamentally different things on a delta-function pattern.*
 
-The lesson: clusterFour needs either denser time sampling or a specialized peak-detection approach. Whole-series similarity matching breaks down when the series is dominated by a single point.
+ClusterFour likely needs either denser time sampling or a specialized peak-detection approach. Whole-series similarity matching breaks down when the series is dominated by a single point.
 
-### The sMAPE disaster on ClusterThree
+### The sMAPE failure on ClusterThree
 
 <img src="/eigen/images/pattern-matching-methods/sMAPE_LT_clusterThreeLT_constraint.png" alt="sMAPE top-20 genes for clusterThree showing complete mismatch with the pattern" style="max-width: 100%;">
 
@@ -158,7 +158,7 @@ Five of six methods agree on clusterThree (17--20 overlap among Pearson, DTW, Co
 
 ## Why Methods Cluster
 
-Stepping back, the overlap data reveals a clean grouping:
+The overlap data reveals a clean grouping:
 
 **Group 1: Shape/Distance (Pearson + MSE + Frechet).** After normalization, all three measure trajectory proximity. Pearson via angular comparison, MSE via Euclidean distance, Frechet via worst-case deviation. The approximate relationship $\text{MSE} \approx 2\sigma^2(1-r)$ means they're coupled. 15--20 overlap consistently.
 
@@ -170,13 +170,13 @@ Stepping back, the overlap data reveals a clean grouping:
 
 ## The Ensemble
 
-The ensemble strategy: convert all metric scores to ranks, count how many methods place each gene in the top 20, and sort by vote count (ties broken by average rank). A gene that appears in 5 of 6 methods' top-20 lists is almost certainly following the pattern. A gene that appears in only 1 is either a false positive from that method or a genuinely different kind of match that only one metric can detect.
+The ensemble strategy converts all metric scores to ranks, counts how many methods place each gene in the top 20, and sorts by vote count (ties broken by average rank). A gene appearing in 5 of 6 methods' top-20 lists is almost certainly following the pattern. A gene appearing in only 1 is either a false positive from that method or a genuinely different kind of match that only one metric can detect.
 
-Visualization uses opacity proportional to vote fraction --- darker lines are higher-consensus genes. This makes the plots immediately readable: dark blue lines hugging the red pattern are the answer.
+Visualization uses opacity proportional to vote fraction --- darker lines are higher-consensus genes, making the plots immediately readable: dark blue lines hugging the red pattern represent the answer.
 
 The ensemble works well when methods mostly agree (clusters Two and Three). It produces mediocre compromises when methods fundamentally disagree (clusterFour). And on every cluster, some methods' votes are actively harmful --- dragging in genes that don't match because the metric was fooled by normalization artifacts, magnitude bias, or zero-value saturation.
 
-Which raises the question: if we know some methods are wrong on some clusters, can we automatically detect and silence them before they vote? That's what we tackled next.
+This raises a natural question: if some methods are known to fail on certain clusters, can they be automatically detected and silenced before they vote? That became the focus of the [following week's work](../when-correlation-lies-gene-expression-pattern-matching).
 
 ---
 
