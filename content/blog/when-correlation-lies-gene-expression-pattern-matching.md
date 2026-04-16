@@ -15,7 +15,7 @@ What followed was a week of debugging that turned into a lesson about the gap be
 
 ## The Setup
 
-This is part of ongoing computational biology research at Binghamton University, extending the NMF-based gene expression analysis described in [a previous post](../nmf-chemoimmuno-analysis). The dataset contains single-cell RNA-seq data from a lung cancer patient undergoing chemo-immunotherapy: ~17,856 genes measured at four timepoints (0, 3, 6, and 9 hours).
+This extends the NMF-based gene expression analysis described in [a previous post](../nmf-chemoimmuno-analysis). The dataset contains single-cell RNA-seq data from a lung cancer patient undergoing chemo-immunotherapy: ~17,856 genes measured at four timepoints (0, 3, 6, and 9 hours).
 
 NMF decomposition produced four clusters, each with a **constraint pattern** --- a biologically observed expression trend that certain genes are expected to follow. The goal: for each cluster, find the genes whose expression best matches the constraint pattern.
 
@@ -135,7 +135,7 @@ If only shape matters --- "find genes that go up and down at the same times, reg
 
 The answer depends on the biology. If the constraint patterns represent specific expression programs that operate at characteristic levels, magnitude matters. If they represent temporal dynamics that can occur at any expression level, shape is what counts.
 
-The methodological direction awaits feedback from the research group. In the meantime, the technical lesson is clear: normalization is not a free operation. It makes an implicit claim about what kind of similarity matters, and if that claim doesn't match the actual question, every metric downstream will be answering the wrong thing.
+The methodological direction is still open. In the meantime, the technical lesson is clear: normalization is not a free operation. It makes an implicit claim about what kind of similarity matters, and if that claim doesn't match the actual question, every metric downstream will be answering the wrong thing.
 
 ---
 

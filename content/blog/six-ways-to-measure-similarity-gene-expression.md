@@ -15,7 +15,7 @@ The question isn't which metric is "correct." The question is what each metric *
 
 ## The Problem
 
-This work is part of ongoing computational biology research at Binghamton University, extending the NMF-based analysis described in [a previous post](../nmf-chemoimmuno-analysis). NMF decomposition of single-cell TCR and gene expression data produced four clusters, each with a **constraint pattern** --- a biologically observed expression trend across four timepoints (0, 3, 6, and 9 hours post-stimulation):
+This extends the NMF-based analysis described in [a previous post](../nmf-chemoimmuno-analysis). NMF decomposition of single-cell TCR and gene expression data produced four clusters, each with a **constraint pattern** --- a biologically observed expression trend across four timepoints (0, 3, 6, and 9 hours post-stimulation):
 
 | Cluster | Shape | LT Values (0, 3, 6, 9h) | Character |
 |---------|-------|--------------------------|-----------|
