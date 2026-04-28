@@ -1,6 +1,6 @@
 ---
 title: "When the Wrong Method Picks the Right Genes"
-date: 2026-04-30
+date: 2026-04-28
 author: "Matt Jacob"
 description: "Shape won the argument over magnitude. The strange part: the method that wins on shape for three of four clusters is the one that doesn't measure shape at all. One question per cluster decides which method to trust --- and the cluster where the question fails turns out to be the only one that needs a different metric."
 tags: ["NMF", "bioinformatics", "gene-expression", "similarity-metrics"]

@@ -1,6 +1,6 @@
 ---
 title: "The Pareto Front I Didn't Need"
-date: 2026-04-30
+date: 2026-04-28
 author: "Matt Jacob"
 description: "I spent most of the week building a 2D Pareto framework that scored every method against the constraint pattern on shape and magnitude axes simultaneously. It worked. Then I noticed it produced the exact same picks as a single-line check, and rewrote the whole thing around the smaller rule. A note on framework simplicity, and on resisting the urge to keep machinery just because you built it."
 tags: ["NMF", "bioinformatics", "gene-expression", "similarity-metrics"]
